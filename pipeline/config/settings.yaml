@@ -1,0 +1,31 @@
+# Pipeline configuration.
+#
+# llm.provider selects which LLMClient implementation the factory
+# (pipeline/extraction/llm_client/factory.py) builds. Switching to a
+# self-hosted model later (e.g. on a compute cluster) means changing
+# `provider` to `openai_compatible` and filling in `base_url`/`model`
+# below -- no pipeline code changes.
+
+llm:
+  provider: anthropic  # anthropic | openai_compatible
+
+  anthropic:
+    # Deliberate cost/quality tradeoff, not a default: Sonnet 5 is
+    # vision-capable with a 1M context window at roughly 1/8th Opus 5's
+    # price, which matters across a 63-paper (and growing) batch. Bump to
+    # claude-opus-5 for specific hard papers/columns once the evaluation
+    # harness flags where Sonnet under-performs.
+    model: claude-sonnet-5
+
+  openai_compatible:
+    # Fill these in when pointing at a self-hosted vLLM/TGI/Ollama server.
+    base_url: http://localhost:8000/v1
+    model: null
+    api_key: null  # most self-hosted servers ignore this
+
+mineru:
+  tier: standard
+
+paths:
+  papers_dir: papers
+  output_dir: output
