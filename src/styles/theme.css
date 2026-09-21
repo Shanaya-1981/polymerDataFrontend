@@ -1,0 +1,187 @@
+/*
+ * Design tokens for Polymer Electrolyte Data Mining.
+ *
+ * This file is the single source of truth for color, type, and focus tokens.
+ * Every later page/component/chart should be built from the semantic
+ * utilities documented below rather than raw Tailwind palette colors
+ * (no `bg-slate-100`, `text-zinc-500`, etc. in app code) so the app stays
+ * visually consistent across parallel work, and so light/dark stay correct
+ * by construction (values swap via the `.dark` class below, one place only).
+ *
+ * Reference: WCAG 2 contrast ratios for every text/background pairing below
+ * were verified programmatically (relative-luminance formula), not eyeballed
+ * — see the design summary in README.md for the numbers.
+ */
+
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+/* Our dark mode is a manual `.dark` class on <html> (see
+   src/components/theme/ThemeProvider.tsx), not the OS media query, so we
+   repoint Tailwind's `dark:` variant at that class. This makes `dark:*`
+   utilities used anywhere in the app agree with the semantic tokens below,
+   which are also switched by the same `.dark` class. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ---- Typography -------------------------------------------------- */
+  --font-sans:
+    "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+
+  /* ---- Surfaces (Surfaces group: bg-canvas / bg-surface / bg-surface-raised).
+     "bg-muted" is intentionally NOT here — see the hand-authored @utility
+     below; it needs a value independent of text-muted's token. */
+  --color-canvas: #fafafa;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+
+  /* ---- Text (text-primary / text-secondary). text-muted is hand-authored
+     below (see @utility) so it can hold its own value distinct from
+     bg-muted's fill color. */
+  --color-primary: #18181b;
+  --color-secondary: #52525b;
+
+  /* ---- Borders (border-subtle / border-default / border-strong).
+     border-subtle is deliberately low-contrast (decorative hairlines: card
+     outlines, dividers). border-default and border-strong are calibrated
+     to clear 3:1 against canvas/surface, for places a border is the only
+     affordance (input fields, outline buttons, focus-adjacent states). */
+  --color-subtle: #e7e7ea;
+  --color-default: #8c8c95;
+  --color-strong: #7a7a83;
+
+  /* ---- Accent: one calm, restrained teal (bg-accent / text-accent /
+     border-accent all come free from this one token; text-on-accent is the
+     label color for accent-filled surfaces; accent-hover is the hover step,
+     used as `hover:bg-accent-hover`). */
+  --color-accent: #0f766e;
+  --color-accent-hover: #0c5f58;
+  --color-on-accent: #ffffff;
+
+  /* ---- Status (light use only: small inline validation/badge text, never
+     large alert surfaces). Kept visually distinct from the categorical
+     chart palette below so a status color never impersonates a series. */
+  --color-danger: #b91c1c;
+  --color-success: #0f7a3d;
+}
+
+/* ---- Raw tokens kept outside @theme -----------------------------------
+   Tailwind's @theme only keeps a variable if something in the scanned
+   source actually resolves to one of its generated utility classes
+   (e.g. bg-canvas) — anything meant to be read as a plain CSS variable
+   instead (var(--x), not a `*-x` class name) belongs out here, or it can
+   get silently pruned from the build. That covers: --ring (consumed by
+   the raw :focus-visible rule below, not a utility class), the two
+   hand-authored utilities' backing values (avoids a bg-muted/text-muted
+   name collision — see the @utility rules below), and the whole chart
+   palette (consumed via var(--chart-N) in chart code, never as a
+   `bg-chart-N` class name, so it would never be detected as "used"). */
+:root {
+  color-scheme: light;
+  --surface-muted: #f0f1f3;
+  --text-muted: #65656d;
+  --ring: #0f766e;
+
+  /* ---- Categorical chart palette (light step) ---------------------
+     12 hand-tuned hues, fixed order, validated with the OKLab/Machado-
+     Oliveira-Fernandes CVD method (see chart-palette.ts for the full
+     validation notes and the >12-category fallback strategy). Slots 1-4
+     additionally clear the *all-pairs* CVD floor (safe for scatter/bubble
+     charts where any two categories can sit side by side); slots 5-12
+     are validated for *adjacent* use only (legends, bars, stacked lines,
+     assigned in a fixed order and never re-cycled). */
+  --chart-1: #31cc3f;
+  --chart-2: #30bddb;
+  --chart-3: #d52ef6;
+  --chart-4: #f82d89;
+  --chart-5: #2db2f8;
+  --chart-6: #f72d4f;
+  --chart-7: #1e7ef5;
+  --chart-8: #f75a23;
+  --chart-9: #31c4ae;
+  --chart-10: #6b24f1;
+  --chart-11: #b4b12b;
+  --chart-12: #f62dc4;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --color-canvas: #0a0a0b;
+  --color-surface: #131316;
+  --color-surface-raised: #1c1c20;
+
+  --color-primary: #f4f4f5;
+  --color-secondary: #b4b4ba;
+
+  --color-subtle: #232327;
+  --color-default: #68686f;
+  --color-strong: #7c7c83;
+
+  --color-accent: #2dd4bf;
+  --color-accent-hover: #5eead4;
+  --color-on-accent: #052e2b;
+
+  --color-danger: #f87171;
+  --color-success: #4ade80;
+
+  --surface-muted: #1a1a1e;
+  --text-muted: #8f8f97;
+  --ring: #2dd4bf;
+
+  /* Categorical chart palette (dark step) - same 12 hues, re-stepped for
+     the dark surface, same fixed order as the light step above. */
+  --chart-1: #26a832;
+  --chart-2: #269cb5;
+  --chart-3: #d22bf2;
+  --chart-4: #f42a86;
+  --chart-5: #2596d2;
+  --chart-6: #f72a4e;
+  --chart-7: #1f7ef5;
+  --chart-8: #e85520;
+  --chart-9: #26a18f;
+  --chart-10: #6b24f2;
+  --chart-11: #949121;
+  --chart-12: #e829b9;
+}
+
+/* ---- Hand-authored semantic utilities ---------------------------------
+   Same usage as any Tailwind utility class (`className="bg-muted"`), just
+   not generated by the automatic --color-* pipeline. */
+@utility bg-muted {
+  background-color: var(--surface-muted);
+}
+
+@utility text-muted {
+  color: var(--text-muted);
+}
+
+/* Numeric data is everywhere in this app (conductivity values, table
+   cells, axis ticks) - apply one of these to align digits in a column. */
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility font-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Base styles -------------------------------------------------------- */
+@layer base {
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* One consistent focus treatment for every interactive element, built
+     from --ring. Only shows for keyboard/programmatic focus, not clicks. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}

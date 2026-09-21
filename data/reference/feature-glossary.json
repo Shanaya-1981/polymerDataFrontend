@@ -1,0 +1,218 @@
+[
+  {
+    "number": 1,
+    "feature": "approximate MW (kDa)",
+    "description": "Mn where given, else Mw",
+    "mlColumn": "approxMW(kDa)"
+  },
+  {
+    "number": 2,
+    "feature": "Approximate Tg",
+    "description": "Tg of electrolyte or polymer without salt if not given",
+    "mlColumn": "approxTg"
+  },
+  {
+    "number": 3,
+    "feature": "log Li:functional group",
+    "description": "log molar salt concentration",
+    "mlColumn": "log Li:functional group"
+  },
+  {
+    "number": 4,
+    "feature": "drying time (h)",
+    "description": "drying time for solvent removal",
+    "mlColumn": "drying time (h)"
+  },
+  {
+    "number": 5,
+    "feature": "drying vacuum",
+    "description": "'high', 'regular', 'none'",
+    "mlColumn": "drying vacuum"
+  },
+  {
+    "number": 6,
+    "feature": "crystalline?",
+    "description": "is the electrolyte crystalline?: 'yes', 'no', 'n/a'",
+    "mlColumn": "crystalline?"
+  },
+  {
+    "number": 7,
+    "feature": "Comonomer1 ETA_epsilon_1",
+    "description": "measure of electronegative atom count",
+    "mlColumn": "Comonomer1 ETA_epsilon_1"
+  },
+  {
+    "number": 8,
+    "feature": "Comonomer1 ETA_eta_F",
+    "description": "functionality index - presence of heteroatoms",
+    "mlColumn": "Comonomer1 ETA_eta_F"
+  },
+  {
+    "number": 9,
+    "feature": "Comonomer1 AETA_eta_BR",
+    "description": "averaged branching index, ring count",
+    "mlColumn": "Comonomer1 AETA_eta_BR"
+  },
+  {
+    "number": 10,
+    "feature": "Comonomer1 AETA_eta_RL",
+    "description": "averaged local reference alkane composite index",
+    "mlColumn": "Comonomer1 AETA_eta_RL"
+  },
+  {
+    "number": 11,
+    "feature": "Comonomer1 ETA_shape_y",
+    "description": "shape index describes size and shape of monomer",
+    "mlColumn": "Comonomer1 ETA_shape_y"
+  },
+  {
+    "number": 12,
+    "feature": "Comonomer1 AETA_dBeta",
+    "description": "averaged measure of relative unsaturation content",
+    "mlColumn": "Comonomer1 AETA_dBeta"
+  },
+  {
+    "number": 13,
+    "feature": "Comonomer1 AETA_beta",
+    "description": "averaged valence electron mobile count",
+    "mlColumn": "Comonomer1 AETA_beta"
+  },
+  {
+    "number": 14,
+    "feature": "Comonomer1 AETA_eta_L",
+    "description": "averaged local composite index, bonded interactions",
+    "mlColumn": "Comonomer1 AETA_eta_L"
+  },
+  {
+    "number": 15,
+    "feature": "Comonomer1 AETA_beta_ns",
+    "description": "averaged nonsigma contribution to valence electron mobile count",
+    "mlColumn": "Comonomer1 AETA_beta_ns"
+  },
+  {
+    "number": 16,
+    "feature": "Comonomer1 AETA_eta_F",
+    "description": "averaged functionality index - presence of heteratoms",
+    "mlColumn": "Comonomer1 AETA_eta_F"
+  },
+  {
+    "number": 17,
+    "feature": "Comonomer1 ETA_psi_1",
+    "description": "hydrogen bonding propensity",
+    "mlColumn": "Comonomer1 ETA_psi_1"
+  },
+  {
+    "number": 18,
+    "feature": "Comonomer1 ETA_epsilon_5",
+    "description": "measure of electronegative atom count",
+    "mlColumn": "Comonomer1 ETA_epsilon_5"
+  },
+  {
+    "number": 19,
+    "feature": "Comonomer1 ETA_dEpsilon_C",
+    "description": "measure of electronegativity contribution",
+    "mlColumn": "Comonomer1 ETA_dEpsilon_C"
+  },
+  {
+    "number": 20,
+    "feature": "Comonomer1 AETA_eta_FL",
+    "description": "averaged local functionality index - presence of heteroatoms",
+    "mlColumn": "Comonomer1 AETA_eta_FL"
+  },
+  {
+    "number": 21,
+    "feature": "Comonomer1 AETA_eta",
+    "description": "averaged measure of electronegativity",
+    "mlColumn": "Comonomer1 AETA_eta"
+  },
+  {
+    "number": 22,
+    "feature": "Comonomer2 AETA_eta_B",
+    "description": "averaged branching index",
+    "mlColumn": "Comonomer2 AETA_eta_B"
+  },
+  {
+    "number": 23,
+    "feature": "Comonomer2 AETA_eta_FL",
+    "description": "averaged local functionality index - presence of heteratoms",
+    "mlColumn": "Comonomer2 AETA_eta_FL"
+  },
+  {
+    "number": 24,
+    "feature": "Comonomer2 AETA_eta_F",
+    "description": "averaged functionality index - presence of heteratoms",
+    "mlColumn": "Comonomer2 AETA_eta_F"
+  },
+  {
+    "number": 25,
+    "feature": "Comonomer2 ETA_shape_p",
+    "description": "shape index describes size and shape of monomer",
+    "mlColumn": "Comonomer2 ETA_shape_p"
+  },
+  {
+    "number": 26,
+    "feature": "Comonomer2 nHBAcc",
+    "description": "number hydrogen bond acceptors",
+    "mlColumn": "Comonomer2 nHBAcc"
+  },
+  {
+    "number": 27,
+    "feature": "Comonomer2 ETA_dAlpha_B",
+    "description": "count of hydrogen bond acceptor atoms/polar surface area",
+    "mlColumn": "Comonomer2 ETA_dAlpha_B"
+  },
+  {
+    "number": 28,
+    "feature": "Comonomer2 ETA_dBeta",
+    "description": "measure of relative unsaturation content",
+    "mlColumn": "Comonomer2 ETA_dBeta"
+  },
+  {
+    "number": 29,
+    "feature": "Comonomer2 AETA_dBeta",
+    "description": "averaged measure of relative unsaturation content",
+    "mlColumn": "Comonomer2 AETA_dBeta"
+  },
+  {
+    "number": 30,
+    "feature": "Comonomer2 ETA_epsilon_1",
+    "description": "measure of electronegative atom count",
+    "mlColumn": "Comonomer2 ETA_epsilon_1"
+  },
+  {
+    "number": 31,
+    "feature": "anion ETA_eta_L",
+    "description": "local composite index, bonded interactions",
+    "mlColumn": "anion ETA_eta_L"
+  },
+  {
+    "number": 32,
+    "feature": "anion AETA_eta",
+    "description": "averaged measure of electronegativity",
+    "mlColumn": "anion AETA_eta"
+  },
+  {
+    "number": 33,
+    "feature": "anion ETA_shape_x",
+    "description": "shape index describes size and shape of monomer",
+    "mlColumn": "anion ETA_shape_x"
+  },
+  {
+    "number": 34,
+    "feature": "anion AETA_alpha",
+    "description": "average core count of a non-hydrogen vertex",
+    "mlColumn": "anion AETA_alpha"
+  },
+  {
+    "number": 35,
+    "feature": "anion nO",
+    "description": "number of oxygen atoms",
+    "mlColumn": "anion nO"
+  },
+  {
+    "number": 36,
+    "feature": "anion nHBAcc",
+    "description": "number hydrogen bond acceptors",
+    "mlColumn": "anion nHBAcc"
+  }
+]

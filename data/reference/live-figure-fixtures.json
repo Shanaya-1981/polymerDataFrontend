@@ -1,0 +1,167 @@
+{
+  "_comment": "Ground truth captured from the live pedatamine.org Dash server on 2026-09-21. Use as test fixtures.",
+  "modes": {
+    "Arrhenius": {
+      "seriesCount": 655,
+      "pointCount": 5225,
+      "xAxisTitle": "1000/T (K<sup>-1</sup>)",
+      "firstSeries": {
+        "customdata0": [
+          "polyethylene carbonate",
+          "-3.0",
+          "TFSI",
+          "0.07482",
+          "https://doi.org/10.1038/pj.2012.97"
+        ],
+        "x": [
+          3.298697014679202,
+          3.193357815743254,
+          3.0016509079994,
+          2.831657935721365,
+          2.6798874447273215
+        ],
+        "y": [
+          3.98e-08,
+          1.74e-07,
+          1.91e-06,
+          1.17e-05,
+          6.31e-05
+        ]
+      }
+    },
+    "T": {
+      "seriesCount": 655,
+      "pointCount": 5225,
+      "xAxisTitle": "T (<sup>o</sup>C)",
+      "firstSeries": {
+        "customdata0": [
+          "polyethylene carbonate",
+          "-3.0",
+          "TFSI",
+          "0.07482",
+          "https://doi.org/10.1038/pj.2012.97"
+        ],
+        "x": [
+          30,
+          40,
+          60,
+          80,
+          100
+        ],
+        "y": [
+          3.98e-08,
+          1.74e-07,
+          1.91e-06,
+          1.17e-05,
+          6.31e-05
+        ]
+      }
+    },
+    "T/Tg": {
+      "seriesCount": 368,
+      "pointCount": 3401,
+      "xAxisTitle": "T/T<sub>g</sub>",
+      "firstSeries": {
+        "customdata0": [
+          "polyethylene carbonate",
+          "-3.0",
+          "TFSI",
+          "0.07482",
+          "https://doi.org/10.1038/pj.2012.97"
+        ],
+        "x": [
+          1.122154358689617,
+          1.159170831019804,
+          1.2332037756801777,
+          1.3072367203405515,
+          1.3812696650009255
+        ],
+        "y": [
+          3.98e-08,
+          1.74e-07,
+          1.91e-06,
+          1.17e-05,
+          6.31e-05
+        ]
+      }
+    },
+    "VFT": {
+      "seriesCount": 368,
+      "pointCount": 3401,
+      "xAxisTitle": "1000/(T-T<sub>g</sub>+50) (K<sup>-1</sup>)",
+      "firstSeries": {
+        "customdata0": [
+          "polyethylene carbonate",
+          "-3.0",
+          "TFSI",
+          "0.07482",
+          "https://doi.org/10.1038/pj.2012.97"
+        ],
+        "x": [
+          12.048192771084338,
+          10.75268817204301,
+          8.849557522123893,
+          7.518796992481203,
+          6.5359477124183005
+        ],
+        "y": [
+          3.98e-08,
+          1.74e-07,
+          1.91e-06,
+          1.17e-05,
+          6.31e-05
+        ]
+      }
+    }
+  },
+  "scatterDefault": {
+    "traces": 12,
+    "points": 655,
+    "traceNames": [
+      "TFSI",
+      "N(SO2C2F5)2",
+      "BF4",
+      "ClO4",
+      "CF3SO3",
+      "PF6",
+      "SCN",
+      "AsF6",
+      "I",
+      "AlCl4",
+      "FSI",
+      "MPSA"
+    ],
+    "firstTrace": {
+      "name": "TFSI",
+      "n": 282,
+      "x": [
+        -3.0,
+        -20.0,
+        -33.0,
+        -62.0,
+        9.0
+      ],
+      "y": [
+        1.91e-06,
+        6.46e-06,
+        1.55e-05,
+        5.6200000000000004e-05,
+        null
+      ],
+      "customdata": [
+        [
+          "polyethylene carbonate",
+          -3.0,
+          "TFSI",
+          "https://doi.org/10.1038/pj.2012.97"
+        ],
+        [
+          "polyethylene carbonate",
+          -20.0,
+          "TFSI",
+          "https://doi.org/10.1038/pj.2012.97"
+        ]
+      ]
+    }
+  }
+}

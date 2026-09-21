@@ -1,0 +1,199 @@
+{
+  "scatterPage": {
+    "xaxis-column": {
+      "options": [
+        "approxTg",
+        "Tg",
+        "approxMW(kDa)",
+        "Li:functional group",
+        "Conductivity at 30C",
+        "Conductivity at 60C",
+        "Conductivity at 90C",
+        "Comonomer1 apol",
+        "Comonomer1 Vabc",
+        "Comonomer1 MW",
+        "Comonomer1 ETA_eta_F",
+        "Comonomer1 AETA_eta_FL",
+        "Comonomer1 AETA_eta_RL",
+        "Comonomer2 apol",
+        "Comonomer2 Vabc",
+        "Comonomer2 MW",
+        "Comonomer2 AETA_eta_F",
+        "Comonomer2 AETA_dBeta",
+        "Comonomer2 ETA_epsilon_1",
+        "Comonomer2 ETA_dBeta",
+        "Comonomer2 ETA_dAlpha_B",
+        "anion apol",
+        "anion Vabc",
+        "anion nHBAcc",
+        "anion nO",
+        "anion AETA_alpha",
+        "anion ETA_shape_x",
+        "Arrhenius Ea (eV)",
+        "VFT activation energy (K)",
+        "VFT activation energy with fixed T0 (K)",
+        "Arrhenius prefactor (S/cm)",
+        "VFT prefactor (S/cm*T^(1/2))",
+        "VFT prefactor with set T0",
+        "Transference number",
+        "drying temp",
+        "drying time (h)",
+        "Polymer family",
+        "Polymer",
+        "Anion",
+        "crystalline?",
+        "Solvent used"
+      ],
+      "default": "approxTg"
+    },
+    "xaxis-type": {
+      "options": [
+        "Linear",
+        "Log"
+      ],
+      "default": "Linear"
+    },
+    "yaxis-column": {
+      "options": [
+        "approxTg",
+        "Tg",
+        "approxMW(kDa)",
+        "Li:functional group",
+        "Conductivity at 30C",
+        "Conductivity at 60C",
+        "Conductivity at 90C",
+        "Comonomer1 apol",
+        "Comonomer1 Vabc",
+        "Comonomer1 MW",
+        "Comonomer1 ETA_eta_F",
+        "Comonomer1 AETA_eta_FL",
+        "Comonomer1 AETA_eta_RL",
+        "Comonomer2 apol",
+        "Comonomer2 Vabc",
+        "Comonomer2 MW",
+        "Comonomer2 AETA_eta_F",
+        "Comonomer2 AETA_dBeta",
+        "Comonomer2 ETA_epsilon_1",
+        "Comonomer2 ETA_dBeta",
+        "Comonomer2 ETA_dAlpha_B",
+        "anion apol",
+        "anion Vabc",
+        "anion nHBAcc",
+        "anion nO",
+        "anion AETA_alpha",
+        "anion ETA_shape_x",
+        "Arrhenius Ea (eV)",
+        "VFT activation energy (K)",
+        "VFT activation energy with fixed T0 (K)",
+        "Arrhenius prefactor (S/cm)",
+        "VFT prefactor (S/cm*T^(1/2))",
+        "VFT prefactor with set T0",
+        "Transference number",
+        "drying temp",
+        "drying time (h)",
+        "Polymer family",
+        "Polymer",
+        "Anion",
+        "crystalline?",
+        "Solvent used"
+      ],
+      "default": "Conductivity at 60C"
+    },
+    "yaxis-type": {
+      "options": [
+        "Linear",
+        "Log"
+      ],
+      "default": "Log"
+    },
+    "color": {
+      "options": [
+        "approxTg",
+        "Tg",
+        "approxMW(kDa)",
+        "Li:functional group",
+        "Conductivity at 30C",
+        "Conductivity at 60C",
+        "Conductivity at 90C",
+        "Comonomer1 apol",
+        "Comonomer1 Vabc",
+        "Comonomer1 MW",
+        "Comonomer1 ETA_eta_F",
+        "Comonomer1 AETA_eta_FL",
+        "Comonomer1 AETA_eta_RL",
+        "Comonomer2 apol",
+        "Comonomer2 Vabc",
+        "Comonomer2 MW",
+        "Comonomer2 AETA_eta_F",
+        "Comonomer2 AETA_dBeta",
+        "Comonomer2 ETA_epsilon_1",
+        "Comonomer2 ETA_dBeta",
+        "Comonomer2 ETA_dAlpha_B",
+        "anion apol",
+        "anion Vabc",
+        "anion nHBAcc",
+        "anion nO",
+        "anion AETA_alpha",
+        "anion ETA_shape_x",
+        "Arrhenius Ea (eV)",
+        "VFT activation energy (K)",
+        "VFT activation energy with fixed T0 (K)",
+        "Arrhenius prefactor (S/cm)",
+        "VFT prefactor (S/cm*T^(1/2))",
+        "VFT prefactor with set T0",
+        "Transference number",
+        "drying temp",
+        "drying time (h)",
+        "Polymer family",
+        "Polymer",
+        "Anion",
+        "crystalline?",
+        "Solvent used"
+      ],
+      "default": "Anion"
+    },
+    "prefiltervis": {
+      "options": [
+        "None",
+        "DOI",
+        "Polymer family",
+        "Polymer",
+        "Anion",
+        "crystalline?",
+        "Solvent used"
+      ],
+      "default": "None"
+    }
+  },
+  "temperaturePage": {
+    "xaxis-column": {
+      "options": [
+        "Arrhenius",
+        "VFT",
+        "T",
+        "T/Tg"
+      ],
+      "default": "Arrhenius"
+    },
+    "color": {
+      "options": [
+        "Polymer family",
+        "Anion",
+        "crystalline?",
+        "Solvent used"
+      ],
+      "default": "Anion"
+    },
+    "prefilter": {
+      "options": [
+        "None",
+        "DOI",
+        "Polymer family",
+        "Anion",
+        "crystalline?",
+        "Solvent used"
+      ],
+      "default": "None"
+    }
+  }
+}
