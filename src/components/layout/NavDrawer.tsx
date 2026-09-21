@@ -20,6 +20,15 @@ const FOCUSABLE_SELECTOR =
 export function NavDrawer({ open, onClose, triggerRef }: NavDrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
+  // Read onClose through a ref so the effect below depends only on `open`.
+  // Otherwise an unmemoized handler re-runs the whole effect on every parent
+  // render, which would restore focus to the trigger and then re-focus the
+  // first link — yanking focus out from under anyone mid-tab.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (!open) return;
 
@@ -32,7 +41,7 @@ export function NavDrawer({ open, onClose, triggerRef }: NavDrawerProps) {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         event.preventDefault();
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (event.key !== "Tab") return;
@@ -59,7 +68,7 @@ export function NavDrawer({ open, onClose, triggerRef }: NavDrawerProps) {
       document.body.style.overflow = previousOverflow;
       trigger?.focus();
     };
-  }, [open, onClose, triggerRef]);
+  }, [open, triggerRef]);
 
   if (!open) return null;
 

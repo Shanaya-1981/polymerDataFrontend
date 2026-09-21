@@ -1,60 +1,70 @@
 /**
- * Categorical chart palette — typed mirror of the `--chart-1` … `--chart-12`
- * custom properties defined in `src/styles/theme.css`. Each slot has a paired
- * light/dark hex that swaps automatically via the `.dark` class on `<html>`.
+ * Categorical chart palette — typed mirror of the `--chart-1` … `--chart-7`
+ * and `--chart-other` custom properties defined in `src/styles/theme.css`.
+ * Each slot has a paired light/dark hex that swaps automatically via the
+ * `.dark` class on `<html>`.
  *
- * Prefer the `var` (CSS `var(--chart-N)`) form in rendered chart output so
- * colors stay theme-reactive with zero JS on theme change. Use `light`/`dark`
- * only where a CSS variable can't be consumed directly (canvas/WebGL fills,
- * exported/downloaded images, non-DOM renderers) — keep them in sync with
- * theme.css if a slot ever changes.
+ * Prefer the `cssVar` form in rendered chart output so colors stay
+ * theme-reactive with zero JS on theme change. Use `light`/`dark` only where a
+ * CSS variable can't be consumed directly (canvas/WebGL fills, exported
+ * images, non-DOM renderers) — keep them in sync with theme.css.
  *
- * ## Validation
- * Colors were chosen and verified with the dataviz skill's method: fixed hue
- * order, OKLCH lightness-band + chroma-floor checks, and CVD separation under
- * Machado-Oliveira-Fernandes (2009) protanopia/deuteranopia simulation at
- * severity 1.0, plus an unsimulated "normal vision" floor — computed with
- * `validate_palette.js`, not eyeballed.
+ * ## Validation — computed, not eyeballed
  *
- * - All 12 slots, in this fixed order, PASS every check for *adjacent* pairs
- *   (legends, bars, stacked lines, chips, i.e. only neighbors in a fixed,
- *   never-recycled assignment touch) in BOTH light and dark.
- * - Slots 1–4 (`allPairsSafe: true`) additionally pass the stricter
- *   *all-pairs* check, safe for scatter/bubble/choropleth/small-multiples
- *   forms where any two categories can end up visually adjacent regardless
- *   of assignment order.
- * - This 4-slot all-pairs cap is a hard colorimetry limit, not an oversight:
- *   the dataviz skill's own 8-hue reference palette clears all-pairs for
- *   only its first 3 slots. Packing 12 mutually CVD-distinct hues into one
- *   perceptually-uniform lightness band leaves no room for more; no
- *   re-ordering fixes it. If a chart shows more than ~4 categories at once
- *   in an all-pairs-risk form, add the secondary encoding described below.
+ * Derived by searching the OKLCH gamut and scoring against the dataviz skill's
+ * `validate_palette.js` (OKLab ΔE, Machado-Oliveira-Fernandes CVD simulation).
+ * These 7 hues PASS every hard check under the strict `--pairs all` criterion
+ * in BOTH light and dark:
  *
- * ## Fallback strategy for >12 categories
- * The dataset has up to 24 polymer families (only 12 anions, which fit
- * directly). When a view needs more than 12 simultaneous categories:
+ * ```
+ * LIGHT  --pairs all : CVD ΔE 8.2 · normal ΔE 17.2 · ALL CHECKS PASS
+ * DARK   --pairs all : CVD ΔE 9.9 · normal ΔE 18.6 · ALL CHECKS PASS
+ * ```
  *
- * 1. Prefer NOT color-encoding all of them at once — fold the long tail into
- *    an explicit "Other" bucket (render it with `text-secondary` /
- *    `border-default`, not a chart hue), or facet/small-multiple instead of
- *    minting a 13th+ hue.
- * 2. If every category must stay individually addressable, cycle these same
- *    12 hues with a SECOND encoding channel so a repeat is never mistaken
- *    for its first pass:
- *    - a distinct marker shape per cycle (circle / square / triangle /
- *      diamond / …) for scatter points;
- *    - a stroke-dash pattern per cycle for lines;
- *    - a lightness/opacity step per cycle (e.g. cycle 2 = 70% fill opacity)
- *      — the weakest signal; pair it with direct labels or a togglable
- *      legend, never ship it alone.
- *    Never synthesize a 13th+ hue at runtime (e.g. HSL rotation) — it will
- *    not have been validated and will likely collide with an existing slot
- *    under color-vision deficiency.
- * 3. Always ship a non-color relief once many categories are visible at
- *    once: a legend (mandatory for 2+ series regardless of count), direct
- *    labels where the count is small, and/or a table view. Identity should
- *    never rest on hue alone past a handful of simultaneously-visible
- *    categories — see `references/anti-patterns.md` in the dataviz skill.
+ * `--pairs all` is the criterion this app needs: the primary view is a scatter
+ * plot, where any two categories can land next to each other, unlike bars or
+ * stacked lines where only legend-neighbors touch.
+ *
+ * **7 is the computed maximum, not a guess.** Joint light+dark margins from the
+ * search (≥ 1.0 passes): N=6 → 1.29, N=7 → 1.03, N=8 → 0.96, N≥9 worse. Dark is
+ * the binding constraint — its lightness band is L ∈ [0.48, 0.67] versus
+ * light's [0.43, 0.77], so hues must separate on hue and chroma alone.
+ *
+ * For scale: the dataviz skill's own 8-hue reference palette clears all-pairs
+ * for only its first 3 slots. Re-ordering never helps (the all-pairs pairlist
+ * is order-independent) — re-*choosing* the hues is what buys the extra slots.
+ *
+ * ## More categories than slots
+ *
+ * The dataset exceeds 7 in several columns (12 anions, 14 solvents, 24 polymer
+ * families, 65 DOIs, 78 polymers). The rule is **fold, never cycle**:
+ *
+ * 1. The 7 most frequent categories — ranked once over the FULL dataset, never
+ *    over the filtered view — take slots 1–7 in that fixed order.
+ * 2. Everything else renders in `OTHER_SLOT`, a desaturated gray that is
+ *    deliberately recessive. It is not an 8th hue.
+ * 3. Never synthesize an 8th+ hue at runtime (HSL rotation and friends) and
+ *    never recycle slots 1–7 for a second group of categories. An unvalidated
+ *    hue will collide with an existing slot under CVD.
+ * 4. Let the user promote a specific category into a hue slot, so a researcher
+ *    studying a rare anion isn't stuck reading it as "Other".
+ *
+ * Because ranking is global and frozen, filtering never repaints the surviving
+ * series — a category keeps its color for the whole session.
+ *
+ * ## Secondary encoding is mandatory on scatter
+ *
+ * Light-mode CVD ΔE is 8.2, only just past the 8.0 target, so identity must not
+ * rest on hue alone. Pair every color with `SERIES_SYMBOLS[i]` on point marks.
+ * This also makes the chart readable in grayscale print. A legend is always
+ * present, hover tooltips always name the category in text, and `/data` is the
+ * table view that discharges the validator's contrast WARN.
+ *
+ * ## Continuous data
+ *
+ * This palette is for categories only. Numeric color needs a single-hue
+ * sequential ramp with a colorbar; the correlation matrix is polarity data and
+ * needs a diverging scale with a neutral midpoint pinned at 0. Never a rainbow.
  */
 
 export interface ChartPaletteSlot {
@@ -62,35 +72,71 @@ export interface ChartPaletteSlot {
   index: number;
   /** `var(--chart-N)` — use this in rendered output so theme swaps "just work". */
   cssVar: string;
-  /** Resolved light-mode hex. Keep in sync with `theme.css`'s `@theme` block. */
+  /** Resolved light-mode hex. Keep in sync with `theme.css`. */
   light: string;
-  /** Resolved dark-mode hex. Keep in sync with `theme.css`'s `.dark` block. */
+  /** Resolved dark-mode hex. Keep in sync with `theme.css`. */
   dark: string;
-  /** True for the leading slots that also clear the stricter *all-pairs*
-   *  CVD floor (safe for scatter/bubble/small-multiples), not just the
-   *  *adjacent* floor that all 12 slots clear. */
-  allPairsSafe: boolean;
 }
 
+/**
+ * The 7 categorical hues, in fixed assignment order. Validated as a set —
+ * re-run `validate_palette.js --pairs all` in both modes before changing any
+ * value, and do not add an 8th.
+ */
 export const CHART_PALETTE: readonly ChartPaletteSlot[] = [
-  { index: 1, cssVar: "var(--chart-1)", light: "#31cc3f", dark: "#26a832", allPairsSafe: true },
-  { index: 2, cssVar: "var(--chart-2)", light: "#30bddb", dark: "#269cb5", allPairsSafe: true },
-  { index: 3, cssVar: "var(--chart-3)", light: "#d52ef6", dark: "#d22bf2", allPairsSafe: true },
-  { index: 4, cssVar: "var(--chart-4)", light: "#f82d89", dark: "#f42a86", allPairsSafe: true },
-  { index: 5, cssVar: "var(--chart-5)", light: "#2db2f8", dark: "#2596d2", allPairsSafe: false },
-  { index: 6, cssVar: "var(--chart-6)", light: "#f72d4f", dark: "#f72a4e", allPairsSafe: false },
-  { index: 7, cssVar: "var(--chart-7)", light: "#1e7ef5", dark: "#1f7ef5", allPairsSafe: false },
-  { index: 8, cssVar: "var(--chart-8)", light: "#f75a23", dark: "#e85520", allPairsSafe: false },
-  { index: 9, cssVar: "var(--chart-9)", light: "#31c4ae", dark: "#26a18f", allPairsSafe: false },
-  { index: 10, cssVar: "var(--chart-10)", light: "#6b24f1", dark: "#6b24f2", allPairsSafe: false },
-  { index: 11, cssVar: "var(--chart-11)", light: "#b4b12b", dark: "#949121", allPairsSafe: false },
-  { index: 12, cssVar: "var(--chart-12)", light: "#f62dc4", dark: "#e829b9", allPairsSafe: false },
+  { index: 1, cssVar: "var(--chart-1)", light: "#e2276c", dark: "#de2269" },
+  { index: 2, cssVar: "var(--chart-2)", light: "#0c3dc9", dark: "#1a4eda" },
+  { index: 3, cssVar: "var(--chart-3)", light: "#29b1c5", dark: "#24a0b2" },
+  { index: 4, cssVar: "var(--chart-4)", light: "#8c59f3", dark: "#9870f7" },
+  { index: 5, cssVar: "var(--chart-5)", light: "#8a5512", dark: "#c67c1f" },
+  { index: 6, cssVar: "var(--chart-6)", light: "#82138c", dark: "#9618a2" },
+  { index: 7, cssVar: "var(--chart-7)", light: "#8c941f", dark: "#606612" },
 ] as const;
 
-/** `["var(--chart-1)", ...]` — handy as a `range()`/`scale` input for most chart libs. */
+/**
+ * Reserved bucket for every category beyond the top 7. Intentionally
+ * low-chroma so folded categories recede behind the named ones — it is a
+ * non-answer, not an 8th series.
+ */
+export const OTHER_SLOT = {
+  cssVar: "var(--chart-other)",
+  light: "#9a9a94",
+  dark: "#6b6b66",
+} as const;
+
+/** Maximum number of categories that can carry a distinct hue. */
+export const MAX_CATEGORICAL_SLOTS = CHART_PALETTE.length;
+
+/** `["var(--chart-1)", ...]` — ready to hand to a chart library's color range. */
 export const CHART_COLOR_VARS: readonly string[] = CHART_PALETTE.map((slot) => slot.cssVar);
 
-/** The 4 slots verified safe even when any two categories can sit side by side. */
-export const ALL_PAIRS_SAFE_CHART_VARS: readonly string[] = CHART_PALETTE.filter(
-  (slot) => slot.allPairsSafe,
-).map((slot) => slot.cssVar);
+/**
+ * Plotly marker symbols paired 1:1 with the hue slots, as the required
+ * secondary encoding on point marks. Index 7 is the "Other" bucket.
+ */
+export const SERIES_SYMBOLS: readonly string[] = [
+  "circle",
+  "square",
+  "diamond",
+  "triangle-up",
+  "cross",
+  "triangle-down",
+  "x",
+  "circle-open",
+] as const;
+
+/**
+ * Resolve a category's position in the frozen global ranking to its color and
+ * marker symbol. Ranks at or beyond {@link MAX_CATEGORICAL_SLOTS} fold into
+ * "Other" rather than cycling.
+ *
+ * @param rank 0-based index into the canonical, dataset-wide category order.
+ */
+export function slotForRank(rank: number): { color: string; symbol: string; isOther: boolean } {
+  const isOther = rank < 0 || rank >= MAX_CATEGORICAL_SLOTS;
+  return {
+    color: isOther ? OTHER_SLOT.cssVar : CHART_PALETTE[rank].cssVar,
+    symbol: SERIES_SYMBOLS[isOther ? MAX_CATEGORICAL_SLOTS : rank],
+    isOther,
+  };
+}

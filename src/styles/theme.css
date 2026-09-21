@@ -84,6 +84,12 @@
   --ring: #0f766e;
 
   /* ---- Categorical chart palette (light step) ---------------------
+     7 hues + a reserved recessive "Other". Derived by gamut search and
+     verified with the dataviz skill's validate_palette.js: PASSES every
+     check under the strict --pairs all criterion (the one our scatter
+     plot needs) in BOTH light and dark. 7 is the computed maximum; 8
+     fails. Assign in fixed order, never cycle. See chart-palette.ts and
+     data/reference/CHART-PALETTE.md. -----------------------------------
      12 hand-tuned hues, fixed order, validated with the OKLab/Machado-
      Oliveira-Fernandes CVD method (see chart-palette.ts for the full
      validation notes and the >12-category fallback strategy). Slots 1-4
@@ -91,18 +97,14 @@
      charts where any two categories can sit side by side); slots 5-12
      are validated for *adjacent* use only (legends, bars, stacked lines,
      assigned in a fixed order and never re-cycled). */
-  --chart-1: #31cc3f;
-  --chart-2: #30bddb;
-  --chart-3: #d52ef6;
-  --chart-4: #f82d89;
-  --chart-5: #2db2f8;
-  --chart-6: #f72d4f;
-  --chart-7: #1e7ef5;
-  --chart-8: #f75a23;
-  --chart-9: #31c4ae;
-  --chart-10: #6b24f1;
-  --chart-11: #b4b12b;
-  --chart-12: #f62dc4;
+  --chart-1: #e2276c;
+  --chart-2: #0c3dc9;
+  --chart-3: #29b1c5;
+  --chart-4: #8c59f3;
+  --chart-5: #8a5512;
+  --chart-6: #82138c;
+  --chart-7: #8c941f;
+  --chart-other: #9a9a94;
 }
 
 .dark {
@@ -130,20 +132,17 @@
   --text-muted: #8f8f97;
   --ring: #2dd4bf;
 
-  /* Categorical chart palette (dark step) - same 12 hues, re-stepped for
-     the dark surface, same fixed order as the light step above. */
-  --chart-1: #26a832;
-  --chart-2: #269cb5;
-  --chart-3: #d22bf2;
-  --chart-4: #f42a86;
-  --chart-5: #2596d2;
-  --chart-6: #f72a4e;
-  --chart-7: #1f7ef5;
-  --chart-8: #e85520;
-  --chart-9: #26a18f;
-  --chart-10: #6b24f2;
-  --chart-11: #949121;
-  --chart-12: #e829b9;
+  /* Categorical chart palette (dark step) - the same 7 hues re-stepped
+     for the dark surface's narrower L band [0.48, 0.67], validated as a
+     set under --pairs all. */
+  --chart-1: #de2269;
+  --chart-2: #1a4eda;
+  --chart-3: #24a0b2;
+  --chart-4: #9870f7;
+  --chart-5: #c67c1f;
+  --chart-6: #9618a2;
+  --chart-7: #606612;
+  --chart-other: #6b6b66;
 }
 
 /* ---- Hand-authored semantic utilities ---------------------------------

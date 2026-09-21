@@ -88,14 +88,24 @@ Dark mode is a `.dark` class on `<html>`, applied before first paint by an inlin
 (light / dark / system, persisted to `localStorage`, respects `prefers-color-scheme` when set to
 "system").
 
-A 12-slot categorical chart palette (`--chart-1` … `--chart-12` in `theme.css`, typed and
-documented in `src/styles/chart-palette.ts`) is validated with the project's dataviz-skill method
-(OKLab CVD simulation, not eyeballed): all 12 slots pass for _adjacent_ use (legends, bars,
-stacked lines); the first 4 additionally pass the stricter _all-pairs_ check needed for
-scatter/bubble charts. `chart-palette.ts` documents the fallback strategy for the dataset's larger
-categorical columns (up to 24 polymer families): fold the long tail into an "Other" bucket rather
-than minting unvalidated hues, and add a secondary encoding (marker shape, dash pattern) if every
-category must stay individually addressable.
+A 7-slot categorical chart palette (`--chart-1` … `--chart-7` plus a reserved recessive
+`--chart-other` in `theme.css`, typed and documented in `src/styles/chart-palette.ts`) is
+_computed_, not eyeballed: the hues were found by searching the OKLCH gamut and scoring against
+the dataviz skill's `validate_palette.js` (OKLab ΔE with Machado-Oliveira-Fernandes CVD
+simulation). They pass every hard check under the strict `--pairs all` criterion in **both**
+light and dark — the criterion this app needs, since the primary view is a scatter plot where
+any two categories can land side by side.
+
+Seven is the computed maximum, not a preference: joint light+dark margins are 1.29 at six hues,
+1.03 at seven, and 0.96 at eight (≥ 1.0 passes). Dark mode binds, because its lightness band
+(L ∈ [0.48, 0.67]) is much narrower than light's.
+
+The dataset exceeds seven categories in several columns (12 anions, 14 solvents, 24 polymer
+families, 65 DOIs, 78 polymers), so the rule is **fold, never cycle**: the seven most frequent
+categories — ranked once over the full dataset, never over the filtered view, so filtering never
+repaints surviving series — take the hue slots, and the rest render as a desaturated "Other".
+Scatter marks additionally vary marker symbol per slot, so identity never rests on color alone.
+Full derivation and the per-column coverage numbers are in `data/reference/CHART-PALETTE.md`.
 
 ## Static hosting (SPA fallback)
 

@@ -1,4 +1,4 @@
-import { useRef, useState, type SVGProps } from "react";
+import { useCallback, useRef, useState, type SVGProps } from "react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/theme";
 import { Nav } from "./Nav";
@@ -7,6 +7,9 @@ import { NavDrawer } from "./NavDrawer";
 export function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  // Stable identity: NavDrawer's focus-trap effect keys off this, and a new
+  // closure each render would tear the trap down and re-steal focus.
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   return (
     <header className="sticky top-0 z-40 border-b border-subtle bg-surface">
@@ -38,7 +41,7 @@ export function Header() {
         </div>
       </div>
 
-      <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} triggerRef={triggerRef} />
+      <NavDrawer open={drawerOpen} onClose={closeDrawer} triggerRef={triggerRef} />
     </header>
   );
 }
