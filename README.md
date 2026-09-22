@@ -17,8 +17,6 @@ static payload, which means the interactions can be instant and the whole thing 
 files. That shift is what this rebuild is about, plus room to add the affordances the original
 didn't reach for.
 
-All seven routes are built. See `HANDOFF.md` for current status.
-
 ## What's new here
 
 **Exploring the data**
@@ -119,6 +117,7 @@ chart-related.
 ## Directory layout
 
 ```
+HANDOFF.md                # project status, gotchas, and candidate next steps
 data/                     # source dataset + captured reference data — do not edit
   raw/                    # the two source CSVs + their MIT license
   reference/              # ground truth captured from the live site
