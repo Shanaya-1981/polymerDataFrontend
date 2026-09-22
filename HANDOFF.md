@@ -5,7 +5,7 @@ and `data/reference/` for the verified specs.
 
 **Status: all four waves complete, reviewed and committed.**
 
-327 tests pass; `typecheck`, `lint`, `build`, `build:data` and the browser smoke test are all
+402 tests pass; `typecheck`, `lint`, `build`, `build:data` and the browser smoke test are all
 clean, and axe reports **no accessibility violations** across 7 routes x 2 viewports. All seven
 routes are built and verified in a real browser at desktop and mobile widths, with every data
 count cross-checked against the live original.
@@ -47,6 +47,15 @@ complete.
 - **Wave 4 — `/data`.** Search, sort, combinable filters, a column picker over all 69 typed
   columns, pagination, and CSV export of either the current view or the full 305-column dataset.
   Plus an axe pass and a browser smoke test.
+
+Added after the four waves:
+
+- **Page state survives nav switches**, remembered per route in `sessionStorage` and carried by
+  the nav links, with a "Reset to defaults" button on the three stateful pages. The URL stays the
+  single source of truth — see the header comment in `src/lib/route-memory.ts` before changing it.
+- **Ranked correlations.** The matrix has no conductivity in it, so the build script now also
+  computes log σ against every feature at each of the 22 temperatures. Doubles as the mobile view
+  of `/correlations`, since a ranked list works at any width and a 36×36 grid does not.
 
 ## Possible next steps
 

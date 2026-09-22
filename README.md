@@ -26,7 +26,7 @@ We aren't affiliated with them and they haven't endorsed this. The data is uncha
 | ---------------- | ------------------------------------------------------------------------------------------ |
 | **Explore**      | Any of 41 properties against any other, coloured by a third. Linear or log on either axis. |
 | **Temperature**  | σ(T) per sample, under Arrhenius, VFT, T, or T/T<sub>g</sub> scaling.                      |
-| **Correlations** | Pearson matrix over the 36 features from the paper's RF feature elimination.               |
+| **Correlations** | The 36-feature Pearson matrix, or a ranked list of what correlates with conductivity.      |
 | **Data**         | Every sample as a row. Search, sort, choose columns, export to CSV.                        |
 | **Features**     | What each of the 36 features means, including the MORDRED descriptors.                     |
 | **About**        | Contributors, funding, contact.                                                            |
@@ -72,6 +72,16 @@ solvents.
   see it on a `localhost` address.
 - **You can see the measurements themselves.** The Data page lists every sample as a row, so you
   can search, sort and download them. The old site only ever gave you plots.
+- **You can ask what correlates with conductivity.** The old correlation matrix only compared the
+  36 features against each other — conductivity wasn't in it at all, so the question most people
+  arrive with had no answer. You can now rank every feature against conductivity at any of the 22
+  measured temperatures. At 60 °C the strongest are lower T<sub>g</sub> (r = −0.39) and lower
+  molecular weight (−0.32), then more charge-delocalised anions — higher electronegativity index,
+  more oxygens, more hydrogen-bond acceptors. Each row shows its own `n`, because coverage varies
+  a lot between properties.
+- **Your view survives switching pages.** Set up a plot, go and look at something else, come back
+  and it's still how you left it. There's a "Reset to defaults" button for when you want a clean
+  slate.
 - **It tells you when points are left out.** A log axis can't show zero or negative values, so
   instead of quietly dropping them it says how many it dropped. T<sub>g</sub> in °C is where
   you'll notice this most. Same idea on the VFT and T/T<sub>g</sub> views, which can only use the
@@ -166,7 +176,8 @@ src/
     layout/                # AppShell, Header, Nav, NavDrawer, Footer, PageHeader
     ui/                    # primitives (Combobox, MultiSelect, Table, Sheet, Notice…)
     charts/                # slim Plotly bundle, PlotlyChart wrapper, trace builders
-  lib/                     # transforms, filtering, log-axis guard, CSV export, URL state
+  lib/                     # transforms, filtering, log-axis guard, CSV export, URL +
+                           #   route state, correlation ranking
   data/                    # typed accessors + generated/ (committed build output)
   pages/                   # one route per file, plus a directory of parts per page
 scripts/
@@ -197,6 +208,12 @@ only load on the routes that need them, so a cold visit to `/` is about 137 kB g
 generated column registry into `src/data/generated/`. That output is committed, so the app builds
 without running the script. Columnar rather than array-of-objects because it maps straight onto
 Plotly's `x`/`y` arrays and gzips much better.
+
+It also emits a feature-vs-conductivity correlation table: for each of the 22 temperatures, the
+correlation of log σ against each feature, with the pair count. Two encoding decisions are
+recorded in the data rather than guessed — `crystalline?` is coded no/yes with the 19 `na` rows
+dropped, and `drying vacuum` is excluded outright, because its ordinal encoding in the forML CSV
+isn't recoverable with confidence. The reason is written into the generated JSON.
 
 The assertions are the main point of that script. It fails the build unless the regenerated data
 still matches the counts we verified against the original site: 655 rows, 5225 non-null
