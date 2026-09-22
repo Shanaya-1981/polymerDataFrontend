@@ -7,9 +7,26 @@ responsive, static single-page app with the same underlying dataset, so research
 polymer-electrolyte conductivity data against material attributes without the baggage of a
 server-rendered Dash backend.
 
-This repository currently contains the **foundation**: tooling, design tokens, theming, the app
-shell, and routed page stubs. Page bodies (charts, tables, filters) are built in later work on top
-of this base.
+All seven routes are built. See `HANDOFF.md` for current status and what is left.
+
+**What it does that the original doesn't**
+
+- **No server round-trip.** The whole dataset ships as a 76 kB gzipped static payload, so every
+  axis change and filter is instant. The original POSTed to a Dash callback for each interaction
+  and returned up to ~1 MB of JSON.
+- **Filters combine.** Pick multiple values across multiple columns (OR within a column, AND
+  across them). The original allowed exactly one column and one value.
+- **Every view is a link.** All controls round-trip through the URL, so a configured plot can be
+  pasted into a paper or a message. The original had no shareable state at all.
+- **A data browser.** `/data` lets you search, sort, page and export the rows. The original gave
+  no way to see the underlying data.
+- **Responsive.** The original used fixed-width Bootstrap columns and a hard-coded figure size.
+- **~8 traces instead of 655** on the temperature page, via null-separated trace batching.
+- **Honest about its own limits.** A log axis on Tg hides 78% of the points and VFT/T-Tg can only
+  plot the 351 samples that have a Tg; the app says so rather than quietly showing less data.
+
+It also **fixes a bug in the original**: the correlation matrix was uniformly scaled by 271/270
+(a population/sample standard-deviation mismatch), so its diagonal read 1.0037 instead of 1.
 
 ## Stack
 
@@ -31,8 +48,15 @@ npm run preview   # preview the production build locally
 npm run typecheck # tsc --noEmit
 npm run lint      # eslint .
 npm run format    # prettier --write .
-npm test          # vitest run
+npm test          # vitest run (unit tests, jsdom)
+npm run smoke     # load every route in real Chrome; fails on blank pages or console errors
+npm run build:data # regenerate src/data/generated/ from data/raw/, asserting every invariant
 ```
+
+**`npm test` passing does not mean the app renders.** jsdom has no canvas, so no unit test ever
+mounts a real chart — we once shipped three blank pages with a fully green suite. Run
+`npm run smoke` (against a running dev server) before trusting the suite on anything
+chart-related.
 
 ## Directory layout
 
@@ -45,16 +69,18 @@ src/
   App.tsx                 # BrowserRouter + route table
   styles/
     theme.css             # design tokens (Tailwind v4 @theme, light/dark, focus ring)
-    chart-palette.ts       # typed mirror of the --chart-1..12 CSS variables
+    chart-palette.ts       # typed mirror of the --chart-1..7 CSS variables
   components/
     theme/                # ThemeProvider, ThemeToggle, useTheme (light/dark/system)
     layout/                # AppShell, Header, Nav, NavDrawer, Footer, PageHeader
-    ui/                    # (later work) shared UI primitives
-    charts/                # (later work) chart components
-  lib/                     # (later work) data loading/parsing utilities
-  data/                    # (later work) processed/typed dataset access
-  pages/                   # one route per file (see table below)
-scripts/                   # (later work) Node scripts, run with tsx
+    ui/                    # shared primitives (Combobox, MultiSelect, Table, Sheet, Notice…)
+    charts/                # slim Plotly bundle, PlotlyChart wrapper, trace builders
+  lib/                     # transforms, filtering, log-axis guard, CSV export, URL state
+  data/                    # typed accessors + generated/ (committed build output)
+  pages/                   # one route per file, plus a directory of parts per page
+scripts/
+  build-data.ts            # CSVs -> typed JSON; asserts every verified invariant
+  smoke.mjs                # browser smoke test
 ```
 
 ### Routes

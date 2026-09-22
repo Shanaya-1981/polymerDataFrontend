@@ -25,7 +25,7 @@ export function FilterPanel({ filters, onChange, onClearAll, selectedCount }: Fi
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold text-primary">Filters</h3>
+        <h2 className="text-sm font-semibold text-primary">Filters</h2>
         {/* "Clear all filters" (not "Clear all"): `MultiSelect` already uses
             "Clear all" for its own per-column chip row, so this needs a
             distinct name for both screen readers and `getByRole` queries. */}
@@ -57,7 +57,8 @@ export function FilterPanel({ filters, onChange, onClearAll, selectedCount }: Fi
       })}
 
       <p className="border-t border-subtle pt-3 text-sm text-secondary">
-        <span className="font-medium text-primary">{selectedCount}</span> of {ROW_COUNT} rows selected
+        <span className="font-medium text-primary">{selectedCount}</span> of {ROW_COUNT} rows
+        selected
       </p>
     </div>
   );

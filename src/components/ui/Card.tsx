@@ -22,17 +22,30 @@ export const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEleme
   },
 );
 
-export const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(
-  function CardTitle({ className, ...props }, ref) {
-    return (
-      <h3
-        ref={ref}
-        className={cn("text-base font-semibold leading-none text-primary", className)}
-        {...props}
-      />
-    );
-  },
-);
+export interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {
+  /**
+   * Heading level. Defaults to `h3`, which suits a card nested under a
+   * section heading — but a card sitting directly under the page `h1` needs
+   * `h2`, or the document skips a level. Card cannot infer its own depth,
+   * and on responsive pages the depth genuinely changes: a sidebar `h2` that
+   * is `display:none` at narrow widths leaves the card's title as the first
+   * heading after the `h1`.
+   */
+  as?: "h2" | "h3" | "h4";
+}
+
+export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(function CardTitle(
+  { className, as: Heading = "h3", ...props },
+  ref,
+) {
+  return (
+    <Heading
+      ref={ref}
+      className={cn("text-base font-semibold leading-none text-primary", className)}
+      {...props}
+    />
+  );
+});
 
 export const CardDescription = forwardRef<
   HTMLParagraphElement,

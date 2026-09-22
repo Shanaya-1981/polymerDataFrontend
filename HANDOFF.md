@@ -3,10 +3,12 @@
 Rebuild of [pedatamine.org](https://pedatamine.org) — see `README.md` for what the project is
 and `data/reference/` for the verified specs.
 
-**Status: paused after Wave 3, reviewed and committed. Wave 4 was never started.**
+**Status: all four waves complete, reviewed and committed.**
 
-236 tests pass; `typecheck`, `lint` and `build` are clean. All six built pages work against the
-real dataset, with every count cross-checked against the live original.
+327 tests pass; `typecheck`, `lint`, `build`, `build:data` and the browser smoke test are all
+clean, and axe reports **no accessibility violations** across 7 routes x 2 viewports. All seven
+routes are built and verified in a real browser at desktop and mobile widths, with every data
+count cross-checked against the live original.
 
 ## Read these first when resuming
 
@@ -42,22 +44,31 @@ complete.
   The temperature page renders **≤ 8 traces instead of the original's 655**, with point totals
   matching the live server exactly in all 16 mode × colour combinations.
 
-## Not done — Wave 4
+- **Wave 4 — `/data`.** Search, sort, combinable filters, a column picker over all 69 typed
+  columns, pagination, and CSV export of either the current view or the full 305-column dataset.
+  Plus an axe pass and a browser smoke test.
 
-1. **`/data` table page.** `src/pages/DataTable.tsx` is still a route stub. Needs a searchable,
-   sortable, paginated browser over the 655 rows plus CSV export. `src/lib/csv-export.ts`
-   already exists, the `Table` primitives in `src/components/ui` already exist, and the full
-   305-column CSV is already served at `public/data/polymer-electrolyte-dataset.csv`.
-2. **Accessibility pass** across the finished pages.
-3. **README polish** — attribution is written but the doc predates Waves 2–3.
+## Possible next steps
 
-Plotly lazy-loading, previously listed here, is already handled: route-level code splitting puts
-it in its own `charts` chunk (386 KB gzip) that only loads on `/explore`, `/temperature` and
-`/correlations`. A cold visit to `/` transfers ~138 KB gzipped.
+Nothing is outstanding. If the work continues, the honest candidates are:
 
-**Never opened in a browser.** Everything is verified by tests, type-checking and numeric
-cross-checks against the live original — which caught real bugs — but no one has actually looked
-at the app. Do that before any new feature work.
+1. **Click-to-inspect on the correlation heatmap** — currently hover-only.
+2. **Let `/data` browse all 305 raw columns.** The typed layer carries 69; the rest are only
+   reachable via the full CSV download. A deliberate split, but revisitable.
+3. **A real UCSB/MRSEC logo asset** on `/about`. The original embedded a 64 kB base64 blob,
+   which was deliberately not reproduced; the textual credit is there.
+4. **Run `npm run smoke` in CI**, against `vite preview`.
+
+## Two things that cost real time — don't relearn them
+
+**A green test suite does not mean the app renders.** jsdom has no canvas, so no unit test ever
+mounts a real chart. Three of six pages once rendered blank white while typecheck, lint and 236
+tests were all green. Worse, that particular bug _cannot_ be unit-tested: it was a missing
+Node-only `global`, which exists under Vitest and not in a browser. `npm run smoke` is the guard.
+
+**Plotly lazy-loading is already handled.** Route-level code splitting puts it in its own
+`charts` chunk (386 KB gzip) loaded only by `/explore`, `/temperature` and `/correlations`. A
+cold visit to `/` transfers ~138 KB gzipped.
 
 ## How this was built
 

@@ -34,7 +34,7 @@ export interface PlotlyChartProps {
   className?: string;
   /** Accessible name for the chart region. Omit only if the surrounding
    *  page already provides one (e.g. a heading immediately above with
-   *  `aria-describedby`) — an unlabeled `role="img"` is worse than none. */
+   *  `aria-describedby`) — an unlabeled region is worse than none. */
   ariaLabel?: string;
 }
 
@@ -149,7 +149,12 @@ export function PlotlyChart({
   return (
     <div
       ref={containerRef}
-      {...(ariaLabel ? { role: "img", "aria-label": ariaLabel } : {})}
+      // `figure`, not `img`: Plotly fills this container with interactive
+      // controls (modebar buttons, the drag layer), and `img` declares the
+      // subtree a single leaf graphic — which axe flags as nested-interactive
+      // and which hides those controls from assistive tech. `figure` carries
+      // the same accessible name while permitting interactive descendants.
+      {...(ariaLabel ? { role: "figure", "aria-label": ariaLabel } : {})}
       className={cn("h-full min-h-[320px] w-full", className)}
     />
   );

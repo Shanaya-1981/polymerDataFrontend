@@ -49,9 +49,8 @@ export function isTemperatureColorColumn(value: string): value is TemperatureCol
   return (TEMPERATURE_COLOR_COLUMN_IDS as readonly string[]).includes(value);
 }
 
-export const TEMPERATURE_COLOR_COLUMN_OPTIONS: readonly RadioOption[] = TEMPERATURE_COLOR_COLUMN_IDS.map(
-  (id) => ({ value: id, label: COLUMN_BY_ID[id].label }),
-);
+export const TEMPERATURE_COLOR_COLUMN_OPTIONS: readonly RadioOption[] =
+  TEMPERATURE_COLOR_COLUMN_IDS.map((id) => ({ value: id, label: COLUMN_BY_ID[id].label }));
 
 /**
  * The 5 combinable multi-select filters: DOI plus the same 4 categorical

@@ -52,7 +52,9 @@ export function useTemperatureControls(): TemperatureControlsState {
     solventUsed: [] as readonly string[],
   });
 
-  const mode: TemperatureMode = isTemperatureMode(urlState.mode) ? urlState.mode : DEFAULT_TEMPERATURE_MODE;
+  const mode: TemperatureMode = isTemperatureMode(urlState.mode)
+    ? urlState.mode
+    : DEFAULT_TEMPERATURE_MODE;
   const colorColumn: TemperatureColorColumn = isTemperatureColorColumn(urlState.color)
     ? urlState.color
     : DEFAULT_TEMPERATURE_COLOR_COLUMN;
@@ -65,7 +67,13 @@ export function useTemperatureControls(): TemperatureControlsState {
       crystalline: urlState.crystalline,
       solventUsed: urlState.solventUsed,
     }),
-    [urlState.doi, urlState.polymerFamily, urlState.anion, urlState.crystalline, urlState.solventUsed],
+    [
+      urlState.doi,
+      urlState.polymerFamily,
+      urlState.anion,
+      urlState.crystalline,
+      urlState.solventUsed,
+    ],
   );
 
   const setMode = useCallback(

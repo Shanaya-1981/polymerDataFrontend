@@ -92,7 +92,9 @@ describe("buildLineSamples + buildTemperatureLineTraces — faithful to the live
 
   it("an unfiltered run always has at least one sample in every mode, so 'Clear filters' always recovers", () => {
     for (const mode of Object.keys(EXPECTED_POINTS) as TemperatureMode[]) {
-      expect(buildLineSamples(mode, DEFAULT_TEMPERATURE_COLOR_COLUMN, {}).length).toBeGreaterThan(0);
+      expect(buildLineSamples(mode, DEFAULT_TEMPERATURE_COLOR_COLUMN, {}).length).toBeGreaterThan(
+        0,
+      );
     }
   });
 

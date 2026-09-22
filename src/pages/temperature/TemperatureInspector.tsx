@@ -22,9 +22,11 @@ export function TemperatureInspector({ selected }: TemperatureInspectorProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Selected sample</CardTitle>
+        <CardTitle as="h2">Selected sample</CardTitle>
         {!selected ? (
-          <p className="text-sm text-secondary">Click a point on the plot to see its details here.</p>
+          <p className="text-sm text-secondary">
+            Click a point on the plot to see its details here.
+          </p>
         ) : null}
       </CardHeader>
 

@@ -16,7 +16,7 @@ export function TemperatureEmptyState({ onClearFilters }: TemperatureEmptyStateP
   return (
     <Card className="flex min-h-[420px] flex-col items-center justify-center gap-4 text-center">
       <CardHeader className="items-center">
-        <CardTitle>No samples match these filters</CardTitle>
+        <CardTitle as="h2">No samples match these filters</CardTitle>
         <CardDescription>Clear a filter or two to bring series back into view.</CardDescription>
       </CardHeader>
       <Button variant="secondary" onClick={onClearFilters}>
