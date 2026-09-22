@@ -1,32 +1,90 @@
 # Polymer Electrolyte Data Mining
 
-A modern, fully client-side rebuild of [pedatamine.org](https://pedatamine.org) — the UC Santa
-Barbara Polymer Electrolyte Data Mining site. The original is a Plotly Dash app that is slow,
-visually dated, and effectively unusable on mobile. This project reimplements it as a fast,
-responsive, static single-page app with the same underlying dataset, so researchers can explore
-polymer-electrolyte conductivity data against material attributes without the baggage of a
-server-rendered Dash backend.
+An interactive explorer for the UC Santa Barbara polymer-electrolyte dataset — a rebuilt
+front-end for [pedatamine.org](https://pedatamine.org).
 
-All seven routes are built. See `HANDOFF.md` for current status and what is left.
+The dataset behind this is the real work, and it isn't ours. Nicole Schauser, Gabrielle Kliegle,
+Piper Cooke, Rachel Segalman and Ram Seshadri hand-curated 655 polymer-electrolyte samples from
+65 published papers, computed molecular descriptors for every one, and published the whole thing
+openly under MIT alongside a Plotly Dash app for exploring it. That curation is the part that
+can't be automated, and everything here rests on it.
 
-**What it does that the original doesn't**
+This project is a fresh front-end over that same dataset. The original app dates from early 2021
+and Dash was a sensible choice for a research group shipping a working tool quickly — it puts a
+usable interface in front of a pandas DataFrame with very little code. Five years on, the browser
+can do more of that work directly: the dataset is only 655 rows, so it fits comfortably in a
+static payload, which means the interactions can be instant and the whole thing can be hosted as
+files. That shift is what this rebuild is about, plus room to add the affordances the original
+didn't reach for.
 
-- **No server round-trip.** The whole dataset ships as a 76 kB gzipped static payload, so every
-  axis change and filter is instant. The original POSTed to a Dash callback for each interaction
-  and returned up to ~1 MB of JSON.
-- **Filters combine.** Pick multiple values across multiple columns (OR within a column, AND
-  across them). The original allowed exactly one column and one value.
+All seven routes are built. See `HANDOFF.md` for current status.
+
+## What's new here
+
+**Exploring the data**
+
+- **Instant interactions.** The whole dataset ships as a 76 kB gzipped static payload and all
+  filtering happens in the browser, so changing an axis or a filter is immediate. The original
+  round-tripped to a Dash callback per interaction, returning up to ~1 MB of JSON for the
+  temperature view.
+- **Filters that combine.** Select multiple values across multiple columns at once — OR within a
+  column, AND across columns. The original offered one column and one value at a time.
 - **Every view is a link.** All controls round-trip through the URL, so a configured plot can be
-  pasted into a paper or a message. The original had no shareable state at all.
-- **A data browser.** `/data` lets you search, sort, page and export the rows. The original gave
-  no way to see the underlying data.
-- **Responsive.** The original used fixed-width Bootstrap columns and a hard-coded figure size.
-- **~8 traces instead of 655** on the temperature page, via null-separated trace batching.
-- **Honest about its own limits.** A log axis on Tg hides 78% of the points and VFT/T-Tg can only
-  plot the 351 samples that have a Tg; the app says so rather than quietly showing less data.
+  pasted into a paper, an issue, or a message and come back exactly as it was.
+- **A data browser** (`/data`, new): search across text columns, sort any column with nulls
+  ordered last in both directions, a column picker over all 69 typed columns, pagination, and CSV
+  export of either the current filtered view or the full 305-column dataset.
+- **A searchable feature glossary** rather than a static 36-row table, and a landing page whose
+  dataset statistics are derived from the data at build time instead of hard-coded.
 
-It also **fixes a bug in the original**: the correlation matrix was uniformly scaled by 271/270
-(a population/sample standard-deviation mismatch), so its diagonal read 1.0037 instead of 1.
+**Charts**
+
+- **Colour that survives colourblindness.** The categorical palette was derived by searching the
+  OKLCH gamut and validated programmatically for CVD separation and contrast in both light and
+  dark mode. Seven hues is the measured maximum that passes; beyond that categories fold into a
+  recessive "Other" rather than recycling hues. Scatter marks also vary marker shape, so identity
+  never rests on colour alone. See `data/reference/CHART-PALETTE.md` for the derivation.
+- **A diverging scale for diverging data.** The correlation matrix spans −1…+1, so it gets two
+  hues with a neutral midpoint pinned at 0 instead of a sequential ramp.
+- **Readable heatmap labels.** The 36 feature names share long prefixes and differ at the end, so
+  they're abbreviated at the front (`C1`/`C2`) rather than truncated at the back, which keeps all
+  36 distinguishable.
+- **8 traces instead of 655** on the temperature page. Each sample's curve is concatenated into a
+  per-colour trace separated by nulls, with a parallel index array so clicking a point still
+  resolves to the right sample.
+- **It tells you what it's hiding.** A log axis can't show non-positive values, and Tg is in °C —
+  so plotting Tg on a log axis silently drops 78% of the points. Here the count of hidden points
+  is stated. Likewise, VFT and T/Tg require a glass-transition temperature and can only plot the
+  351 samples that have one; the page says so rather than quietly showing less data.
+
+**Data quality**
+
+- **Correlation matrix recomputed.** The original's was uniformly scaled by 271/270 — a
+  population/sample standard-deviation mismatch — so its diagonal read 1.0037 instead of 1.
+- **Source encoding repaired.** The CSV isn't valid UTF-8: 37 stray `0xA0` bytes and 2 `0x96`
+  bytes sit inside citation text. Decoded as Windows-1252 so a page range reads `104–109` rather
+  than a replacement glyph.
+- **Invisible characters stripped.** 40 cells carry a zero-width no-break space _inside_ the
+  value, including three polymer names — invisible in any editor, but enough to break exact
+  matching and search. The downloadable CSV gets the same treatment plus a BOM so Excel reads it
+  as UTF-8.
+- **Every invariant asserted at build time.** `npm run build:data` fails the build unless the
+  regenerated data still matches the counts verified against the live original: 655 rows, 5225
+  conductivity measurements, 368 samples with a Tg, the category cardinalities, and a correlation
+  diagonal of exactly 1.
+
+**Platform**
+
+- **Responsive.** Navigation collapses into a drawer and chart controls into a bottom sheet, so
+  the plot stays visible while you adjust it. The original used fixed-width columns and a
+  hard-coded figure size.
+- **Light and dark mode**, applied before first paint so there's no flash, with charts repainting
+  to match.
+- **Accessible.** Keyboard reachable throughout with visible focus, semantic landmarks, a skip
+  link, `aria-sort` on sortable headers, live regions for result counts, and a clean axe audit
+  across all 7 routes at desktop and mobile widths.
+- **Lazy-loaded charts.** A cold visit to the landing page transfers ~137 kB gzipped; Plotly and
+  the dataset load only on the routes that need them.
 
 ## Stack
 

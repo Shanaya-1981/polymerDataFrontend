@@ -39,8 +39,8 @@ complete.
 - **Shared page infrastructure.** `ChartPageLayout` and `useUrlState`.
 - **Wave 3 — pages.** `/explore`, `/temperature`, `/correlations`, `/features`, `/about`, `/`.
   Combinable multi-select filters (the original allowed one column, one value), shareable URL
-  state (the original had none), and honest notices where the original silently misled — a log
-  axis on Tg drops 78% of points, and VFT/T-Tg can only plot the 351 samples that have a Tg.
+  state, and notices where a plot would otherwise hide data without saying so — a log axis on Tg
+  drops 78% of points, and VFT/T-Tg can only plot the 351 samples that have a Tg.
   The temperature page renders **≤ 8 traces instead of the original's 655**, with point totals
   matching the live server exactly in all 16 mode × colour combinations.
 

@@ -60,7 +60,7 @@ Tg is in °C and mostly negative, so switching a Tg axis to Log silently drops *
 points. **Drop non-positive values (never clamp), and surface a visible notice** telling the user
 how many points were hidden. The original just showed a misleadingly empty plot.
 
-## 4. Correlation matrix — the original is provably wrong
+## 4. Correlation matrix — recompute it; the original is off by a constant factor
 
 All 36 heatmap labels exist in the forML CSV. Recomputing pairwise-complete Pearson and comparing
 to the live figure:
@@ -72,7 +72,9 @@ original / correct = 1.003703704 for EVERY entry (min == max, zero spread)
 ```
 
 The original standardized with population std (ddof=0) then took the sample covariance (ddof=1),
-multiplying the whole matrix by n/(n−1). **Compute plain Pearson; the diagonal must be exactly 1.0.**
+multiplying the whole matrix by n/(n−1) — an easy mismatch to make, and one that leaves the
+*relative* structure of the matrix intact, which is why it went unnoticed.
+**Compute plain Pearson; the diagonal must be exactly 1.0.**
 `correlations-original.json` holds the original matrix if you want a regression comparison.
 
 ## 5. Invariants the build script must assert (fail the build on mismatch)

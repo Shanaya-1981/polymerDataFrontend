@@ -85,10 +85,11 @@ export default function About() {
             >
               pedatamine.org
             </a>{" "}
-            Dash application, built for a cleaner and more usable interface, especially on
-            mobile. It is not affiliated with or endorsed by the original authors. The underlying
-            dataset and code remain licensed under the MIT License — see the GitHub repository
-            above for the license text and the original data.
+            Dash application. The database, the literature curation behind it, and the original
+            application are the work of the contributors named above; this site only rebuilds the
+            interface, using their openly published data. It is not affiliated with or endorsed by
+            them. The dataset and the original code remain licensed under the MIT License — see the
+            GitHub repository above for the license text and the original data.
           </p>
         </Notice>
       </div>
