@@ -3,8 +3,8 @@
  *
  * Run via `npm run build:data` (type-checks this directory first, then runs
  * this file with `tsx`). Emits into `src/data/generated/` (dataset.json,
- * conductivity.json, correlations.json, categories.json,
- * feature-glossary.json, columns.ts) and a
+ * conductivity.json, correlations.json, feature-target-correlations.json,
+ * categories.json, feature-glossary.json, columns.ts) and a
  * cleaned copy of the full CSV into `public/data/` for download/export.
  *
  * Every number this script asserts was independently verified against the
@@ -21,7 +21,7 @@ import Papa from "papaparse";
 
 import { parseNumericCell, parseTextCell, stripZeroWidth } from "../src/lib/parse";
 import { rankCategories } from "../src/lib/category-order";
-import { buildCorrelationMatrix } from "../src/lib/correlation";
+import { buildCorrelationMatrix, pearsonCorrelation } from "../src/lib/correlation";
 import { slugifyHeader } from "./slugify";
 import { decodeLenientUtf8 } from "./decode-lenient-utf8";
 
@@ -500,6 +500,192 @@ assertTrue(
   );
 }
 
+// Every off-diagonal cell of the matrix above shares one sample size: the
+// forML CSV has zero missing values across the 36 glossary columns (verified
+// below), so every pairwise-complete overlap is the full 271 rows. Stored
+// alongside feature-target-correlations.json so the ranked-list UI can show
+// an honest `n` for a feature target too, without re-deriving it at runtime.
+let forMLMissingInGlossaryColumns = 0;
+for (const label of glossaryLabels) {
+  for (const value of forMLNumericColumns[label]) {
+    if (value == null) forMLMissingInGlossaryColumns += 1;
+  }
+}
+assertEqual(
+  "forML CSV missing values across the 36 glossary columns (0 means every correlations.json cell shares one n)",
+  forMLMissingInGlossaryColumns,
+  0,
+);
+const matrixSampleSize = forML.rows.length;
+
+// ---------------------------------------------------------------------------
+// feature-target-correlations.json — each glossary feature vs log10
+// conductivity, at each of the 22 measurement temperatures, computed from
+// the MAIN CSV (not forML). This is the table the live app's 36x36 matrix
+// cannot answer: "what correlates with conductivity itself" rather than
+// "how do the 36 features correlate with each other."
+// ---------------------------------------------------------------------------
+
+console.log("\nComputing feature-vs-conductivity correlations (main CSV):");
+
+const DRYING_VACUUM_LABEL = "drying vacuum";
+const DRYING_VACUUM_EXCLUSION_REASON =
+  "Values are yes/high/none/dry nitrogen in the main CSV but ordinal 0-3 in the forML CSV, and " +
+  "the intended ordering between the two encodings is not recoverable with confidence. Rather " +
+  "than invent one, this feature is left out of the table below. It still appears as a row and " +
+  "column of the feature-vs-feature matrix above, via the forML CSV's own (separate) encoding.";
+
+const featureTargetLabels = glossaryLabels.filter((label) => label !== DRYING_VACUUM_LABEL);
+assertEqual(
+  "feature-vs-conductivity feature count (36 glossary features minus drying vacuum)",
+  featureTargetLabels.length,
+  35,
+);
+
+/**
+ * Read one glossary feature's values straight off the main CSV's rows —
+ * independent of `numericColumns`/`categoricalColumns` above, because 20 of
+ * the 36 glossary features are forML-only and were never added to the
+ * 69-column plan those come from. Applies the three documented encodings:
+ * `log Li:functional group` is derived (log10 of the present `Li:functional
+ * group` column), `crystalline?` is coded no→0/yes→1/na→dropped, and every
+ * other label is read verbatim.
+ */
+function readFeatureColumnFromMainCsv(label: string): (number | null)[] {
+  if (label === "log Li:functional group") {
+    return main.rows.map((row) => {
+      const value = parseNumericCell(row["Li:functional group"] ?? "", "Li:functional group");
+      // Guard defensively even though DATA-SPEC.md §3 records zero ≤0 values
+      // for this column today — only positive values can be logged.
+      return value != null && value > 0 ? Math.log10(value) : null;
+    });
+  }
+  if (label === "crystalline?") {
+    return main.rows.map((row) => {
+      const raw = (row["crystalline?"] ?? "").trim().toLowerCase();
+      if (raw === "no") return 0;
+      if (raw === "yes") return 1;
+      return null; // "na" (DATA-SPEC.md §2) — a real category, but no ordinal encoding for it.
+    });
+  }
+  return main.rows.map((row, rowIndex) =>
+    parseNumericCell(row[label] ?? "", `${label} (row ${rowIndex})`),
+  );
+}
+
+const featureTargetColumns = new Map(
+  featureTargetLabels.map((label) => [label, readFeatureColumnFromMainCsv(label)] as const),
+);
+
+function getFeatureTargetColumn(label: string): readonly (number | null)[] {
+  const column = featureTargetColumns.get(label);
+  if (!column) throw new BuildAssertionError(`no feature-target column for ${JSON.stringify(label)}`);
+  return column;
+}
+
+// Regression guard for the crystalline? encoding specifically: DATA-SPEC.md
+// §2 records exactly 19 "na" rows for this column (out of 655), and all of
+// them must be dropped (null) rather than silently coded as 0 or 1.
+assertEqual(
+  'crystalline? rows coded "na" (dropped for this computation only)',
+  rowCount - countNonNull(getFeatureTargetColumn("crystalline?")),
+  19,
+);
+
+/** Count of positions where both arrays have a non-null value — the same
+ *  overlap `pearsonCorrelation` computes r over, exposed here because that
+ *  function reports only r, not the n behind it. */
+function pairwiseCount(a: readonly (number | null)[], b: readonly (number | null)[]): number {
+  let n = 0;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] != null && b[i] != null) n += 1;
+  }
+  return n;
+}
+
+const featureTargetR: (number | null)[][] = [];
+const featureTargetN: number[][] = [];
+let undefinedFeatureTargetCorrelations = 0;
+
+CONDUCTIVITY_TEMPS_C.forEach((_temp, tempIndex) => {
+  // Only positive conductivity values can be logged (DATA-SPEC.md §3) — the
+  // live dataset happens to have zero non-positive conductivity readings at
+  // every temperature, but this guards the general case rather than
+  // assuming that stays true.
+  const logConductivity = conductivityValues.map((row) => {
+    const value = row[tempIndex];
+    return value != null && value > 0 ? Math.log10(value) : null;
+  });
+
+  const rRow: (number | null)[] = [];
+  const nRow: number[] = [];
+  for (const label of featureTargetLabels) {
+    const featureColumn = getFeatureTargetColumn(label);
+    const r = pearsonCorrelation(logConductivity, featureColumn);
+    if (r == null) undefinedFeatureTargetCorrelations += 1;
+    rRow.push(r);
+    nRow.push(pairwiseCount(logConductivity, featureColumn));
+  }
+  featureTargetR.push(rRow);
+  featureTargetN.push(nRow);
+});
+
+assertEqual("feature-vs-conductivity table temperature count", featureTargetR.length, 22);
+assertTrue(
+  "feature-vs-conductivity table is 35 features wide throughout",
+  featureTargetR.every((row) => row.length === 35) && featureTargetN.every((row) => row.length === 35),
+);
+assertTrue(
+  "every feature-vs-conductivity r is within [-1, 1]",
+  featureTargetR.every((row) => row.every((r) => r == null || (r >= -1 && r <= 1))),
+);
+assertTrue(
+  "every feature-vs-conductivity n is >= 0",
+  featureTargetN.every((row) => row.every((n) => n >= 0)),
+);
+// A handful of cells have no defined correlation (fewer than 2
+// pairwise-complete points, or zero variance over the overlap — e.g. the
+// rare 21C reading turns out to come from 7 rows that are otherwise
+// identical in several structural descriptors). Pinned exactly, in the same
+// spirit as every other count in this script, rather than just tolerated.
+assertEqual(
+  "feature-vs-conductivity cells with an undefined correlation (n<2, or zero variance over the overlap)",
+  undefinedFeatureTargetCorrelations,
+  24,
+);
+
+// Sanity check against six values independently computed and verified for
+// `Conductivity at 60C` (see the wave brief) — must match to ~3 decimals.
+console.log("\nSpot-checking feature-vs-conductivity correlations at 60C:");
+const SPOT_CHECK_TEMP_C = 60;
+const SPOT_CHECKS: ReadonlyArray<{ feature: string; r: number; n: number }> = [
+  { feature: "approxTg", r: -0.393, n: 302 },
+  { feature: "approxMW(kDa)", r: -0.323, n: 337 },
+  { feature: "anion AETA_eta", r: 0.306, n: 389 },
+  { feature: "anion ETA_eta_L", r: 0.264, n: 389 },
+  { feature: "anion nO", r: 0.237, n: 389 },
+  { feature: "anion nHBAcc", r: 0.223, n: 389 },
+];
+const spotCheckTempIndex = CONDUCTIVITY_TEMPS_C.indexOf(SPOT_CHECK_TEMP_C);
+for (const check of SPOT_CHECKS) {
+  const featureIndex = featureTargetLabels.indexOf(check.feature);
+  assertTrue(`feature-vs-conductivity table includes "${check.feature}"`, featureIndex !== -1);
+  const actualR = featureTargetR[spotCheckTempIndex][featureIndex];
+  const actualN = featureTargetN[spotCheckTempIndex][featureIndex];
+  if (actualR == null) {
+    throw new BuildAssertionError(`spot check "${check.feature}" at ${SPOT_CHECK_TEMP_C}C: r is null`);
+  }
+  assertTrue(
+    `spot check: Conductivity at ${SPOT_CHECK_TEMP_C}C × ${check.feature} — r = ${actualR.toFixed(3)} (expected ${check.r})`,
+    Math.abs(actualR - check.r) < 5e-4,
+  );
+  assertEqual(
+    `spot check: Conductivity at ${SPOT_CHECK_TEMP_C}C × ${check.feature} — n`,
+    actualN,
+    check.n,
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Write generated artifacts
 // ---------------------------------------------------------------------------
@@ -538,6 +724,18 @@ const datasetJson = {
 };
 const conductivityJson = { temps: CONDUCTIVITY_TEMPS_C, values: conductivityValues };
 const correlationsJson = { labels: correlations.labels, matrix: correlations.matrix };
+// Each of the 35 non-excluded glossary features vs log10 conductivity, at
+// each of the 22 temperatures — the feature-vs-conductivity answer the
+// feature-vs-feature matrix above can't give. `r`/`n` are indexed
+// `[temperatureIndex][featureIndex]`, matching `temperatures`/`features`.
+const featureTargetCorrelationsJson = {
+  temperatures: CONDUCTIVITY_TEMPS_C,
+  features: featureTargetLabels,
+  excludedFeature: { mlColumn: DRYING_VACUUM_LABEL, reason: DRYING_VACUUM_EXCLUSION_REASON },
+  matrixSampleSize,
+  r: featureTargetR,
+  n: featureTargetN,
+};
 const categoriesJson = categories;
 // The feature glossary is reference material, but the /features page renders
 // it at runtime. Emit it into the generated layer so nothing under `src/`
@@ -560,6 +758,11 @@ const sizeReports: SizeReport[] = [
     "correlations.json",
     path.join(GENERATED_DIR, "correlations.json"),
     JSON.stringify(correlationsJson),
+  ),
+  writeAndReport(
+    "feature-target-correlations.json",
+    path.join(GENERATED_DIR, "feature-target-correlations.json"),
+    JSON.stringify(featureTargetCorrelationsJson),
   ),
   writeAndReport(
     "categories.json",
