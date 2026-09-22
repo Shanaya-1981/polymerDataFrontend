@@ -3,7 +3,8 @@
  *
  * Run via `npm run build:data` (type-checks this directory first, then runs
  * this file with `tsx`). Emits into `src/data/generated/` (dataset.json,
- * conductivity.json, correlations.json, categories.json, columns.ts) and a
+ * conductivity.json, correlations.json, categories.json,
+ * feature-glossary.json, columns.ts) and a
  * cleaned copy of the full CSV into `public/data/` for download/export.
  *
  * Every number this script asserts was independently verified against the
@@ -196,26 +197,40 @@ function deriveKind(header: string): "categorical" | "continuous" {
 
 type PageId = "explore" | "temperature";
 
-function derivePagesLookup(): Map<string, PageId[]> {
-  const explore = [
+/**
+ * Being *plottable* on a page and being *filterable* on it are different
+ * things, and conflating them is a trap: `DOI` is offered as a filter on both
+ * pages but was never one of the original's 41 x/y/color options, so a single
+ * combined list yields 42 where the spec says 41. Derive the two separately.
+ */
+function derivePageLookups(): {
+  plottable: Map<string, PageId[]>;
+  filterable: Map<string, PageId[]>;
+} {
+  const explorePlottable = [
     uiControls.scatterPage["xaxis-column"].options,
     uiControls.scatterPage["yaxis-column"].options,
     uiControls.scatterPage.color.options,
-    uiControls.scatterPage.prefiltervis.options,
   ].flat();
-  const temperature = [
-    uiControls.temperaturePage.color.options,
-    uiControls.temperaturePage.prefilter.options,
-  ].flat();
+  const exploreFilterable = uiControls.scatterPage.prefiltervis.options;
+  const temperaturePlottable = uiControls.temperaturePage.color.options;
+  const temperatureFilterable = uiControls.temperaturePage.prefilter.options;
 
-  const lookup = new Map<string, PageId[]>();
-  for (const header of new Set([...explore, ...temperature])) {
-    const pages: PageId[] = [];
-    if (explore.includes(header)) pages.push("explore");
-    if (temperature.includes(header)) pages.push("temperature");
-    lookup.set(header, pages);
-  }
-  return lookup;
+  const build = (explore: string[], temperature: string[]) => {
+    const lookup = new Map<string, PageId[]>();
+    for (const header of new Set([...explore, ...temperature])) {
+      const pages: PageId[] = [];
+      if (explore.includes(header)) pages.push("explore");
+      if (temperature.includes(header)) pages.push("temperature");
+      lookup.set(header, pages);
+    }
+    return lookup;
+  };
+
+  return {
+    plottable: build(explorePlottable, temperaturePlottable),
+    filterable: build(exploreFilterable, temperatureFilterable),
+  };
 }
 
 interface ColumnPlanEntry {
@@ -224,7 +239,8 @@ interface ColumnPlanEntry {
   readonly label: string;
   readonly unit?: string;
   readonly kind: "categorical" | "continuous";
-  readonly pages: readonly PageId[];
+  readonly plottableOn: readonly PageId[];
+  readonly filterableOn: readonly PageId[];
   readonly description?: string;
 }
 
@@ -258,7 +274,7 @@ function buildColumnPlan(mainHeader: readonly string[]): ColumnPlanEntry[] {
   );
 
   const descriptionByColumn = new Map(featureGlossary.map((f) => [f.mlColumn, f.description]));
-  const pagesLookup = derivePagesLookup();
+  const pageLookups = derivePageLookups();
 
   const plan = allHeaders.map((header) => ({
     header,
@@ -266,7 +282,8 @@ function buildColumnPlan(mainHeader: readonly string[]): ColumnPlanEntry[] {
     label: header,
     unit: deriveUnit(header),
     kind: deriveKind(header),
-    pages: pagesLookup.get(header) ?? [],
+    plottableOn: pageLookups.plottable.get(header) ?? [],
+    filterableOn: pageLookups.filterable.get(header) ?? [],
     description: descriptionByColumn.get(header),
   }));
 
@@ -522,6 +539,11 @@ const datasetJson = {
 const conductivityJson = { temps: CONDUCTIVITY_TEMPS_C, values: conductivityValues };
 const correlationsJson = { labels: correlations.labels, matrix: correlations.matrix };
 const categoriesJson = categories;
+// The feature glossary is reference material, but the /features page renders
+// it at runtime. Emit it into the generated layer so nothing under `src/`
+// imports out of `data/reference/`, which holds reconnaissance artifacts and
+// provenance rather than production input.
+const featureGlossaryJson = featureGlossary;
 
 const sizeReports: SizeReport[] = [
   writeAndReport(
@@ -544,6 +566,11 @@ const sizeReports: SizeReport[] = [
     path.join(GENERATED_DIR, "categories.json"),
     JSON.stringify(categoriesJson),
   ),
+  writeAndReport(
+    "feature-glossary.json",
+    path.join(GENERATED_DIR, "feature-glossary.json"),
+    JSON.stringify(featureGlossaryJson),
+  ),
 ];
 
 // --- columns.ts ---
@@ -557,7 +584,8 @@ const columnMetaLiterals = columnPlan.map((c) => ({
   label: c.label,
   unit: c.unit,
   kind: c.kind,
-  pages: c.pages,
+  plottableOn: c.plottableOn,
+  filterableOn: c.filterableOn,
   description: c.description,
 }));
 
@@ -567,7 +595,8 @@ const columnsTs = `/**
  *
  * Typed registry for every column in dataset.json: a stable id, display
  * label (the literal source CSV header), unit where meaningful, whether the
- * column is categorical or continuous, which routed pages offer it as a
+ * column is categorical or continuous, which routed pages plot it and which
+ * filter by it (they are NOT the same set — see derivePageLookups), as a
  * control (derived from data/reference/ui-controls.json), and its glossary
  * description where one exists. Only 16 of these 69 columns are also one of
  * the 36 correlation features in data/reference/feature-glossary.json — the
@@ -583,7 +612,8 @@ export interface ColumnMeta {
   readonly label: string;
   readonly unit?: string;
   readonly kind: ColumnKind;
-  readonly pages: readonly PageId[];
+  readonly plottableOn: readonly PageId[];
+  readonly filterableOn: readonly PageId[];
   readonly description?: string;
 }
 

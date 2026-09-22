@@ -136,3 +136,18 @@ all rows                     655        all conductivity points     5225
 rows with Tg                 368        their conductivity points   3401
 rows with zero conductivity   36
 ```
+
+### Plottable series counts (what actually reaches a chart)
+
+The counts above are *rows considered*. Rows with no conductivity contribute no line,
+so the number of series actually drawn is lower. Both figures verified:
+
+| mode | rows considered | series actually drawn | points |
+|---|---|---|---|
+| Arrhenius, T | 655 | **619** (655 − 36) | 5225 |
+| T/Tg, VFT | 368 | **351** (368 − 17) | 3401 |
+
+17 of the 368 Tg-bearing rows are *also* among the 36 with no conductivity at all, which is
+why the second subtraction is 17 rather than 36. Point totals are unaffected either way,
+since the dropped rows contributed zero points. Prefer showing the drawn count in the UI —
+it is the honest one.

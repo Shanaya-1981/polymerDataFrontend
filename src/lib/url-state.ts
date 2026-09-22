@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 
 /**
@@ -35,6 +35,11 @@ export function useUrlState<T extends UrlState>(defaults: T): [T, (patch: Partia
   const defaultsKey = JSON.stringify(defaults);
   const stableDefaults = useMemo(() => JSON.parse(defaultsKey) as T, [defaultsKey]);
 
+  // Lets `patch` compose across several calls in the same tick — see the
+  // comment in `patch`. Only ever written from inside the callback, never
+  // during render.
+  const pendingRef = useRef<{ from: URLSearchParams; next: URLSearchParams } | null>(null);
+
   const state = useMemo(() => {
     const next = {} as Record<string, UrlStateValue>;
     for (const [key, fallback] of Object.entries(stableDefaults)) {
@@ -51,28 +56,35 @@ export function useUrlState<T extends UrlState>(defaults: T): [T, (patch: Partia
 
   const patch = useCallback(
     (changes: Partial<T>) => {
-      setSearchParams(
-        (current) => {
-          const next = new URLSearchParams(current);
-          for (const [key, value] of Object.entries(changes)) {
-            const fallback = stableDefaults[key];
-            next.delete(key);
-            if (value == null || isDefault(value, fallback)) continue;
-            if (Array.isArray(value)) {
-              // An explicitly-empty list is still a choice ("filter on, but
-              // nothing selected"), so record it rather than dropping it.
-              if (value.length === 0) next.set(key, "");
-              else for (const v of value) next.append(key, v);
-            } else {
-              next.set(key, String(value));
-            }
-          }
-          return next;
-        },
-        { replace: true },
-      );
+      // React Router's functional `setSearchParams` hands the updater the
+      // params from the *current render's* closure, not a queued value the
+      // way React's own setState does. So two `patch` calls in one tick would
+      // both start from the same base and the second would silently discard
+      // the first. Accumulate across calls instead, tagged with the
+      // generation they were derived from so a real URL change (a Link, the
+      // back button) correctly resets the accumulation.
+      const carried =
+        pendingRef.current?.from === searchParams ? pendingRef.current.next : searchParams;
+      const next = new URLSearchParams(carried);
+
+      for (const [key, value] of Object.entries(changes)) {
+        const fallback = stableDefaults[key];
+        next.delete(key);
+        if (value == null || isDefault(value, fallback)) continue;
+        if (Array.isArray(value)) {
+          // An explicitly-empty list is still a choice ("filter on, but
+          // nothing selected"), so record it rather than dropping it.
+          if (value.length === 0) next.set(key, "");
+          else for (const v of value) next.append(key, v);
+        } else {
+          next.set(key, String(value));
+        }
+      }
+
+      pendingRef.current = { from: searchParams, next };
+      setSearchParams(next, { replace: true });
     },
-    [setSearchParams, stableDefaults],
+    [searchParams, setSearchParams, stableDefaults],
   );
 
   return [state, patch];
