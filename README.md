@@ -1,75 +1,87 @@
 # Polymer Electrolyte Data Mining
 
-An interactive explorer for the UC Santa Barbara polymer-electrolyte dataset — a rebuilt
-front-end for [pedatamine.org](https://pedatamine.org).
-
-Solid polymer electrolytes are a candidate for safer lithium batteries, and the open question is
-which material properties actually drive ionic conductivity. This site lets you plot that
-dataset's measurements against each other and see for yourself.
+A rebuilt front end for [pedatamine.org](https://pedatamine.org) — the Schauser et al.
+polymer-electrolyte database. 655 samples curated from 65 papers, conductivity across 22
+temperatures from 0 to 125 °C, and MORDRED descriptors for each comonomer and anion.
 
 ## Credit where it belongs
 
-The dataset is the real work here, and it isn't ours. **Nicole Schauser, Gabrielle Kliegle, Piper
-Cooke, Rachel Segalman and Ram Seshadri** hand-curated 655 polymer-electrolyte samples from 65
-published papers, computed molecular descriptors for every one, and published all of it openly
-under the MIT license alongside a Plotly Dash app for exploring it. That curation is the part
-that can't be automated, and everything here rests on it.
+The database is the real work here, and it isn't ours. **Nicole Schauser, Gabrielle Kliegle,
+Piper Cooke, Rachel Segalman and Ram Seshadri** did the literature curation, computed the
+descriptors, and published everything openly under MIT alongside a Plotly Dash app for exploring
+it. That curation is the part that can't be automated, and everything here rests on it.
 
 Their data and original application:
 [github.com/nschauser/PolymerElectrolyte](https://github.com/nschauser/PolymerElectrolyte) ·
 UC Santa Barbara / NSF MRSEC DMR 1720256.
 
 This is an independent rebuild of the interface only, not affiliated with or endorsed by them.
+The data is unchanged: it is their `6_2_2020` curation snapshot, and nothing has been added to it
+since.
 
 ---
 
 ## What you can do here
 
-| Page             | What it's for                                                                                                                   |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| **Explore**      | Plot any two of 41 measured and computed properties against each other, coloured by a third. Linear or log on either axis.      |
-| **Temperature**  | Conductivity against temperature for every sample, in the four scalings the literature uses: Arrhenius, VFT, plain T, and T/Tg. |
-| **Correlations** | How the 36 machine-learning features relate to one another, as a colour-coded matrix.                                           |
-| **Data**         | Browse, search, sort and export every row. Choose which columns to show; download the current view or the whole dataset as CSV. |
-| **Features**     | A searchable, plain-language glossary of what each of the 36 features actually means.                                           |
-| **About**        | Who built the database, how it was funded, and how to get in touch.                                                             |
+| Page             | What it's for                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------- |
+| **Explore**      | Any of 41 properties against any other, coloured by a third. Independent linear/log per axis. |
+| **Temperature**  | σ(T) per sample under Arrhenius, VFT, T, or T/T<sub>g</sub> scaling.                          |
+| **Correlations** | Pearson matrix over the 36 features from the paper's RF recursive feature elimination.        |
+| **Data**         | The rows themselves — searchable, sortable, column-selectable, exportable as CSV.             |
+| **Features**     | What each of the 36 features means, including the MORDRED descriptors.                        |
+| **About**        | Contributors, funding, contact.                                                               |
 
-Click a point on any plot to see which polymer it is and which paper it came from, with a direct
-link to the DOI.
+Clicking a point identifies the polymer and links its DOI.
+
+## Coverage, before you go looking
+
+Worth knowing up front, because the database is sparse in places and the plots don't pad:
+
+| Property                | Samples with a value |
+| ----------------------- | -------------------- |
+| Li:functional group     | 655 / 655            |
+| M<sub>w</sub>           | 528 / 655            |
+| VFT E<sub>a</sub>       | 426 / 655            |
+| Arrhenius E<sub>a</sub> | 424 / 655            |
+| T<sub>g</sub>           | 368 / 655            |
+| M<sub>n</sub>           | 325 / 655            |
+| PDI                     | 265 / 655            |
+| % crystallinity         | 137 / 655            |
+| T<sub>m</sub>           | 82 / 655             |
+| Transference number     | 80 / 655             |
+| D<sub>Li</sub>          | 29 / 655             |
+| Storage modulus         | 4 / 655              |
+
+Conductivity itself is 5225 measurements spread unevenly over the 22 temperatures — densest at
+30–90 °C. Categorical spread: 78 polymers across 24 families, 12 anions, 14 casting solvents.
 
 ## What's different from the original site
 
-Nothing about the data has changed — it's the same 655 samples. What changed is the experience of
-using it:
-
-- **Nothing to wait for.** Changing an axis or a filter updates the plot immediately, rather than
-  asking a server and waiting for a reply.
-- **It works on a phone or tablet.** The original was built for a desktop window and didn't
-  adapt.
-- **Filters combine.** Narrow to exactly the subset you care about — say, three specific anions
-  _and_ two solvents at once — instead of one choice at a time.
-- **Every view is a link.** Configure a plot, copy the URL, and it opens the same way for whoever
-  you send it to. Useful for pointing at a specific view in a paper or an email.
-- **You can see the actual numbers.** The data browser and CSV export are new; previously there
-  was no way to inspect or download the underlying rows.
-- **It tells you when a plot is hiding something.** A log axis can't show zero or negative
-  numbers, and glass-transition temperatures are mostly negative in °C — so switching a Tg axis to
-  log quietly drops most of the data. Here you're told how many points were left out. Same for the
-  VFT and T/Tg views, which can only include the 351 samples that have a recorded
-  glass-transition temperature.
-- **The colours are readable.** The palette is checked to stay distinguishable for the common
-  forms of colour blindness, and each category also gets its own marker shape — so the plots still
-  work in greyscale print. Where a property has more categories than there are safe colours, the
-  rarest fold into a single grey "Other" rather than being given confusable colours.
+- **No server round-trip.** Axis and filter changes are immediate.
+- **Works on a phone or tablet.** The original was fixed-width desktop only.
+- **Filters combine** across columns — PEO-family samples with TFSI or ClO₄, cast from
+  acetonitrile — rather than one column and one value at a time.
+- **Every view is a link.** Configure a plot, copy the URL, and it reopens identically. Usable
+  for pointing at a specific view in an SI or a referee response.
+- **The rows are inspectable and exportable.** Neither was possible before.
+- **Excluded points are reported, not silently dropped.** A log axis can't take non-positive
+  values, so the count it excludes is stated rather than left for you to notice — relevant mostly
+  for T<sub>g</sub> in °C. Likewise VFT and T/T<sub>g</sub> are limited to the 351 samples that
+  have both a T<sub>g</sub> and conductivity data, and say so.
+- **Colours are CVD-validated and shape-encoded**, so series stay separable for colour-blind
+  readers and in greyscale print. Categories beyond the seven safe hues fold into one grey
+  "Other" rather than getting confusable colours.
 - **Light and dark mode.**
-- **One number is corrected.** The original's correlation matrix was scaled by a constant factor
-  (271/270) from a statistics subtlety, making its diagonal read 1.0037 instead of 1. This version
-  computes it directly. Because the factor was the same everywhere it didn't change the
-  relationships in the matrix — any comparison drawn from the original plot still holds.
+- **The correlation matrix is recomputed.** The original's was scaled by a constant 271/270 — a
+  population/sample standard-deviation mismatch — so its diagonal read 1.0037. Since the factor
+  was uniform it left the relative structure intact, so conclusions drawn from the original plot
+  still hold; this version just reports r directly.
 
 ## Running it yourself
 
-There's no hosted deployment yet. To run it locally you'll need [Node.js](https://nodejs.org):
+Not hosted anywhere yet. To run it locally, install [Node.js](https://nodejs.org) (LTS is fine),
+then from this directory:
 
 ```bash
 npm install
