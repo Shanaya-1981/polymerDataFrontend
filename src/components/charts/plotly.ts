@@ -32,6 +32,9 @@
  * If a future dataset pushes past ~15-20k points, re-register `scattergl`
  * here and restore those two Vite settings.
  */
+// MUST stay first: defines the bare `global` that plotly's prepare_regl
+// reads unguarded. Imports run in source order, so this beats lib/core.
+import "./global-shim";
 import * as Plotly from "plotly.js/lib/core";
 import * as scatter from "plotly.js/lib/scatter";
 import * as heatmap from "plotly.js/lib/heatmap";

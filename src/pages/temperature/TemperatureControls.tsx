@@ -81,7 +81,7 @@ export function TemperatureControls({
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-primary">Filters</h2>
           <Button variant="ghost" size="sm" onClick={onResetFilters} disabled={!hasActiveFilters}>
-            Reset
+            Clear all filters
           </Button>
         </div>
 
@@ -96,7 +96,7 @@ export function TemperatureControls({
                 options={categoryOrder(columnId).map((value) => ({ value, label: value }))}
                 values={filters[columnId] ?? []}
                 onChange={(values) => onFilterChange(columnId, values)}
-                placeholder="All"
+                placeholder="Any value"
               />
             </div>
           );

@@ -8,7 +8,7 @@ import {
   type PlotlyLayout,
 } from "@/components/charts";
 import { CORRELATION_LABELS, correlationMatrix } from "@/data";
-import { truncateTickLabel } from "./tick-labels";
+import { TICK_LABEL_LEGEND, formatTickLabel } from "./tick-labels";
 
 /**
  * The 36×36 Pearson correlation heatmap (DATA-SPEC.md §4).
@@ -35,7 +35,7 @@ export function CorrelationHeatmap() {
 
   const trace = useMemo(() => buildCorrelationHeatmapTrace(matrix, mode), [matrix, mode]);
 
-  const tickText = useMemo(() => CORRELATION_LABELS.map((label) => truncateTickLabel(label)), []);
+  const tickText = useMemo(() => CORRELATION_LABELS.map((label) => formatTickLabel(label)), []);
 
   const layout = useMemo<Partial<PlotlyLayout>>(
     () => ({
@@ -63,14 +63,24 @@ export function CorrelationHeatmap() {
   );
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-subtle bg-surface">
-      <div className="h-[70vh] max-h-[820px] min-h-[560px] w-full min-w-[820px] p-2">
-        <PlotlyChart
-          data={[trace]}
-          layout={layout}
-          ariaLabel="Correlation heatmap of 36 machine-learning features, colored from blue (negative correlation) through gray (no correlation) to pink-red (positive correlation)"
-        />
+    <figure className="m-0">
+      {/* The matrix is square (scaleanchor + scaleratio), so the container has
+          to be roughly square too — a full-width box just letterboxes the plot
+          and leaves most of the card empty. Below the min-width it scrolls
+          horizontally rather than squashing 36x36 cells into slivers. */}
+      <div className="overflow-x-auto rounded-lg border border-subtle bg-surface">
+        <div className="mx-auto aspect-square w-full max-w-[980px] min-w-[860px] p-2">
+          <PlotlyChart
+            data={[trace]}
+            layout={layout}
+            ariaLabel="Correlation heatmap of 36 machine-learning features, colored from blue (negative correlation) through gray (no correlation) to pink-red (positive correlation)"
+          />
+        </div>
       </div>
-    </div>
+      <figcaption className="mt-2 text-sm text-muted">
+        Axis labels are abbreviated: {TICK_LABEL_LEGEND}. Hover any cell for the full feature names
+        and the exact r value.
+      </figcaption>
+    </figure>
   );
 }

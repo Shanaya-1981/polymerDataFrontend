@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Polymer Electrolyte Data Mining">
+  <title>Polymer Electrolyte Data Mining</title>
+  <rect width="32" height="32" rx="7" fill="#0f766e"/>
+  <!-- A conductivity-vs-temperature curve: the shape the whole site is about. -->
+  <path d="M6 23.5 C 11 23 15 19.5 18 14.5 C 20.2 10.8 22.6 8.6 26 8"
+        fill="none" stroke="#ffffff" stroke-width="2.1"
+        stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+  <circle cx="9.5" cy="23" r="2" fill="#5eead4"/>
+  <circle cx="17.5" cy="15.2" r="2" fill="#5eead4"/>
+  <circle cx="25" cy="8.3" r="2" fill="#5eead4"/>
+</svg>
