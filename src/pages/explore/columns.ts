@@ -20,6 +20,7 @@ import {
   type FrozenCategoryColumnId,
 } from "@/data";
 import type { ComboboxOption } from "@/components/ui";
+import { columnDisplayName } from "@/lib/column-format";
 
 /**
  * Safe lookup: `COLUMN_BY_ID[id]` is typed as always-defined (the generated
@@ -70,9 +71,7 @@ export function columnLabel(id: string): string {
 /** Axis/colorbar title: the column's label, with its unit parenthesized
  *  where the registry has one (e.g. "approxTg (°C)"). */
 export function axisTitle(id: string): string {
-  const meta = getColumnMeta(id);
-  if (!meta) return id;
-  return meta.unit ? `${meta.label} (${meta.unit})` : meta.label;
+  return columnDisplayName(getColumnMeta(id), id);
 }
 
 export const PLOTTABLE_COLUMN_OPTIONS: readonly ComboboxOption[] = PLOTTABLE_COLUMN_IDS.map(
