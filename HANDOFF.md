@@ -50,14 +50,29 @@ complete.
 
 ## Possible next steps
 
-Nothing is outstanding. If the work continues, the honest candidates are:
+Feature proposals and a plan for testing them with real researchers are in
+**[`NEXT-STEPS.md`](NEXT-STEPS.md)**. Short version of what's worth doing, in order:
 
-1. **Click-to-inspect on the correlation heatmap** — currently hover-only.
-2. **Let `/data` browse all 305 raw columns.** The typed layer carries 69; the rest are only
-   reachable via the full CSV download. A deliberate split, but revisitable.
-3. **A real UCSB/MRSEC logo asset** on `/about`. The original embedded a 64 kB base64 blob,
-   which was deliberately not reproduced; the textual credit is there.
-4. **Run `npm run smoke` in CI**, against `vite preview`.
+1. **Fit overlays on the Temperature page.** We already ship Arrhenius and VFT parameters for
+   ~425 of the 655 samples and use none of them.
+2. **Trend line and residual ranking on Explore**, to surface the samples that beat the
+   σ–T<sub>g</sub> coupling.
+3. **"Add my sample"** — plot your own measurement against the literature cloud.
+4. **Box-select to export and list DOIs.**
+5. **Small multiples**, faceted by polymer family or anion.
+
+Decided against: 3D plots, and a transference-number tradeoff view (only 30 samples have both
+t<sub>+</sub> and σ(60 °C)). Reasoning for both is in `NEXT-STEPS.md`.
+
+Smaller loose ends:
+
+- Let `/data` browse all 305 raw columns. The typed layer carries 69; the rest are only
+  reachable through the full CSV download. A deliberate split, but revisitable.
+- A real UCSB/MRSEC logo asset on `/about`. The original embedded a 64 kB base64 blob, which we
+  deliberately didn't reproduce, so only the text credit is there.
+- Run `npm run smoke` in CI against `vite preview`.
+- Deploy it somewhere. The SPA fallback is documented in the README but nothing is hosted, and
+  the README's "Running it locally" section should become a link once it is.
 
 ## Two things that cost real time — don't relearn them
 
