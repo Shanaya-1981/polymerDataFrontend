@@ -27,7 +27,7 @@ We aren't affiliated with them and they haven't endorsed this. The data is uncha
 | **Explore**      | Any of 41 properties against any other, coloured by a third. Linear or log on either axis. |
 | **Temperature**  | σ(T) per sample, under Arrhenius, VFT, T, or T/T<sub>g</sub> scaling.                      |
 | **Correlations** | Pearson matrix over the 36 features from the paper's RF feature elimination.               |
-| **Data**         | The rows themselves. Search, sort, pick columns, export to CSV.                            |
+| **Data**         | Every sample as a row. Search, sort, choose columns, export to CSV.                        |
 | **Features**     | What each of the 36 features means, including the MORDRED descriptors.                     |
 | **About**        | Contributors, funding, contact.                                                            |
 
@@ -63,10 +63,15 @@ solvents.
 - **Nothing waits on a server.** Changing an axis or a filter updates the plot right away.
 - **It works on a phone or a tablet.** The old one was desktop-only.
 - **Filters stack.** You can ask for PEO-family samples with TFSI or ClO₄, cast from
-  acetonitrile, all at once. Before, you got one column and one value.
-- **Any view is a link.** Set up a plot, copy the URL, and it opens the same way for anyone you
-  send it to. Handy for an SI figure or a referee response.
-- **You can look at the rows and download them.** Neither was possible before.
+  acetonitrile, all at once. The old site let you filter on one property at a time, with one
+  value.
+- **Any view is a link.** Whatever you change on the page goes into the URL, so you can copy it
+  and it reopens exactly the same for whoever you send it to. Handy for an SI figure or a referee
+  response. Only the things you've actually changed get added, so if the URL still looks plain it
+  means everything is sitting at its default. This works when you run it locally too, you'll just
+  see it on a `localhost` address.
+- **You can see the measurements themselves.** The Data page lists every sample as a row, so you
+  can search, sort and download them. The old site only ever gave you plots.
 - **It tells you when points are left out.** A log axis can't show zero or negative values, so
   instead of quietly dropping them it says how many it dropped. T<sub>g</sub> in °C is where
   you'll notice this most. Same idea on the VFT and T/T<sub>g</sub> views, which can only use the
