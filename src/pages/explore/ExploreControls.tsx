@@ -1,4 +1,4 @@
-import { Combobox, Label } from "@/components/ui";
+import { Button, Combobox, Label } from "@/components/ui";
 import type { FrozenCategoryColumnId } from "@/data";
 import type { FilterSelections } from "@/lib/filtering";
 import type { AxisScale } from "@/lib/log-axis";
@@ -21,6 +21,11 @@ export interface ExploreControlsProps {
   onFilterChange: (columnId: FrozenCategoryColumnId, values: string[]) => void;
   onClearFilters: () => void;
   filteredRowCount: number;
+  /** Whether every axis, scale, color, and filter is already at its
+   *  default — mirrors `onClearFilters`'s own disabled condition below. */
+  isAtDefaults: boolean;
+  /** Returns axes, scale, color, and every filter to its default. */
+  onReset: () => void;
 }
 
 /**
@@ -43,9 +48,25 @@ export function ExploreControls({
   onFilterChange,
   onClearFilters,
   filteredRowCount,
+  isAtDefaults,
+  onReset,
 }: ExploreControlsProps) {
   return (
     <div className="flex flex-col gap-6">
+      {/* "Reset to defaults" (not "Clear all filters", below): this resets
+          the axes, scale and color too, not just the filters — a broader
+          action that needs a name distinct enough neither screen readers
+          nor `getByRole` queries can confuse the two. */}
+      <Button
+        variant="outline"
+        size="sm"
+        className="self-start"
+        onClick={onReset}
+        disabled={isAtDefaults}
+      >
+        Reset to defaults
+      </Button>
+
       <div className="flex flex-col gap-4">
         <AxisControl
           label="X axis"

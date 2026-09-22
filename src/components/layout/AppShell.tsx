@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
+import { useRouteMemoryRecorder } from "@/lib/route-memory";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 
@@ -18,6 +19,11 @@ function RouteFallback() {
 /** Top-level page frame: skip link, header/nav, routed page content, footer.
  *  Rendered once as a layout route; `<Outlet />` swaps in the active page. */
 export function AppShell() {
+  // Mounted once here, since this component renders exactly once as the
+  // layout route wrapping every page — see `route-memory.ts` for what this
+  // records and, importantly, why it never restores state on its own.
+  useRouteMemoryRecorder();
+
   return (
     <div className="flex min-h-dvh flex-col">
       <a

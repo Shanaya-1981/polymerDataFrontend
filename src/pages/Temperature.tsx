@@ -26,8 +26,16 @@ import {
 } from "./temperature/traces";
 
 export default function Temperature() {
-  const { resolved, setMode, setColorColumn, setFilter, clearFilters, hasActiveFilters } =
-    useTemperatureControls();
+  const {
+    resolved,
+    setMode,
+    setColorColumn,
+    setFilter,
+    clearFilters,
+    hasActiveFilters,
+    isAtDefaults,
+    resetToDefaults,
+  } = useTemperatureControls();
   const { mode, colorColumn, filters } = resolved;
   const themeMode = useChartThemeMode();
   const [selected, setSelected] = useState<TemperatureInspectorData | null>(null);
@@ -42,7 +50,10 @@ export default function Temperature() {
   // mode, and `PlotlyChart` only repaints its own chrome (axis lines,
   // legend text) on a theme change — it never sees category ranks, so it
   // cannot repaint trace colors itself.
-  const traces = useMemo(() => buildTemperatureLineTraces(samples, themeMode), [samples, themeMode]);
+  const traces = useMemo(
+    () => buildTemperatureLineTraces(samples, themeMode),
+    [samples, themeMode],
+  );
   const pointCount = useMemo(() => countSamplePoints(samples), [samples]);
 
   const layout = useMemo<Partial<PlotlyLayout>>(
@@ -84,6 +95,8 @@ export default function Temperature() {
             onFilterChange={setFilter}
             onResetFilters={clearFilters}
             hasActiveFilters={hasActiveFilters}
+            isAtDefaults={isAtDefaults}
+            onReset={resetToDefaults}
           />
         }
         chart={

@@ -24,8 +24,18 @@ import {
 } from "./explore/plot-data";
 
 export default function Explore() {
-  const { resolved, setX, setY, setColor, setXScale, setYScale, setFilter, clearAllFilters } =
-    useExploreControls();
+  const {
+    resolved,
+    setX,
+    setY,
+    setColor,
+    setXScale,
+    setYScale,
+    setFilter,
+    clearAllFilters,
+    isAtDefaults,
+    resetToDefaults,
+  } = useExploreControls();
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const themeMode = useChartThemeMode();
 
@@ -49,7 +59,10 @@ export default function Explore() {
   // `PlotlyChart` only repaints its own chrome (axis lines, legend text) on
   // a theme change — it never sees category ranks, so it cannot repaint
   // trace colors itself.
-  const traces = useMemo(() => buildScatterTraces(seriesInput, themeMode), [seriesInput, themeMode]);
+  const traces = useMemo(
+    () => buildScatterTraces(seriesInput, themeMode),
+    [seriesInput, themeMode],
+  );
 
   const xNotice = useMemo(
     () => buildAxisNotice(resolved.x, resolved.xScale, filteredRowIndices),
@@ -105,12 +118,14 @@ export default function Explore() {
             onFilterChange={setFilter}
             onClearFilters={clearAllFilters}
             filteredRowCount={filteredRowIndices.length}
+            isAtDefaults={isAtDefaults}
+            onReset={resetToDefaults}
           />
         }
         summary={
           <p>
-            <span className="font-medium text-primary">{filteredRowIndices.length}</span> of {ROW_COUNT}{" "}
-            rows selected
+            <span className="font-medium text-primary">{filteredRowIndices.length}</span> of{" "}
+            {ROW_COUNT} rows selected
           </p>
         }
         chart={
@@ -130,7 +145,12 @@ export default function Explore() {
                       : `None of the ${filteredRowIndices.length} selected rows can be plotted with the current axis settings (missing values, or non-positive values on a log axis).`}
                   </p>
                   {emptyReason === "no-rows-match-filters" ? (
-                    <Button variant="secondary" size="sm" className="self-start" onClick={clearAllFilters}>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="self-start"
+                      onClick={clearAllFilters}
+                    >
                       Clear filters
                     </Button>
                   ) : null}

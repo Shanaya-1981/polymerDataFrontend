@@ -61,13 +61,21 @@ describe("Explore page", () => {
     renderExplore();
 
     expect(screen.getByRole("combobox", { name: "X axis" })).toHaveTextContent("approxTg");
-    expect(screen.getByRole("combobox", { name: "Y axis" })).toHaveTextContent("Conductivity at 60C");
+    expect(screen.getByRole("combobox", { name: "Y axis" })).toHaveTextContent(
+      "Conductivity at 60C",
+    );
     expect(screen.getByRole("combobox", { name: "Color" })).toHaveTextContent("Anion");
 
     const xScale = screen.getByRole("radiogroup", { name: "X axis scale" });
-    expect(within(xScale).getByRole("radio", { name: "Linear" })).toHaveAttribute("aria-checked", "true");
+    expect(within(xScale).getByRole("radio", { name: "Linear" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
     const yScale = screen.getByRole("radiogroup", { name: "Y axis scale" });
-    expect(within(yScale).getByRole("radio", { name: "Log" })).toHaveAttribute("aria-checked", "true");
+    expect(within(yScale).getByRole("radio", { name: "Log" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
 
     expect(screen.getByTestId("plotly-stub")).toBeInTheDocument();
   });
@@ -140,5 +148,39 @@ describe("Explore page", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Clear filters" }));
     expect(rowCountSpans(655).length).toBeGreaterThan(0);
+  });
+
+  it("shows a Reset to defaults control, distinct from Clear all filters, disabled until something changes", () => {
+    renderExplore();
+
+    const reset = screen.getByRole("button", { name: "Reset to defaults" });
+    const clearFilters = screen.getByRole("button", { name: "Clear all filters" });
+    expect(reset).toBeDisabled();
+    expect(clearFilters).toBeDisabled();
+
+    // A non-filter change enables Reset but must leave the narrower
+    // Clear-all-filters action alone — proof the two aren't secretly the
+    // same control under two names.
+    selectColumn("X axis", "Tg");
+    expect(screen.getByRole("button", { name: "Reset to defaults" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Clear all filters" })).toBeDisabled();
+  });
+
+  it("resetting returns every control — axes, color, and filters — to its default", () => {
+    renderExplore();
+
+    selectColumn("X axis", "Tg");
+    selectColumn("Color", "Polymer");
+    fireEvent.click(screen.getByRole("combobox", { name: "Anion" }));
+    fireEvent.click(screen.getByRole("option", { name: "TFSI" }));
+    expect(rowCountSpans(655)).toHaveLength(0); // filter narrowed the count
+
+    fireEvent.click(screen.getByRole("button", { name: "Reset to defaults" }));
+
+    expect(screen.getByRole("combobox", { name: "X axis" })).toHaveTextContent("approxTg");
+    expect(screen.getByRole("combobox", { name: "Color" })).toHaveTextContent("Anion");
+    expect(rowCountSpans(655).length).toBeGreaterThan(0);
+    expect(screen.getByRole("button", { name: "Reset to defaults" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Clear all filters" })).toBeDisabled();
   });
 });

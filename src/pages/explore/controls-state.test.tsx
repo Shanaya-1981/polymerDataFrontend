@@ -1,7 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+import { rememberedPath, useRouteMemoryRecorder } from "@/lib/route-memory";
 import {
   DEFAULT_COLOR_COLUMN,
   DEFAULT_X_COLUMN,
@@ -91,6 +92,13 @@ function wrapper({ children }: { children: ReactNode }) {
   return <MemoryRouter initialEntries={["/explore"]}>{children}</MemoryRouter>;
 }
 
+// route-memory is backed by sessionStorage (see its own test file for the
+// unavailable-storage fallback); clear it so a route-memory assertion below
+// can't be left over from an earlier test in this file.
+beforeEach(() => {
+  sessionStorage.clear();
+});
+
 describe("useExploreControls", () => {
   it("starts at the documented defaults with every filter empty", () => {
     const { result } = renderHook(() => useExploreControls(), { wrapper });
@@ -173,5 +181,68 @@ describe("useExploreControls", () => {
 
     expect(result.current.resolved.filters.anion).toEqual(["TFSI"]);
     expect(result.current.resolved.filters.polymer).toEqual(["PEO"]);
+  });
+});
+
+describe("isAtDefaults / resetToDefaults", () => {
+  it("starts true, at the documented defaults", () => {
+    const { result } = renderHook(() => useExploreControls(), { wrapper });
+    expect(result.current.isAtDefaults).toBe(true);
+  });
+
+  it("goes false the moment any single field changes", () => {
+    const { result } = renderHook(() => useExploreControls(), { wrapper });
+    act(() => result.current.setX("tg"));
+    expect(result.current.isAtDefaults).toBe(false);
+  });
+
+  it("resetToDefaults returns axes, scales, color and every filter to default in one call", () => {
+    const { result } = renderHook(() => useExploreControls(), { wrapper });
+
+    act(() => result.current.setX("tg"));
+    act(() => result.current.setYScale("linear"));
+    act(() => result.current.setColor("polymerFamily"));
+    act(() => result.current.setFilter("anion", ["TFSI"]));
+    expect(result.current.isAtDefaults).toBe(false);
+
+    act(() => result.current.resetToDefaults());
+
+    expect(result.current.resolved).toEqual({
+      x: DEFAULT_X_COLUMN,
+      xScale: DEFAULT_X_SCALE,
+      y: DEFAULT_Y_COLUMN,
+      yScale: DEFAULT_Y_SCALE,
+      color: DEFAULT_COLOR_COLUMN,
+      filters: {
+        polymerFamily: [],
+        polymer: [],
+        anion: [],
+        crystalline: [],
+        solventUsed: [],
+        doi: [],
+      },
+    });
+    expect(result.current.isAtDefaults).toBe(true);
+  });
+
+  // The other half of the fix this hook exists for: resetting the URL
+  // alone isn't enough, because a nav link would otherwise still carry the
+  // pre-reset search remembered from before the reset. `useRouteMemoryRecorder`
+  // is mounted alongside the controls here to stand in for `AppShell`,
+  // which is where it really lives — the two run independently there too.
+  function useHarness() {
+    useRouteMemoryRecorder();
+    return useExploreControls();
+  }
+
+  it("resetToDefaults also forgets /explore's remembered search", () => {
+    const { result } = renderHook(() => useHarness(), { wrapper });
+
+    act(() => result.current.setX("tg"));
+    expect(rememberedPath("/explore")).toBe("/explore?x=tg");
+
+    act(() => result.current.resetToDefaults());
+
+    expect(rememberedPath("/explore")).toBe("/explore");
   });
 });

@@ -24,7 +24,9 @@
  * back to its documented default rather than reaching the data layer.
  */
 import { useCallback, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { useUrlState, type UrlStateValue } from "@/lib/url-state";
+import { clearRememberedRoute } from "@/lib/route-memory";
 import type { FilterSelections } from "@/lib/filtering";
 import type { ColumnId, FrozenCategoryColumnId } from "@/data";
 import { DEFAULT_COLUMN_IDS, isColumnId, resolveColumnIds } from "./columns";
@@ -140,6 +142,20 @@ export interface UseDataTableStateResult {
   readonly setColumns: (ids: string[]) => void;
   readonly setFilter: (columnId: FrozenCategoryColumnId, values: string[]) => void;
   readonly clearAllFilters: () => void;
+  /**
+   * True when the URL carries no non-default state at all. `useUrlState`
+   * already omits every key equal to its default, so a page sitting at its
+   * defaults always has a bare query string — checking the whole search
+   * string this way can't drift from that contract.
+   */
+  readonly isAtDefaults: boolean;
+  /**
+   * Resets search, sort, page, page size, visible columns, and every
+   * filter to its default in one call, and forgets this route's
+   * remembered search (`@/lib/route-memory`), so the next nav click back
+   * to `/data` doesn't bring the old state back.
+   */
+  readonly resetToDefaults: () => void;
 }
 
 /** Two-way bind the `/data` page's whole control surface to the URL. See
@@ -147,6 +163,7 @@ export interface UseDataTableStateResult {
 export function useDataTableState(): UseDataTableStateResult {
   const [raw, patch] = useUrlState(DEFAULTS);
   const resolved = useMemo(() => resolveDataTableState(raw), [raw]);
+  const location = useLocation();
 
   // Search, sort, page size, and filter changes all reset to page 1 —
   // otherwise a narrower result set can silently strand the reader on a now
@@ -193,6 +210,11 @@ export function useDataTableState(): UseDataTableStateResult {
     });
   }, [patch]);
 
+  const resetToDefaults = useCallback(() => {
+    patch({ ...DEFAULTS });
+    clearRememberedRoute(location.pathname);
+  }, [patch, location.pathname]);
+
   return {
     raw,
     resolved,
@@ -203,5 +225,7 @@ export function useDataTableState(): UseDataTableStateResult {
     setColumns,
     setFilter,
     clearAllFilters,
+    isAtDefaults: location.search === "",
+    resetToDefaults,
   };
 }

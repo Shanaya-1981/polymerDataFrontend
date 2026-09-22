@@ -39,6 +39,8 @@ export default function DataTable() {
     setColumns,
     setFilter,
     clearAllFilters,
+    isAtDefaults,
+    resetToDefaults,
   } = useDataTableState();
   const [filtersOpen, setFiltersOpen] = useState(() =>
     FILTERABLE_COLUMN_IDS.some((id) => (resolved.filters[id]?.length ?? 0) > 0),
@@ -59,7 +61,11 @@ export default function DataTable() {
   const sortedIndices = useMemo(() => {
     const columnId = resolved.sortColumn;
     if (!columnId) return filteredIndices;
-    return sortRowIndices(filteredIndices, (rowIndex) => allRows[rowIndex][columnId], resolved.sortDirection);
+    return sortRowIndices(
+      filteredIndices,
+      (rowIndex) => allRows[rowIndex][columnId],
+      resolved.sortDirection,
+    );
   }, [filteredIndices, allRows, resolved.sortColumn, resolved.sortDirection]);
 
   const pageInfo = useMemo(
@@ -98,6 +104,21 @@ export default function DataTable() {
 
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-4">
+          {/* "Reset to defaults" (not "Clear all filters", inside FilterPanel
+              below): this also resets search, sort, page, page size, and
+              visible columns, not just the filters — a broader action that
+              needs a name distinct enough neither screen readers nor
+              `getByRole` queries can confuse the two. */}
+          <Button
+            variant="outline"
+            size="sm"
+            className="self-start"
+            onClick={resetToDefaults}
+            disabled={isAtDefaults}
+          >
+            Reset to defaults
+          </Button>
+
           <Toolbar
             search={resolved.search}
             onSearchChange={setSearch}

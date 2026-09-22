@@ -20,7 +20,9 @@
  * letting bad input reach the data layer.
  */
 import { useCallback, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import { useUrlState, type UrlStateValue } from "@/lib/url-state";
+import { clearRememberedRoute } from "@/lib/route-memory";
 import type { FilterSelections } from "@/lib/filtering";
 import type { AxisScale } from "@/lib/log-axis";
 import type { FrozenCategoryColumnId } from "@/data";
@@ -113,6 +115,23 @@ export interface UseExploreControlsResult {
   readonly setYScale: (scale: AxisScale) => void;
   readonly setFilter: (columnId: FrozenCategoryColumnId, values: readonly string[]) => void;
   readonly clearAllFilters: () => void;
+  /**
+   * True when the URL carries no non-default state at all. `useUrlState`
+   * already omits every key that equals its default (see its own header
+   * comment), so a page sitting at its defaults always has a bare query
+   * string — checking the whole search string this way can't drift from
+   * that contract the way re-deriving "is every field default?" by hand
+   * could.
+   */
+  readonly isAtDefaults: boolean;
+  /**
+   * Resets every axis, scale, color, and filter to its documented default
+   * in one call — composes fine within a tick, see `useUrlState`'s `patch`
+   * comment — and forgets this route's remembered search (`@/lib/
+   * route-memory`), so the next nav click back to `/explore` doesn't
+   * resurrect the state just reset.
+   */
+  readonly resetToDefaults: () => void;
 }
 
 /** Two-way bind the Explore page's whole control surface to the URL. See
@@ -120,6 +139,7 @@ export interface UseExploreControlsResult {
 export function useExploreControls(): UseExploreControlsResult {
   const [raw, patch] = useUrlState(EXPLORE_DEFAULTS);
   const resolved = useMemo(() => resolveExploreState(raw), [raw]);
+  const location = useLocation();
 
   const setX = useCallback((id: string) => patch({ x: id }), [patch]);
   const setY = useCallback((id: string) => patch({ y: id }), [patch]);
@@ -145,5 +165,22 @@ export function useExploreControls(): UseExploreControlsResult {
     });
   }, [patch]);
 
-  return { raw, resolved, setX, setY, setColor, setXScale, setYScale, setFilter, clearAllFilters };
+  const resetToDefaults = useCallback(() => {
+    patch({ ...EXPLORE_DEFAULTS });
+    clearRememberedRoute(location.pathname);
+  }, [patch, location.pathname]);
+
+  return {
+    raw,
+    resolved,
+    setX,
+    setY,
+    setColor,
+    setXScale,
+    setYScale,
+    setFilter,
+    clearAllFilters,
+    isAtDefaults: location.search === "",
+    resetToDefaults,
+  };
 }

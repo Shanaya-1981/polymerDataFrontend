@@ -22,6 +22,11 @@ export interface TemperatureControlsProps {
   onFilterChange: (columnId: TemperatureFilterColumnId, values: readonly string[]) => void;
   onResetFilters: () => void;
   hasActiveFilters: boolean;
+  /** Whether mode, color, and every filter is already at its default —
+   *  mirrors `hasActiveFilters`'s own role for `onResetFilters` below. */
+  isAtDefaults: boolean;
+  /** Returns mode, color, and every filter to its default. */
+  onReset: () => void;
 }
 
 /**
@@ -44,6 +49,8 @@ export function TemperatureControls({
   onFilterChange,
   onResetFilters,
   hasActiveFilters,
+  isAtDefaults,
+  onReset,
 }: TemperatureControlsProps) {
   const uid = useId();
   const modeLabelId = `${uid}-mode-label`;
@@ -51,6 +58,20 @@ export function TemperatureControls({
 
   return (
     <div className="flex flex-col gap-8">
+      {/* "Reset to defaults" (not "Clear all filters", below): this also
+          resets mode and color, not just the filters — a broader action
+          that needs a name distinct enough neither screen readers nor
+          `getByRole` queries can confuse the two. */}
+      <Button
+        variant="outline"
+        size="sm"
+        className="self-start"
+        onClick={onReset}
+        disabled={isAtDefaults}
+      >
+        Reset to defaults
+      </Button>
+
       <div className="flex flex-col gap-3">
         <Label id={modeLabelId}>X axis</Label>
         <RadioGroup

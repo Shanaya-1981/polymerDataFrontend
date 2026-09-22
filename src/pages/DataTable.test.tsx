@@ -36,7 +36,14 @@ function selectOption(comboboxName: string, optionName: string) {
 describe("DataTable page", () => {
   it("renders the documented default columns as real table headers", () => {
     renderDataTable();
-    for (const name of ["Polymer", "Polymer family", "Anion", "crystalline?", "Solvent used", "DOI"]) {
+    for (const name of [
+      "Polymer",
+      "Polymer family",
+      "Anion",
+      "crystalline?",
+      "Solvent used",
+      "DOI",
+    ]) {
       expect(screen.getByRole("columnheader", { name })).toBeInTheDocument();
     }
     // Reference is a real column, just not one of the eleven defaults.
@@ -131,5 +138,36 @@ describe("DataTable page", () => {
     selectOption("Columns", "Reference");
 
     expect(screen.getByRole("columnheader", { name: "Reference" })).toBeInTheDocument();
+  });
+
+  it("shows a Reset to defaults control, disabled until something changes", () => {
+    renderDataTable();
+    expect(screen.getByRole("button", { name: "Reset to defaults" })).toBeDisabled();
+
+    fireEvent.change(screen.getByLabelText("Search"), { target: { value: "carbonate" } });
+    expect(screen.getByRole("button", { name: "Reset to defaults" })).toBeEnabled();
+  });
+
+  it("resetting returns search, sort, filters, and the column set to their defaults", () => {
+    renderDataTable();
+
+    fireEvent.change(screen.getByLabelText("Search"), { target: { value: "carbonate" } });
+    fireEvent.click(screen.getByRole("button", { name: "Anion" })); // sorts by Anion
+    fireEvent.click(screen.getByRole("button", { name: /Filters/ }));
+    selectOption("Anion", "TFSI");
+    selectOption("Columns", "Reference");
+    expect(screen.getByRole("columnheader", { name: "Reference" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Reset to defaults" }));
+
+    expect(screen.getByLabelText("Search")).toHaveValue("");
+    expect(screen.getByRole("columnheader", { name: "Anion" })).toHaveAttribute(
+      "aria-sort",
+      "none",
+    );
+    expect(screen.queryByRole("columnheader", { name: "Reference" })).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Showing 1–25 of 655 rows.");
+    expect(screen.getByRole("button", { name: "Reset to defaults" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Clear all filters" })).toBeDisabled();
   });
 });

@@ -1,7 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+import { rememberedPath, useRouteMemoryRecorder } from "@/lib/route-memory";
 import { DEFAULT_COLUMN_IDS } from "./columns";
 import { DEFAULT_PAGE_SIZE } from "./pagination";
 import {
@@ -87,6 +88,10 @@ function wrapper({ children }: { children: ReactNode }) {
   return <MemoryRouter initialEntries={["/data"]}>{children}</MemoryRouter>;
 }
 
+beforeEach(() => {
+  sessionStorage.clear();
+});
+
 describe("useDataTableState", () => {
   it("starts at the documented defaults with every filter empty", () => {
     const { result } = renderHook(() => useDataTableState(), { wrapper });
@@ -168,5 +173,63 @@ describe("useDataTableState", () => {
     act(() => result.current.setPageSize(100));
     expect(result.current.resolved.pageSize).toBe(100);
     expect(result.current.resolved.page).toBe(1);
+  });
+});
+
+describe("isAtDefaults / resetToDefaults", () => {
+  it("starts true, at the documented defaults", () => {
+    const { result } = renderHook(() => useDataTableState(), { wrapper });
+    expect(result.current.isAtDefaults).toBe(true);
+  });
+
+  it("goes false the moment any single field changes", () => {
+    const { result } = renderHook(() => useDataTableState(), { wrapper });
+    act(() => result.current.setSearch("carbonate"));
+    expect(result.current.isAtDefaults).toBe(false);
+  });
+
+  it("resetToDefaults returns search, sort, page, page size, columns and filters to default in one call", () => {
+    const { result } = renderHook(() => useDataTableState(), { wrapper });
+
+    act(() => result.current.setSearch("carbonate"));
+    act(() => result.current.setSort("anion"));
+    act(() => result.current.setPage(3));
+    act(() => result.current.setPageSize(100));
+    act(() => result.current.setColumns(["anion", "polymer"]));
+    act(() => result.current.setFilter("anion", ["TFSI"]));
+    expect(result.current.isAtDefaults).toBe(false);
+
+    act(() => result.current.resetToDefaults());
+
+    expect(result.current.resolved.search).toBe("");
+    expect(result.current.resolved.sortColumn).toBeNull();
+    expect(result.current.resolved.page).toBe(1);
+    expect(result.current.resolved.pageSize).toBe(DEFAULT_PAGE_SIZE);
+    expect(result.current.resolved.visibleColumns).toEqual(DEFAULT_COLUMN_IDS);
+    for (const id of FILTERABLE_COLUMN_IDS) {
+      expect(result.current.resolved.filters[id]).toEqual([]);
+    }
+    expect(result.current.isAtDefaults).toBe(true);
+  });
+
+  // The other half of the fix this hook exists for: resetting the URL
+  // alone isn't enough, because a nav link would otherwise still carry the
+  // pre-reset search remembered from before the reset. `useRouteMemoryRecorder`
+  // is mounted alongside the controls here to stand in for `AppShell`,
+  // which is where it really lives — the two run independently there too.
+  function useHarness() {
+    useRouteMemoryRecorder();
+    return useDataTableState();
+  }
+
+  it("resetToDefaults also forgets /data's remembered search", () => {
+    const { result } = renderHook(() => useHarness(), { wrapper });
+
+    act(() => result.current.setSearch("carbonate"));
+    expect(rememberedPath("/data")).toBe("/data?q=carbonate");
+
+    act(() => result.current.resetToDefaults());
+
+    expect(rememberedPath("/data")).toBe("/data");
   });
 });
