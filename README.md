@@ -1,42 +1,43 @@
 # Polymer Electrolyte Data Mining
 
-A rebuilt front end for [pedatamine.org](https://pedatamine.org) — the Schauser et al.
-polymer-electrolyte database. 655 samples curated from 65 papers, conductivity across 22
-temperatures from 0 to 125 °C, and MORDRED descriptors for each comonomer and anion.
+A rebuilt front end for [pedatamine.org](https://pedatamine.org), the polymer electrolyte
+database from Schauser et al. 655 samples pulled from 65 papers, conductivity at 22 temperatures
+between 0 and 125 °C, and MORDRED descriptors for the comonomers and the anion.
 
-## Credit where it belongs
+## Credits
 
-The database is the real work here, and it isn't ours. **Nicole Schauser, Gabrielle Kliegle,
-Piper Cooke, Rachel Segalman and Ram Seshadri** did the literature curation, computed the
-descriptors, and published everything openly under MIT alongside a Plotly Dash app for exploring
-it. That curation is the part that can't be automated, and everything here rests on it.
+The database is the real work here and it isn't ours. Nicole Schauser, Gabrielle Kliegle, Piper
+Cooke, Rachel Segalman and Ram Seshadri did the literature curation, computed the descriptors,
+and put all of it online under MIT along with a Plotly Dash app to explore it. We only rebuilt
+the interface.
 
-Their data and original application:
-[github.com/nschauser/PolymerElectrolyte](https://github.com/nschauser/PolymerElectrolyte) ·
+Their data and original app:
+[github.com/nschauser/PolymerElectrolyte](https://github.com/nschauser/PolymerElectrolyte).
 UC Santa Barbara / NSF MRSEC DMR 1720256.
 
-This is an independent rebuild of the interface only, not affiliated with or endorsed by them.
-The data is unchanged: it is their `6_2_2020` curation snapshot, and nothing has been added to it
-since.
+We aren't affiliated with them and they haven't endorsed this. The data is unchanged. It's their
+`6_2_2020` snapshot and we haven't added anything to it.
 
 ---
 
-## What you can do here
+## What you can do
 
-| Page             | What it's for                                                                                 |
-| ---------------- | --------------------------------------------------------------------------------------------- |
-| **Explore**      | Any of 41 properties against any other, coloured by a third. Independent linear/log per axis. |
-| **Temperature**  | σ(T) per sample under Arrhenius, VFT, T, or T/T<sub>g</sub> scaling.                          |
-| **Correlations** | Pearson matrix over the 36 features from the paper's RF recursive feature elimination.        |
-| **Data**         | The rows themselves — searchable, sortable, column-selectable, exportable as CSV.             |
-| **Features**     | What each of the 36 features means, including the MORDRED descriptors.                        |
-| **About**        | Contributors, funding, contact.                                                               |
+| Page             | What it's for                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------ |
+| **Explore**      | Any of 41 properties against any other, coloured by a third. Linear or log on either axis. |
+| **Temperature**  | σ(T) per sample, under Arrhenius, VFT, T, or T/T<sub>g</sub> scaling.                      |
+| **Correlations** | Pearson matrix over the 36 features from the paper's RF feature elimination.               |
+| **Data**         | The rows themselves. Search, sort, pick columns, export to CSV.                            |
+| **Features**     | What each of the 36 features means, including the MORDRED descriptors.                     |
+| **About**        | Contributors, funding, contact.                                                            |
 
-Clicking a point identifies the polymer and links its DOI.
+Click a point on any plot and it tells you the polymer and links the DOI.
 
-## Coverage, before you go looking
+## How complete the data is
 
-Worth knowing up front, because the database is sparse in places and the plots don't pad:
+Some properties are only recorded for a handful of samples. If a sample doesn't have a value for
+what you're plotting, it just won't show up, so it's worth checking this before you go looking
+for a trend and find almost nothing there.
 
 | Property                | Samples with a value |
 | ----------------------- | -------------------- |
@@ -53,35 +54,37 @@ Worth knowing up front, because the database is sparse in places and the plots d
 | D<sub>Li</sub>          | 29 / 655             |
 | Storage modulus         | 4 / 655              |
 
-Conductivity itself is 5225 measurements spread unevenly over the 22 temperatures — densest at
-30–90 °C. Categorical spread: 78 polymers across 24 families, 12 anions, 14 casting solvents.
+Conductivity is 5225 measurements in total, but they aren't spread evenly. Most of them sit
+between 30 and 90 °C. There are 78 polymers across 24 families, 12 anions and 14 casting
+solvents.
 
-## What's different from the original site
+## What's new compared to the old site
 
-- **No server round-trip.** Axis and filter changes are immediate.
-- **Works on a phone or tablet.** The original was fixed-width desktop only.
-- **Filters combine** across columns — PEO-family samples with TFSI or ClO₄, cast from
-  acetonitrile — rather than one column and one value at a time.
-- **Every view is a link.** Configure a plot, copy the URL, and it reopens identically. Usable
-  for pointing at a specific view in an SI or a referee response.
-- **The rows are inspectable and exportable.** Neither was possible before.
-- **Excluded points are reported, not silently dropped.** A log axis can't take non-positive
-  values, so the count it excludes is stated rather than left for you to notice — relevant mostly
-  for T<sub>g</sub> in °C. Likewise VFT and T/T<sub>g</sub> are limited to the 351 samples that
-  have both a T<sub>g</sub> and conductivity data, and say so.
-- **Colours are CVD-validated and shape-encoded**, so series stay separable for colour-blind
-  readers and in greyscale print. Categories beyond the seven safe hues fold into one grey
-  "Other" rather than getting confusable colours.
+- **Nothing waits on a server.** Changing an axis or a filter updates the plot right away.
+- **It works on a phone or a tablet.** The old one was desktop-only.
+- **Filters stack.** You can ask for PEO-family samples with TFSI or ClO₄, cast from
+  acetonitrile, all at once. Before, you got one column and one value.
+- **Any view is a link.** Set up a plot, copy the URL, and it opens the same way for anyone you
+  send it to. Handy for an SI figure or a referee response.
+- **You can look at the rows and download them.** Neither was possible before.
+- **It tells you when points are left out.** A log axis can't show zero or negative values, so
+  instead of quietly dropping them it says how many it dropped. T<sub>g</sub> in °C is where
+  you'll notice this most. Same idea on the VFT and T/T<sub>g</sub> views, which can only use the
+  351 samples that have both a T<sub>g</sub> and conductivity data.
+- **The colours work for colour-blind readers**, and every series gets its own marker shape too,
+  so the plots survive greyscale printing. If a property has more categories than we have safe
+  colours for, the rarest ones go into a single grey "Other" instead of getting colours you can't
+  tell apart.
 - **Light and dark mode.**
-- **The correlation matrix is recomputed.** The original's was scaled by a constant 271/270 — a
-  population/sample standard-deviation mismatch — so its diagonal read 1.0037. Since the factor
-  was uniform it left the relative structure intact, so conclusions drawn from the original plot
-  still hold; this version just reports r directly.
+- **The correlation matrix is recomputed.** The old one was multiplied by 271/270 throughout,
+  which is a population-vs-sample standard deviation mix-up, so its diagonal came out at 1.0037.
+  The factor was the same for every cell, so nothing about the relative structure changed and
+  anything you concluded from the old plot still stands. This version just reports r directly.
 
-## Running it yourself
+## Running it locally
 
-Not hosted anywhere yet. To run it locally, install [Node.js](https://nodejs.org) (LTS is fine),
-then from this directory:
+It isn't hosted anywhere yet. Install [Node.js](https://nodejs.org) (LTS is fine), then from this
+directory:
 
 ```bash
 npm install
@@ -97,25 +100,25 @@ Everything below is implementation detail.
 📖 **[Architecture wiki](https://deepwiki.com/merlinymy/polymerDataFrontend/2-data-layer)** — a
 generated walkthrough of the codebase, starting at the data layer.
 
-Project status, known gotchas and candidate next steps live in **[`HANDOFF.md`](HANDOFF.md)**.
+Status, known gotchas and possible next steps are in **[`HANDOFF.md`](HANDOFF.md)**.
 
 ## Stack
 
 - [Vite](https://vite.dev) + [React 19](https://react.dev) + TypeScript (strict)
-- [Tailwind CSS v4](https://tailwindcss.com), CSS-first configuration (`@theme` in
+- [Tailwind CSS v4](https://tailwindcss.com), CSS-first config (`@theme` in
   `src/styles/theme.css`, no `tailwind.config.js`)
 - [react-router-dom v7](https://reactrouter.com) (`BrowserRouter`)
 - [Plotly.js](https://plotly.com/javascript/) as a slim custom bundle (`scatter` + `heatmap` only)
 - [Radix UI](https://www.radix-ui.com) primitives + [cmdk](https://cmdk.paco.me) for the
   searchable selects
-- [Vitest](https://vitest.dev) + Testing Library (jsdom); [Playwright](https://playwright.dev) for
+- [Vitest](https://vitest.dev) + Testing Library (jsdom), [Playwright](https://playwright.dev) for
   the browser smoke test
 - ESLint (flat config) + Prettier
-- npm; standalone Node scripts run with [`tsx`](https://github.com/privatenumber/tsx)
+- npm. Standalone Node scripts run with [`tsx`](https://github.com/privatenumber/tsx)
 
-No backend. The dataset is small enough (655 rows) to ship as a static payload — 76 kB gzipped —
-so all filtering, sorting and plotting happens in the browser and the whole app can be hosted as
-files.
+There's no backend. 655 rows is small enough to ship as a static file (76 kB gzipped), so all the
+filtering, sorting and plotting happens in the browser and the whole thing can be hosted as
+static files.
 
 ## Commands
 
@@ -132,21 +135,21 @@ npm run smoke      # load every route in real Chrome; fails on blank pages or co
 npm run build:data # regenerate src/data/generated/ from data/raw/, asserting every invariant
 ```
 
-### `npm test` passing does not mean the app renders
+### A green test suite doesn't mean the app renders
 
-jsdom has no canvas, so no unit test ever mounts a real chart. Three of six pages once rendered
-blank white while typecheck, lint and 236 tests were all green — and that particular bug _could
-not_ have been unit-tested, because it was a missing Node-only global that exists under Vitest and
-not in a browser. Run `npm run smoke` against a running dev server before trusting the suite on
-anything chart-related.
+jsdom has no canvas, so no unit test ever mounts a real chart. Three of the six pages once came
+up blank white while typecheck, lint and 236 tests were all passing. That particular bug couldn't
+have been caught by a unit test either, because it was a missing Node-only global that exists
+under Vitest but not in a browser. Run `npm run smoke` against a running dev server before you
+trust the suite on anything chart-related.
 
 ## Directory layout
 
 ```
-HANDOFF.md                 # project status, gotchas, candidate next steps
-data/                      # source dataset + captured reference data — do not edit
+HANDOFF.md                 # status, gotchas, possible next steps
+data/                      # source dataset + captured reference data — don't edit
   raw/                     # the two source CSVs + their MIT license
-  reference/               # ground truth captured from the live original + specs
+  reference/               # ground truth captured from the original site, plus specs
 src/
   main.tsx                 # entry point (mounts <App/>, imports theme.css)
   App.tsx                  # BrowserRouter + route table
@@ -162,7 +165,7 @@ src/
   data/                    # typed accessors + generated/ (committed build output)
   pages/                   # one route per file, plus a directory of parts per page
 scripts/
-  build-data.ts            # CSVs -> typed JSON; asserts every verified invariant
+  build-data.ts            # CSVs -> typed JSON, asserts every invariant
   smoke.mjs                # browser smoke test
 ```
 
@@ -179,105 +182,108 @@ scripts/
 | `/about`        | `src/pages/About.tsx`        | About        |
 | `*`             | `src/pages/NotFound.tsx`     | — (404)      |
 
-Pages are code-split with `React.lazy` inside a single `<Suspense>` boundary in `AppShell`, so
-only the routed content area shows a loading state. Plotly and the dataset land in their own
-chunks, loaded only by the routes that need them — a cold visit to `/` transfers ~137 kB gzipped.
+Pages are code-split with `React.lazy` inside one `<Suspense>` boundary in `AppShell`, so only
+the routed content area shows a loading state. Plotly and the dataset get their own chunks and
+only load on the routes that need them, so a cold visit to `/` is about 137 kB gzipped.
 
 ## Data pipeline
 
-`npm run build:data` reads the two CSVs in `data/raw/` and emits typed, columnar JSON plus a
-generated column registry into `src/data/generated/` (committed, so the app builds without running
-the script). Columnar rather than array-of-objects: it maps straight onto Plotly's `x`/`y` arrays
-and gzips far better.
+`npm run build:data` reads the two CSVs in `data/raw/` and writes typed, columnar JSON plus a
+generated column registry into `src/data/generated/`. That output is committed, so the app builds
+without running the script. Columnar rather than array-of-objects because it maps straight onto
+Plotly's `x`/`y` arrays and gzips much better.
 
-**The assertions are the point of that script.** It fails the build unless the regenerated data
-still matches the counts verified against the live original: 655 rows, 5225 non-null conductivity
-measurements, 368 samples with a Tg, 441 with `approxTg`, the six category cardinalities, and a
-36×36 correlation matrix with a diagonal of exactly 1. Ground truth:
-[`data/reference/DATA-SPEC.md`](data/reference/DATA-SPEC.md).
+The assertions are the main point of that script. It fails the build unless the regenerated data
+still matches the counts we verified against the original site: 655 rows, 5225 non-null
+conductivity measurements, 368 samples with a T<sub>g</sub>, 441 with `approxTg`, the six
+category cardinalities, and a 36×36 correlation matrix with a diagonal of exactly 1. The ground
+truth is in [`data/reference/DATA-SPEC.md`](data/reference/DATA-SPEC.md).
 
-Three data-quality repairs happen here:
+Three data-quality fixes happen here:
 
-- **Encoding.** The main CSV is not valid UTF-8 — 37 stray `0xA0` bytes and 2 `0x96` bytes sit
-  inside pasted citation text. Decoded as Windows-1252 rather than Latin-1, so a page range reads
-  `104–109` instead of an invisible control character.
-- **Zero-width characters.** 40 cells carry a `U+FEFF` _inside_ the value, including three polymer
-  names. Invisible in any editor, but enough to break exact matching and search. Stripped at parse
-  time; the downloadable CSV gets the same treatment plus a leading BOM so Excel reads it as UTF-8.
-- **Correlation matrix.** Recomputed as plain pairwise-complete Pearson. A test asserts that ours
-  × 271/270 reproduces the original's, which both explains the discrepancy and pins the
-  computation.
+- **Encoding.** The main CSV isn't valid UTF-8. There are 37 stray `0xA0` bytes and 2 `0x96`
+  bytes sitting inside pasted citation text. We decode as Windows-1252 rather than Latin-1, so a
+  page range reads `104–109` instead of an invisible control character.
+- **Zero-width characters.** 40 cells have a `U+FEFF` inside the value, including three polymer
+  names. It's invisible in any editor but it breaks exact matching and search, so we strip it at
+  parse time. The downloadable CSV gets the same treatment plus a leading BOM so Excel reads it
+  as UTF-8.
+- **Correlation matrix.** Recomputed as plain pairwise-complete Pearson. There's a test asserting
+  that ours × 271/270 reproduces the original's, which both explains the difference and pins the
+  computation down.
 
 ## Charts
 
-One `PlotlyChart` wrapper calls `Plotly.react()` against a ref rather than using
-`react-plotly.js`, with a `ResizeObserver` for responsiveness and concrete theme colours resolved
-from CSS custom properties (Plotly can't read `var()` inside SVG attributes).
+One `PlotlyChart` wrapper calls `Plotly.react()` against a ref instead of using
+`react-plotly.js`. It uses a `ResizeObserver` for responsiveness and resolves theme colours from
+CSS custom properties into concrete values, because Plotly can't read `var()` inside SVG
+attributes.
 
-**Trace batching.** The temperature page draws up to 619 sample curves. Rather than one trace each
-— which is what the original did, at roughly 1 MB of JSON per interaction — samples sharing a
-colour are concatenated into a single trace separated by `null`s, giving ≤ 8 traces. A parallel
-`customdata` array of equal length carries each point's source row index, so a click still
-resolves to the right sample. See `src/components/charts/series.ts`; the index mapping has its own
-test, because an off-by-one there would silently attribute a measurement to the wrong paper.
+**Trace batching.** The temperature page draws up to 619 sample curves. One trace each is what
+the original did, and it cost roughly 1 MB of JSON per interaction. Instead, samples that share a
+colour get concatenated into a single trace separated by `null`s, which gets it down to 8 traces
+or fewer. A parallel `customdata` array of the same length carries each point's source row index
+so a click still resolves to the right sample. That's in `src/components/charts/series.ts`, and
+the index mapping has its own test, because an off-by-one there would quietly credit a
+measurement to the wrong paper.
 
-**`scattergl` is deliberately not registered.** It measured 143 kB gzipped extra for a dataset
-whose largest plot is 5225 points, comfortably inside SVG's range, and SVG exports crisp PNGs at
-any scale. Read the note in `src/components/charts/plotly.ts` before adding it back.
+**`scattergl` is deliberately not registered.** It measured 143 kB gzipped extra, and the largest
+plot here is 5225 points, which SVG handles fine. SVG also exports crisp PNGs at any scale. Read
+the note in `src/components/charts/plotly.ts` before adding it back.
 
 ## Design tokens
 
-`src/styles/theme.css` defines a semantic token contract that all UI is built from instead of raw
-Tailwind palette colours (no `bg-slate-100` in app code): surfaces (`bg-canvas`, `bg-surface`,
-`bg-surface-raised`, `bg-muted`), text (`text-primary`, `text-secondary`, `text-muted`), borders
-(`border-subtle`, `border-default`, `border-strong`), a single accent (`bg-accent` / `text-accent`
-/ `border-accent` / `text-on-accent`, plus `bg-accent-hover`), restrained status colours
-(`text-danger`, `text-success`), a `.tabular` utility for aligning numeric columns, and a `--ring`
-focus colour used by a global `:focus-visible` style.
+`src/styles/theme.css` defines a semantic token contract that all the UI is built from, instead
+of raw Tailwind palette colours (no `bg-slate-100` in app code): surfaces (`bg-canvas`,
+`bg-surface`, `bg-surface-raised`, `bg-muted`), text (`text-primary`, `text-secondary`,
+`text-muted`), borders (`border-subtle`, `border-default`, `border-strong`), one accent
+(`bg-accent` / `text-accent` / `border-accent` / `text-on-accent`, plus `bg-accent-hover`),
+restrained status colours (`text-danger`, `text-success`), a `.tabular` utility for lining up
+numeric columns, and a `--ring` focus colour used by a global `:focus-visible` style.
 
 Dark mode is a `.dark` class on `<html>`, applied before first paint by an inline script in
-`index.html` (no flash of the wrong theme) and kept in sync afterwards by `ThemeProvider`
+`index.html` so there's no flash of the wrong theme, then kept in sync by `ThemeProvider`
 (light / dark / system, persisted to `localStorage`).
 
-### The chart palette is computed, not chosen
+### How the chart palette was picked
 
-The 7-slot categorical palette (`--chart-1` … `--chart-7` plus a reserved recessive
-`--chart-other`, typed in `src/styles/chart-palette.ts`) was derived by searching the OKLCH gamut
-and scoring candidates with `validate_palette.js` (OKLab ΔE under Machado-Oliveira-Fernandes CVD
-simulation). It passes every hard check under the strict `--pairs all` criterion in **both** light
-and dark — the criterion this app needs, since the primary view is a scatter plot where any two
-categories can land side by side.
+The 7-slot categorical palette (`--chart-1` … `--chart-7` plus a reserved grey `--chart-other`,
+typed in `src/styles/chart-palette.ts`) was found by searching the OKLCH gamut and scoring
+candidates with `validate_palette.js` (OKLab ΔE under Machado-Oliveira-Fernandes CVD simulation).
+It passes every hard check under the strict `--pairs all` criterion in both light and dark, which
+is the criterion this app needs since the main view is a scatter plot where any two categories can
+end up side by side.
 
-Seven is the measured maximum, not a preference: joint light+dark margins are 1.29 at six hues,
-1.03 at seven and 0.96 at eight (≥ 1.0 passes). Dark mode binds, because its lightness band
-(L ∈ [0.48, 0.67]) is much narrower than light's.
+Seven is the measured ceiling, not a preference. Joint light+dark margins come out at 1.29 for
+six hues, 1.03 for seven and 0.96 for eight, where 1.0 is the pass mark. Dark mode is what binds,
+because its lightness band (L ∈ [0.48, 0.67]) is a lot narrower than light's.
 
-Several columns exceed seven categories (12 anions, 14 solvents, 24 polymer families, 65 DOIs, 78
-polymers), so the rule is **fold, never cycle**: the seven most frequent categories — ranked once
-over the full dataset, never over the filtered view, so filtering never repaints surviving series
-— take the hue slots, and the rest render as a desaturated "Other". Scatter marks additionally
-vary marker symbol per slot. Full derivation and per-column coverage:
-[`data/reference/CHART-PALETTE.md`](data/reference/CHART-PALETTE.md).
+Several columns have more than seven categories (12 anions, 14 solvents, 24 polymer families, 65
+DOIs, 78 polymers), so the rule is fold, never cycle. The seven most frequent categories take the
+hue slots and everything else renders as a desaturated "Other". The ranking is computed once over
+the whole dataset rather than the filtered view, so filtering never repaints the series that
+survive. Scatter marks also vary marker symbol per slot. Full derivation and the per-column
+coverage numbers are in [`data/reference/CHART-PALETTE.md`](data/reference/CHART-PALETTE.md).
 
 ## Accessibility
 
 Keyboard reachable throughout with visible focus, semantic landmarks, a skip link, a
-focus-trapped mobile nav drawer, `aria-sort` on sortable headers, and live regions for result
+focus-trapped mobile nav drawer, `aria-sort` on sortable headers and live regions for result
 counts. axe reports no violations across all 7 routes at desktop and mobile widths. The `/data`
-table doubles as the non-colour view of the plotted data.
+table also serves as the non-colour way to read the plotted data.
 
 ## Static hosting (SPA fallback)
 
-Client-side-routed (`BrowserRouter`), so a static host must serve `index.html` for unknown paths
-or deep links and refreshes will 404:
+Routing is client-side (`BrowserRouter`), so a static host has to serve `index.html` for unknown
+paths or deep links and refreshes will 404:
 
-- **Netlify** — `public/_redirects` is already included (`/* /index.html 200`).
+- **Netlify** — `public/_redirects` is already there (`/* /index.html 200`).
 - **GitHub Pages** — copy the built `dist/index.html` to `dist/404.html` as a post-build step.
 - **Vercel** — rewrites are configured by default for Vite SPA output.
 
 ## Data & attribution
 
-Data from Nicole Schauser et al., UC Santa Barbara / NSF MRSEC DMR 1720256. MIT licensed —
+Data from Nicole Schauser et al., UC Santa Barbara / NSF MRSEC DMR 1720256. MIT licensed:
 [github.com/nschauser/PolymerElectrolyte](https://github.com/nschauser/PolymerElectrolyte). The
-source CSVs and their license live untouched in `data/raw/`; `data/reference/` holds ground truth
-captured from the original, used to verify this rebuild against it.
+source CSVs and their license sit untouched in `data/raw/`. `data/reference/` holds the ground
+truth we captured from the original site and used to check this rebuild against it.
