@@ -5,6 +5,7 @@
   "type": "module",
   "description": "A modern, fully client-side rebuild of pedatamine.org (UC Santa Barbara Polymer Electrolyte Data Mining).",
   "scripts": {
+    "build:data": "tsc --noEmit -p scripts/tsconfig.json && tsx scripts/build-data.ts",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
