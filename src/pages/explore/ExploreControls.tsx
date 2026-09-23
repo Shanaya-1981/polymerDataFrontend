@@ -1,9 +1,9 @@
-import { Button, Combobox, Label } from "@/components/ui";
+import { Button, Combobox, InfoTooltip, Label } from "@/components/ui";
 import type { FrozenCategoryColumnId } from "@/data";
 import type { FilterSelections } from "@/lib/filtering";
 import type { AxisScale } from "@/lib/log-axis";
 import { AxisControl } from "./AxisControl";
-import { PLOTTABLE_COLUMN_OPTIONS } from "./columns";
+import { columnLabel, getColumnMeta, PLOTTABLE_COLUMN_OPTIONS } from "./columns";
 import { FilterPanel } from "./FilterPanel";
 
 export interface ExploreControlsProps {
@@ -51,6 +51,8 @@ export function ExploreControls({
   isAtDefaults,
   onReset,
 }: ExploreControlsProps) {
+  const colorDescription = getColumnMeta(color)?.description;
+
   return (
     <div className="flex flex-col gap-6">
       {/* "Reset to defaults" (not "Clear all filters", below): this resets
@@ -85,7 +87,12 @@ export function ExploreControls({
           onScaleChange={onYScaleChange}
         />
         <div className="flex flex-col gap-2">
-          <Label htmlFor="explore-color-column">Color</Label>
+          <span className="flex items-center gap-1.5">
+            <Label htmlFor="explore-color-column">Color</Label>
+            {colorDescription ? (
+              <InfoTooltip content={colorDescription} label={`What is "${columnLabel(color)}"?`} />
+            ) : null}
+          </span>
           <Combobox
             id="explore-color-column"
             aria-label="Color"

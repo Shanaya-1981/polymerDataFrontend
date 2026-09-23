@@ -28,6 +28,7 @@ import { decodeLenientUtf8 } from "./decode-lenient-utf8";
 import uiControls from "../data/reference/ui-controls.json";
 import featureGlossary from "../data/reference/feature-glossary.json";
 import correlationsOriginal from "../data/reference/correlations-original.json";
+import uiColumnDescriptions from "./ui-column-descriptions.json";
 
 // ---------------------------------------------------------------------------
 // Paths
@@ -273,7 +274,38 @@ function buildColumnPlan(mainHeader: readonly string[]): ColumnPlanEntry[] {
     69,
   );
 
-  const descriptionByColumn = new Map(featureGlossary.map((f) => [f.mlColumn, f.description]));
+  // `featureGlossary` (36 entries) is the original curators' verified ML
+  // feature glossary — it always wins where it has an entry. It only covers
+  // 16 of the 41 plottable columns, though, so `ui-column-descriptions.json`
+  // (this project's own plain-language glosses, NOT part of the verified
+  // dataset) fills in the rest for the tooltip feature. Priority matters:
+  // a verified description must never be shadowed by our own gloss for the
+  // same header.
+  const uiDescriptionByColumn = uiColumnDescriptions as Readonly<Record<string, string>>;
+  const unknownUiDescriptionKeys = Object.keys(uiDescriptionByColumn).filter(
+    (header) => !allHeaders.includes(header),
+  );
+  assertTrue(
+    "every key in ui-column-descriptions.json matches a real column header",
+    unknownUiDescriptionKeys.length === 0,
+    unknownUiDescriptionKeys.length > 0
+      ? `unknown header(s): ${JSON.stringify(unknownUiDescriptionKeys)}`
+      : undefined,
+  );
+  const overriddenByVerifiedGlossary = Object.keys(uiDescriptionByColumn).filter((header) =>
+    featureGlossary.some((f) => f.mlColumn === header),
+  );
+  assertTrue(
+    "ui-column-descriptions.json only fills gaps the verified feature-glossary.json leaves, never overlaps it",
+    overriddenByVerifiedGlossary.length === 0,
+    overriddenByVerifiedGlossary.length > 0
+      ? `header(s) present in both: ${JSON.stringify(overriddenByVerifiedGlossary)}`
+      : undefined,
+  );
+  const descriptionByColumn = new Map<string, string | undefined>([
+    ...Object.entries(uiDescriptionByColumn),
+    ...featureGlossary.map((f) => [f.mlColumn, f.description] as const),
+  ]);
   const pageLookups = derivePageLookups();
 
   const plan = allHeaders.map((header) => ({
@@ -800,11 +832,15 @@ const columnsTs = `/**
  * label (the literal source CSV header), unit where meaningful, whether the
  * column is categorical or continuous, which routed pages plot it and which
  * filter by it (they are NOT the same set — see derivePageLookups), as a
- * control (derived from data/reference/ui-controls.json), and its glossary
- * description where one exists. Only 16 of these 69 columns are also one of
- * the 36 correlation features in data/reference/feature-glossary.json — the
- * other 20 glossary features are forML-only and never appear as a plottable
- * column; they show up solely as labels in correlations.json.
+ * control (derived from data/reference/ui-controls.json), and a plain-
+ * language description where one exists. Only 16 of these 69 columns are
+ * also one of the 36 correlation features in
+ * data/reference/feature-glossary.json — the other 20 glossary features are
+ * forML-only and never appear as a plottable column; they show up solely as
+ * labels in correlations.json. Every remaining column's description (this
+ * app's own gloss, not part of the verified dataset) comes from
+ * scripts/ui-column-descriptions.json instead — see build-data.ts's
+ * \`descriptionByColumn\` for how the two are merged.
  */
 
 export type ColumnKind = "categorical" | "continuous";

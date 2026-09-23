@@ -6,11 +6,15 @@
  * label (the literal source CSV header), unit where meaningful, whether the
  * column is categorical or continuous, which routed pages plot it and which
  * filter by it (they are NOT the same set — see derivePageLookups), as a
- * control (derived from data/reference/ui-controls.json), and its glossary
- * description where one exists. Only 16 of these 69 columns are also one of
- * the 36 correlation features in data/reference/feature-glossary.json — the
- * other 20 glossary features are forML-only and never appear as a plottable
- * column; they show up solely as labels in correlations.json.
+ * control (derived from data/reference/ui-controls.json), and a plain-
+ * language description where one exists. Only 16 of these 69 columns are
+ * also one of the 36 correlation features in
+ * data/reference/feature-glossary.json — the other 20 glossary features are
+ * forML-only and never appear as a plottable column; they show up solely as
+ * labels in correlations.json. Every remaining column's description (this
+ * app's own gloss, not part of the verified dataset) comes from
+ * scripts/ui-column-descriptions.json instead — see build-data.ts's
+ * `descriptionByColumn` for how the two are merged.
  */
 
 export type ColumnKind = "categorical" | "continuous";
@@ -46,7 +50,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Glass transition temperature of the electrolyte (polymer plus dissolved salt) — the temperature below which it stiffens from a rubbery to a glassy state."
   },
   {
     "id": "approxMWKDa",
@@ -66,7 +71,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Molar ratio of lithium ions to the polymer's coordinating functional groups — how concentrated the dissolved salt is."
   },
   {
     "id": "conductivityAt30C",
@@ -76,7 +82,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 30°C."
   },
   {
     "id": "conductivityAt60C",
@@ -86,7 +93,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 60°C."
   },
   {
     "id": "conductivityAt90C",
@@ -96,7 +104,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 90°C."
   },
   {
     "id": "comonomer1Apol",
@@ -105,7 +114,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Atomic polarizability of comonomer 1 — how easily its electron cloud distorts in an electric field."
   },
   {
     "id": "comonomer1Vabc",
@@ -114,7 +124,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Van der Waals volume of comonomer 1 — an estimate of the molecule's physical size."
   },
   {
     "id": "comonomer1MW",
@@ -124,7 +135,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Molecular weight of comonomer 1."
   },
   {
     "id": "comonomer1ETA_eta_F",
@@ -163,7 +175,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Atomic polarizability of comonomer 2 — how easily its electron cloud distorts in an electric field."
   },
   {
     "id": "comonomer2Vabc",
@@ -172,7 +185,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Van der Waals volume of comonomer 2 — an estimate of the molecule's physical size."
   },
   {
     "id": "comonomer2MW",
@@ -182,7 +196,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Molecular weight of comonomer 2."
   },
   {
     "id": "comonomer2AETA_eta_F",
@@ -241,7 +256,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Atomic polarizability of the anion — how easily its electron cloud distorts in an electric field."
   },
   {
     "id": "anionVabc",
@@ -250,7 +266,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Van der Waals volume of the anion — an estimate of the ion's physical size."
   },
   {
     "id": "anionNHBAcc",
@@ -300,7 +317,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Activation energy for ion transport from a simple Arrhenius fit, in electron-volts — how much energy ions need to start moving through the polymer."
   },
   {
     "id": "vftActivationEnergyK",
@@ -310,7 +328,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Activation-energy-like term from a Vogel-Fulcher-Tammann (VFT) fit, in Kelvin. VFT is used instead of a simple Arrhenius law because conductivity rises faster than Arrhenius predicts as a polymer approaches its glass transition."
   },
   {
     "id": "vftActivationEnergyWithFixedT0K",
@@ -320,7 +339,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Same VFT activation-energy term, but from a fit where the reference temperature T0 was held fixed rather than allowed to vary freely."
   },
   {
     "id": "arrheniusPrefactorSCm",
@@ -330,7 +350,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Pre-exponential term from the Arrhenius fit — the conductivity the fit extrapolates to at infinitely high temperature."
   },
   {
     "id": "vftPrefactorSCmT12",
@@ -340,7 +361,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Pre-exponential term from the VFT fit, scaled by the square root of temperature."
   },
   {
     "id": "vftPrefactorWithSetT0",
@@ -349,7 +371,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "VFT pre-exponential term from the fit where T0 was held fixed."
   },
   {
     "id": "transferenceNumber",
@@ -358,7 +381,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Fraction of the total ionic current carried by the lithium ion rather than its counter-ion — higher generally means better battery performance."
   },
   {
     "id": "dryingTemp",
@@ -368,7 +392,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "plottableOn": [
       "explore"
     ],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Temperature the sample was dried at during preparation, to drive off residual casting solvent."
   },
   {
     "id": "dryingTimeH",
@@ -392,7 +417,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "filterableOn": [
       "explore",
       "temperature"
-    ]
+    ],
+    "description": "Chemical family of the polymer's backbone (e.g. ether, ester, carbonate)."
   },
   {
     "id": "polymer",
@@ -403,7 +429,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     ],
     "filterableOn": [
       "explore"
-    ]
+    ],
+    "description": "Name of the specific polymer used as the electrolyte host."
   },
   {
     "id": "anion",
@@ -416,7 +443,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "filterableOn": [
       "explore",
       "temperature"
-    ]
+    ],
+    "description": "The lithium salt's counter-ion (e.g. TFSI, ClO4), paired with the Li+ cation that actually carries charge."
   },
   {
     "id": "crystalline",
@@ -443,7 +471,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "filterableOn": [
       "explore",
       "temperature"
-    ]
+    ],
+    "description": "Solvent the polymer was dissolved/cast in during sample preparation."
   },
   {
     "id": "conductivityAt0C",
@@ -451,7 +480,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 0°C."
   },
   {
     "id": "conductivityAt15C",
@@ -459,7 +489,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 15°C."
   },
   {
     "id": "conductivityAt20C",
@@ -467,7 +498,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 20°C."
   },
   {
     "id": "conductivityAt21C",
@@ -475,7 +507,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 21°C."
   },
   {
     "id": "conductivityAt25C",
@@ -483,7 +516,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 25°C (approximately room temperature)."
   },
   {
     "id": "conductivityAt27C",
@@ -491,7 +525,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 27°C."
   },
   {
     "id": "conductivityAt35C",
@@ -499,7 +534,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 35°C."
   },
   {
     "id": "conductivityAt40C",
@@ -507,7 +543,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 40°C."
   },
   {
     "id": "conductivityAt45C",
@@ -515,7 +552,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 45°C."
   },
   {
     "id": "conductivityAt50C",
@@ -523,7 +561,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 50°C."
   },
   {
     "id": "conductivityAt55C",
@@ -531,7 +570,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 55°C."
   },
   {
     "id": "conductivityAt65C",
@@ -539,7 +579,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 65°C."
   },
   {
     "id": "conductivityAt70C",
@@ -547,7 +588,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 70°C."
   },
   {
     "id": "conductivityAt75C",
@@ -555,7 +597,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 75°C."
   },
   {
     "id": "conductivityAt80C",
@@ -563,7 +606,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 80°C."
   },
   {
     "id": "conductivityAt85C",
@@ -571,7 +615,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 85°C."
   },
   {
     "id": "conductivityAt100C",
@@ -579,7 +624,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 100°C."
   },
   {
     "id": "conductivityAt110C",
@@ -587,7 +633,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 110°C."
   },
   {
     "id": "conductivityAt125C",
@@ -595,7 +642,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "S/cm",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Ionic conductivity of the electrolyte measured at 125°C."
   },
   {
     "id": "tgPolymerWithoutSalt",
@@ -603,7 +651,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "°C",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Glass transition temperature of the bare polymer, measured before any lithium salt is added."
   },
   {
     "id": "polymerMnKDa",
@@ -611,7 +660,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "kDa",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Number-average molecular weight of the polymer (kDa) — reflects the typical chain length."
   },
   {
     "id": "polymerMwKDa",
@@ -619,7 +669,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "kDa",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Weight-average molecular weight of the polymer (kDa) — weighted toward longer chains than Mn, so it's more sensitive to a few very long chains."
   },
   {
     "id": "comonomerPercentage",
@@ -627,7 +678,8 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "unit": "%",
     "kind": "continuous",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Percentage of the minority comonomer making up the copolymer."
   },
   {
     "id": "doi",
@@ -637,35 +689,40 @@ export const COLUMNS: readonly ColumnMeta[] = [
     "filterableOn": [
       "explore",
       "temperature"
-    ]
+    ],
+    "description": "Digital Object Identifier — a permanent link to the published paper this sample's data came from."
   },
   {
     "id": "reference",
     "label": "Reference",
     "kind": "categorical",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Full citation for the paper this sample was reported in."
   },
   {
     "id": "notes",
     "label": "Notes",
     "kind": "categorical",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "Free-text notes recorded by the original curators about this sample."
   },
   {
     "id": "smilesDescriptor1",
     "label": "SMILES descriptor 1",
     "kind": "categorical",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "SMILES string — a compact text notation encoding comonomer 1's molecular structure."
   },
   {
     "id": "smilesDescriptor2",
     "label": "SMILES descriptor 2",
     "kind": "categorical",
     "plottableOn": [],
-    "filterableOn": []
+    "filterableOn": [],
+    "description": "SMILES string — a compact text notation encoding comonomer 2's molecular structure."
   }
 ];
 

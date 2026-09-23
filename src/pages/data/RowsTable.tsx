@@ -1,5 +1,6 @@
 import {
   cn,
+  InfoTooltip,
   Table,
   TableBody,
   TableCell,
@@ -57,13 +58,19 @@ export function RowsTable({ columns, rows, sortColumn, sortDirection, onSort }: 
         <TableRow>
           <TableHead className={STICKY_HEADER_CLASSES}>#</TableHead>
           {columns.map((id) => {
-            const isNumeric = getColumnMeta(id)?.kind === "continuous";
+            const meta = getColumnMeta(id);
+            const isNumeric = meta?.kind === "continuous";
             return (
               <TableHead
                 key={id}
                 sortDirection={sortColumn === id ? sortDirection : false}
                 onSort={() => onSort(id)}
                 className={isNumeric ? "text-right" : undefined}
+                endAdornment={
+                  meta?.description ? (
+                    <InfoTooltip content={meta.description} label={`What is "${columnHeading(id)}"?`} />
+                  ) : null
+                }
               >
                 {columnHeading(id)}
               </TableHead>

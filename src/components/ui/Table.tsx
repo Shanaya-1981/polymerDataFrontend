@@ -1,6 +1,7 @@
 import {
   forwardRef,
   type HTMLAttributes,
+  type ReactNode,
   type ThHTMLAttributes,
   type TdHTMLAttributes,
 } from "react";
@@ -64,10 +65,14 @@ export interface TableHeadProps extends ThHTMLAttributes<HTMLTableCellElement> {
   sortDirection?: "asc" | "desc" | false;
   /** Presence makes the header interactive (rendered as a button). */
   onSort?: () => void;
+  /** Rendered as a sibling after the sort button rather than inside it —
+   *  for interactive content (e.g. an `InfoTooltip`) that would otherwise
+   *  end up as an invalid nested `<button>` inside the sort button. */
+  endAdornment?: ReactNode;
 }
 
 export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(function TableHead(
-  { className, children, sortDirection = false, onSort, ...props },
+  { className, children, sortDirection = false, onSort, endAdornment, ...props },
   ref,
 ) {
   return (
@@ -83,18 +88,21 @@ export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(functi
       )}
       {...props}
     >
-      {onSort ? (
-        <button
-          type="button"
-          onClick={onSort}
-          className="-mx-1 inline-flex items-center gap-1 rounded px-1 py-0.5 hover:text-primary"
-        >
-          {children}
-          <SortIcon direction={sortDirection} />
-        </button>
-      ) : (
-        children
-      )}
+      <span className="inline-flex items-center gap-1.5">
+        {onSort ? (
+          <button
+            type="button"
+            onClick={onSort}
+            className="-mx-1 inline-flex items-center gap-1 rounded px-1 py-0.5 hover:text-primary"
+          >
+            {children}
+            <SortIcon direction={sortDirection} />
+          </button>
+        ) : (
+          children
+        )}
+        {endAdornment}
+      </span>
     </th>
   );
 });

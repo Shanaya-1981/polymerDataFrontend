@@ -1,6 +1,6 @@
-import { Combobox, Label, RadioGroup, type RadioOption } from "@/components/ui";
+import { Combobox, InfoTooltip, Label, RadioGroup, type RadioOption } from "@/components/ui";
 import type { AxisScale } from "@/lib/log-axis";
-import { isCategoricalColumn, PLOTTABLE_COLUMN_OPTIONS } from "./columns";
+import { columnLabel, getColumnMeta, isCategoricalColumn, PLOTTABLE_COLUMN_OPTIONS } from "./columns";
 
 const SCALE_OPTIONS: readonly RadioOption[] = [
   { value: "linear", label: "Linear" },
@@ -38,11 +38,17 @@ export function AxisControl({
   onScaleChange,
 }: AxisControlProps) {
   const scaleDisabled = isCategoricalColumn(columnId);
+  const description = getColumnMeta(columnId)?.description;
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-3">
-        <Label htmlFor={`${idPrefix}-column`}>{label}</Label>
+        <span className="flex items-center gap-1.5">
+          <Label htmlFor={`${idPrefix}-column`}>{label}</Label>
+          {description ? (
+            <InfoTooltip content={description} label={`What is "${columnLabel(columnId)}"?`} />
+          ) : null}
+        </span>
         <RadioGroup
           aria-label={`${label} scale`}
           options={SCALE_OPTIONS}

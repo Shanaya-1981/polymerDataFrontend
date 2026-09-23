@@ -34,3 +34,4 @@ export {
   type SheetSide,
 } from "./Sheet";
 export { Skeleton } from "./Skeleton";
+export { InfoTooltip, type InfoTooltipProps } from "./Tooltip";
