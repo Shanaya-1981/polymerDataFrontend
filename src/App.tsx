@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AppShell } from "@/components/layout/AppShell";
 import { ThemeProvider } from "@/components/theme";
+import { ImportedDataProvider } from "@/contexts";
 
 const Home = lazy(() => import("@/pages/Home"));
 const Explore = lazy(() => import("@/pages/Explore"));
@@ -15,20 +16,23 @@ const NotFound = lazy(() => import("@/pages/NotFound"));
 export function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<AppShell />}>
-            <Route index element={<Home />} />
-            <Route path="explore" element={<Explore />} />
-            <Route path="temperature" element={<Temperature />} />
-            <Route path="correlations" element={<Correlations />} />
-            <Route path="data" element={<DataTable />} />
-            <Route path="features" element={<Features />} />
-            <Route path="about" element={<About />} />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      {/* Above the router so an imported CSV outlives the Explore route. */}
+      <ImportedDataProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<AppShell />}>
+              <Route index element={<Home />} />
+              <Route path="explore" element={<Explore />} />
+              <Route path="temperature" element={<Temperature />} />
+              <Route path="correlations" element={<Correlations />} />
+              <Route path="data" element={<DataTable />} />
+              <Route path="features" element={<Features />} />
+              <Route path="about" element={<About />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ImportedDataProvider>
     </ThemeProvider>
   );
 }

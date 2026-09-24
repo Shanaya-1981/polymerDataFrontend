@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   CHART_PALETTE,
+  IMPORTED_SLOT,
   MAX_CATEGORICAL_SLOTS,
   OTHER_SLOT,
   SERIES_SYMBOLS,
@@ -10,12 +11,14 @@ import {
   buildCategoricalScatterTraces,
   buildContinuousScatterTrace,
   buildCorrelationHeatmapTrace,
+  buildImportedScatterTrace,
   buildNullSeparatedGroups,
   buildScatterTraces,
   buildTemperatureLineTraces,
   resolveSlotColor,
   type CategoricalPoint,
   type ContinuousPoint,
+  type ImportedPoint,
   type LineSample,
 } from "./series";
 
@@ -384,5 +387,85 @@ describe("buildCorrelationHeatmapTrace", () => {
       [0.5, "#68686f"],
       [1, CHART_PALETTE[0].dark],
     ]);
+  });
+});
+
+describe("buildScatterTraces continuousName", () => {
+  const input = {
+    kind: "continuous" as const,
+    points: [{ x: 1, y: 2, colorValue: 0.5, rowIndex: 0 }],
+  };
+
+  it("leaves the continuous trace unnamed by default", () => {
+    const [trace] = buildScatterTraces(input, "light").map((t) => shape<ScatterTraceShape>(t));
+    expect(trace.name).toBeUndefined();
+  });
+
+  it("names the continuous trace when asked, so a shared legend never shows 'trace 0'", () => {
+    const [trace] = buildScatterTraces(input, "light", { continuousName: "Dataset" }).map((t) =>
+      shape<ScatterTraceShape>(t),
+    );
+    expect(trace.name).toBe("Dataset");
+  });
+});
+
+describe("buildImportedScatterTrace", () => {
+  interface ImportedTraceShape extends Omit<ScatterTraceShape, "customdata"> {
+    customdata?: unknown;
+    showlegend: boolean;
+    text: string[];
+    marker: MarkerShape & { line: { color: string; width: number } };
+  }
+
+  const points: ImportedPoint[] = [
+    { x: -40, y: 1e-4, rowNumber: 1, colorValue: "TFSI" },
+    { x: 10, y: 3e-5, rowNumber: 3, colorValue: null },
+  ];
+
+  it("is one star-marker trace with its own toggleable legend entry", () => {
+    const trace = shape<ImportedTraceShape>(buildImportedScatterTrace(points, "light"));
+    expect(trace.type).toBe("scatter");
+    expect(trace.mode).toBe("markers");
+    expect(trace.name).toBe("Imported");
+    expect(trace.showlegend).toBe(true);
+    expect(trace.x).toEqual([-40, 10]);
+    expect(trace.y).toEqual([1e-4, 3e-5]);
+    expect(trace.marker.symbol).toBe("star");
+    expect(SERIES_SYMBOLS).not.toContain(trace.marker.symbol);
+  });
+
+  it("uses a color outside the 7 palette hues and the Other gray, in both modes", () => {
+    for (const mode of ["light", "dark"] as const) {
+      const trace = shape<ImportedTraceShape>(buildImportedScatterTrace(points, mode));
+      const taken = [...CHART_PALETTE.map((slot) => slot[mode]), OTHER_SLOT[mode]];
+      expect(trace.marker.color).toBe(IMPORTED_SLOT[mode]);
+      expect(taken).not.toContain(trace.marker.color);
+      expect(trace.marker.line.width).toBeGreaterThan(0);
+    }
+  });
+
+  it("carries no customdata, so a click never opens a dataset row in the inspector", () => {
+    const trace = shape<ImportedTraceShape>(buildImportedScatterTrace(points, "light"));
+    expect(trace.customdata).toBeUndefined();
+  });
+
+  it("puts the row number and the color column's value in hover text", () => {
+    const trace = shape<ImportedTraceShape>(
+      buildImportedScatterTrace(points, "light", { colorLabel: "Anion" }),
+    );
+    expect(trace.text).toEqual(["row 1<br>Anion: TFSI", "row 3<br>Anion: —"]);
+  });
+
+  it("escapes user-supplied text before it reaches Plotly's pseudo-HTML hover label", () => {
+    const trace = shape<ImportedTraceShape>(
+      buildImportedScatterTrace(
+        [{ x: 1, y: 1, rowNumber: 1, colorValue: "<b>x</b> & y" }],
+        "light",
+        {
+          colorLabel: "Anion",
+        },
+      ),
+    );
+    expect(trace.text[0]).toBe("row 1<br>Anion: &lt;b&gt;x&lt;/b&gt; &amp; y");
   });
 });

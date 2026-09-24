@@ -12,6 +12,7 @@
  */
 import {
   CHART_PALETTE,
+  IMPORTED_SLOT,
   MAX_CATEGORICAL_SLOTS,
   OTHER_SLOT,
   slotForRank,
@@ -30,7 +31,15 @@ const OTHER_LABEL = "Other";
  * chart-palette.ts isn't Plotly-aware) back to something Plotly accepts.
  */
 type ScatterMarkerSymbol =
-  "circle" | "square" | "diamond" | "triangle-up" | "cross" | "triangle-down" | "x" | "circle-open";
+  | "circle"
+  | "square"
+  | "diamond"
+  | "triangle-up"
+  | "cross"
+  | "triangle-down"
+  | "x"
+  | "circle-open"
+  | "star";
 
 /** Plotly trace type to render scatter-family series as. Defaults to SVG
  *  `scatter`: this app's largest plot is 5,225 points, well inside SVG's
@@ -168,13 +177,14 @@ export const SEQUENTIAL_COLORSCALE: ColorScale = "Viridis";
  */
 export function buildContinuousScatterTrace(
   points: readonly ContinuousPoint[],
-  options: ScatterTraceOptions & { colorAxisTitle?: string } = {},
+  options: ScatterTraceOptions & { colorAxisTitle?: string; name?: string } = {},
 ): Data {
   const traceType = options.traceType ?? DEFAULT_TRACE_TYPE;
   const markerSize = options.markerSize ?? DEFAULT_MARKER_SIZE;
   return {
     type: traceType,
     mode: "markers",
+    ...(options.name ? { name: options.name } : {}),
     x: points.map((p) => p.x),
     y: points.map((p) => p.y),
     customdata: points.map((p) => p.rowIndex),
@@ -197,14 +207,83 @@ export function buildContinuousScatterTrace(
 export function buildScatterTraces(
   input: ScatterSeriesInput,
   mode: ChartThemeMode,
-  options?: ScatterTraceOptions,
+  options: ScatterTraceOptions & {
+    /** Legend name for the lone continuous trace. Only needed once another
+     *  trace shares the legend — Plotly would otherwise call it "trace 0". */
+    continuousName?: string;
+  } = {},
 ): Data[] {
+  const { continuousName, ...traceOptions } = options;
   if (input.kind === "categorical") {
-    return buildCategoricalScatterTraces(input.points, mode, options);
+    return buildCategoricalScatterTraces(input.points, mode, traceOptions);
   }
   return [
-    buildContinuousScatterTrace(input.points, { ...options, colorAxisTitle: input.colorAxisTitle }),
+    buildContinuousScatterTrace(input.points, {
+      ...traceOptions,
+      colorAxisTitle: input.colorAxisTitle,
+      name: continuousName,
+    }),
   ];
+}
+
+/** One user-imported row, already resolved to plottable (x, y). */
+export interface ImportedPoint {
+  x: number | string;
+  y: number | string;
+  /** 1-based data-row number in the imported file (header excluded). */
+  rowNumber: number;
+  /** This row's value for the current color column, shown in hover text —
+   *  imported points keep their own fixed color, so the value is the only
+   *  place the color column shows up for them. */
+  colorValue: number | string | null;
+}
+
+export const IMPORTED_TRACE_NAME = "Imported";
+const IMPORTED_MARKER_SIZE = 13;
+
+/** User-supplied text ends up in Plotly's pseudo-HTML hover labels. */
+function escapeHoverText(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/**
+ * The overlay trace for user-imported rows: one trace, a fixed out-of-
+ * palette color and a `star` symbol (`IMPORTED_SLOT`), and its own legend
+ * entry so it can be toggled. Carries no `customdata` on purpose — the
+ * page's click handler treats a numeric `customdata` as a dataset row
+ * index, and these rows aren't in the dataset.
+ */
+export function buildImportedScatterTrace(
+  points: readonly ImportedPoint[],
+  mode: ChartThemeMode,
+  options: Pick<ScatterTraceOptions, "traceType"> & { colorLabel?: string } = {},
+): Data {
+  const traceType = options.traceType ?? DEFAULT_TRACE_TYPE;
+  const { colorLabel } = options;
+  return {
+    type: traceType,
+    mode: "markers",
+    name: IMPORTED_TRACE_NAME,
+    showlegend: true,
+    x: points.map((p) => p.x),
+    y: points.map((p) => p.y),
+    text: points.map((p) => {
+      const row = `row ${p.rowNumber}`;
+      if (!colorLabel) return row;
+      const value = p.colorValue == null ? "—" : escapeHoverText(String(p.colorValue));
+      return `${row}<br>${escapeHoverText(colorLabel)}: ${value}`;
+    }),
+    marker: {
+      color: mode === "dark" ? IMPORTED_SLOT.dark : IMPORTED_SLOT.light,
+      symbol: IMPORTED_SLOT.symbol,
+      size: IMPORTED_MARKER_SIZE,
+      line: {
+        color: mode === "dark" ? IMPORTED_SLOT.outlineDark : IMPORTED_SLOT.outlineLight,
+        width: 1.5,
+      },
+    },
+    hovertemplate: `${IMPORTED_TRACE_NAME}, %{text}<br>x: %{x}<br>y: %{y}<extra></extra>`,
+  };
 }
 
 /** One sample's full line (e.g. one row's conductivity-vs-temperature

@@ -4,11 +4,14 @@ import {
   axisNoticeMessage,
   buildAxisNotice,
   buildExplorePoints,
+  buildImportedPoints,
   categoryCounts,
   exploreEmptyReason,
   highCardinalityMessage,
   highCardinalityNotice,
+  importedNoticeMessage,
 } from "./plot-data";
+import { parseImportCsv, type ImportedDataset } from "./csv-import";
 
 const ALL_ROWS = Array.from({ length: 655 }, (_, i) => i);
 
@@ -62,7 +65,11 @@ describe("buildAxisNotice", () => {
 
 describe("axisNoticeMessage", () => {
   it("is calm and factual, naming the axis, both counts, and the column", () => {
-    const message = axisNoticeMessage("Y", { droppedCount: 287, consideredCount: 368, columnLabel: "Tg" });
+    const message = axisNoticeMessage("Y", {
+      droppedCount: 287,
+      consideredCount: 368,
+      columnLabel: "Tg",
+    });
     expect(message).toBe("287 of 368 Y-axis points hidden — a log axis can't show Tg values ≤ 0.");
   });
 });
@@ -179,7 +186,14 @@ describe("buildExplorePoints", () => {
 
   it("throws for a genuinely unknown column id", () => {
     expect(() =>
-      buildExplorePoints([0], "not-a-real-column", "linear", "conductivityAt60C", "linear", "anion"),
+      buildExplorePoints(
+        [0],
+        "not-a-real-column",
+        "linear",
+        "conductivityAt60C",
+        "linear",
+        "anion",
+      ),
     ).toThrow(/unknown column id/);
   });
 });
@@ -254,5 +268,174 @@ describe("exploreEmptyReason", () => {
 
   it("is null once anything is plottable", () => {
     expect(exploreEmptyReason(10, 1)).toBeNull();
+  });
+});
+
+describe("buildImportedPoints", () => {
+  function importCsv(text: string): ImportedDataset {
+    const result = parseImportCsv(text, "mine.csv");
+    if (!result.ok) throw new Error(result.error);
+    return result.data;
+  }
+
+  const imported = importCsv(
+    [
+      "approxTg,Conductivity at 60C,Anion,Li:functional group",
+      "-40,1e-4,TFSI,0.1",
+      "10,,ClO4,0.2", // no conductivity: never plottable
+      "20,5e-5,ClO4,", // no color value: still plotted
+      "-5,0,TFSI,0.3", // zero conductivity: hidden on a log Y axis only
+    ].join("\n"),
+  );
+
+  it("plots every row that has both axis values, carrying 1-based row numbers", () => {
+    const result = buildImportedPoints(
+      imported,
+      {},
+      "approxTg",
+      "linear",
+      "conductivityAt60C",
+      "linear",
+      "anion",
+    );
+    expect(result.points).toEqual([
+      { x: -40, y: 1e-4, rowNumber: 1, colorValue: "TFSI" },
+      { x: 20, y: 5e-5, rowNumber: 3, colorValue: "ClO4" },
+      { x: -5, y: 0, rowNumber: 4, colorValue: "TFSI" },
+    ]);
+    expect(result.totalCount).toBe(4);
+    expect(result.matchingFilterCount).toBe(4);
+    expect(result.missingAxes).toEqual([]);
+  });
+
+  it("drops non-positive values on a log axis, like the dataset", () => {
+    const result = buildImportedPoints(
+      imported,
+      {},
+      "approxTg",
+      "linear",
+      "conductivityAt60C",
+      "log",
+      "anion",
+    );
+    expect(result.points.map((p) => p.rowNumber)).toEqual([1, 3]);
+  });
+
+  it("follows the color column for hover values, including a numeric one", () => {
+    const result = buildImportedPoints(
+      imported,
+      {},
+      "approxTg",
+      "linear",
+      "conductivityAt60C",
+      "linear",
+      "liFunctionalGroup",
+    );
+    expect(result.points.map((p) => p.colorValue)).toEqual([0.1, null, 0.3]);
+  });
+
+  it("gives a null color value when the file lacks the color column", () => {
+    const result = buildImportedPoints(
+      imported,
+      {},
+      "approxTg",
+      "linear",
+      "conductivityAt60C",
+      "linear",
+      "polymerFamily",
+    );
+    expect(result.points.every((p) => p.colorValue === null)).toBe(true);
+  });
+
+  it("applies the active filters", () => {
+    const result = buildImportedPoints(
+      imported,
+      { anion: ["TFSI"] },
+      "approxTg",
+      "linear",
+      "conductivityAt60C",
+      "linear",
+      "anion",
+    );
+    expect(result.points.map((p) => p.rowNumber)).toEqual([1, 4]);
+    expect(result.matchingFilterCount).toBe(2);
+  });
+
+  it("hides every row when a filtered column is absent from the file", () => {
+    const result = buildImportedPoints(
+      imported,
+      { solventUsed: ["water"] },
+      "approxTg",
+      "linear",
+      "conductivityAt60C",
+      "linear",
+      "anion",
+    );
+    expect(result.points).toEqual([]);
+    expect(result.matchingFilterCount).toBe(0);
+  });
+
+  it("plots categorical axes with the imported category values", () => {
+    const result = buildImportedPoints(
+      imported,
+      {},
+      "anion",
+      "linear",
+      "approxTg",
+      "linear",
+      "anion",
+    );
+    expect(result.points.map((p) => p.x)).toEqual(["TFSI", "ClO4", "ClO4", "TFSI"]);
+  });
+
+  it("reports which axis columns the file doesn't have", () => {
+    const result = buildImportedPoints(imported, {}, "tg", "linear", "approxMWKDa", "log", "anion");
+    expect(result.missingAxes).toEqual(["X", "Y"]);
+    expect(result.points).toEqual([]);
+  });
+});
+
+describe("importedNoticeMessage", () => {
+  const base = {
+    points: [],
+    totalCount: 4,
+    matchingFilterCount: 4,
+    missingAxes: [] as ("X" | "Y")[],
+  };
+  const point = { x: 1, y: 1, rowNumber: 1, colorValue: null };
+
+  it("is null when every imported row is plotted", () => {
+    expect(
+      importedNoticeMessage(
+        { ...base, totalCount: 1, matchingFilterCount: 1, points: [point] },
+        "tg",
+        "tg",
+      ),
+    ).toBeNull();
+  });
+
+  it("names a missing axis column by its label", () => {
+    expect(importedNoticeMessage({ ...base, missingAxes: ["X"] }, "approxTg", "tg")).toBe(
+      'The imported file has no "approxTg" column, so its rows can\'t be placed on these axes.',
+    );
+  });
+
+  it("names both missing axis columns", () => {
+    expect(importedNoticeMessage({ ...base, missingAxes: ["X", "Y"] }, "approxTg", "tg")).toBe(
+      'The imported file has no "approxTg" or "Tg" columns, so its rows can\'t be placed on these axes.',
+    );
+  });
+
+  it("splits hidden rows into filtered-out and unplottable", () => {
+    expect(
+      importedNoticeMessage(
+        { ...base, matchingFilterCount: 3, points: [point] },
+        "approxTg",
+        "conductivityAt60C",
+      ),
+    ).toBe(
+      "1 of 4 imported rows plotted: 1 don't match the active filters; 2 have a missing X or Y " +
+        "value, or one a log axis can't show (≤ 0).",
+    );
   });
 });

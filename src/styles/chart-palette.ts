@@ -104,6 +104,27 @@ export const OTHER_SLOT = {
   dark: "#6b6b66",
 } as const;
 
+/**
+ * Marker for user-imported rows overlaid on the Explore scatter. Not a
+ * categorical slot and not an 8th hue: it marks provenance ("this point is
+ * yours, not the literature's"), so it deliberately sits outside the 7-hue
+ * set and pairs with a symbol no slot uses (`star`).
+ *
+ * Checked with `validate_palette.js --pairs all` as an 8th entry against
+ * each mode's 7 hues: it leaves the set's worst pairs unchanged (light CVD
+ * ΔE 8.2 / normal 17.2, dark 9.9 / 18.6), so it collides with none of them.
+ * It fails only the lightness band, by design — it is meant to pop — and in
+ * light mode sits at 1.79:1 against the white surface, which is what the
+ * near-black `outline` is for.
+ */
+export const IMPORTED_SLOT = {
+  light: "#f5b800",
+  dark: "#facc15",
+  outlineLight: "#18181b",
+  outlineDark: "#0a0a0b",
+  symbol: "star",
+} as const;
+
 /** Maximum number of categories that can carry a distinct hue. */
 export const MAX_CATEGORICAL_SLOTS = CHART_PALETTE.length;
 

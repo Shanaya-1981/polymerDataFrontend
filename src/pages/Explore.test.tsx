@@ -1,6 +1,7 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { Link, MemoryRouter, Outlet, Route, Routes } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
+import { ImportedDataProvider } from "@/contexts";
 import { filterRows } from "@/data";
 import Explore from "./Explore";
 
@@ -26,7 +27,11 @@ vi.mock("@/components/charts", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/components/charts")>();
   return {
     ...actual,
-    PlotlyChart: () => <div data-testid="plotly-stub" />,
+    // Trace names are surfaced so the CSV-overlay tests can see what
+    // would reach Plotly without a canvas.
+    PlotlyChart: ({ data }: { data: { name?: string }[] }) => (
+      <div data-testid="plotly-stub" data-trace-names={data.map((t) => t.name ?? "").join("|")} />
+    ),
   };
 });
 
@@ -45,9 +50,11 @@ if (typeof Element.prototype.scrollIntoView !== "function") {
 
 function renderExplore() {
   return render(
-    <MemoryRouter initialEntries={["/explore"]}>
-      <Explore />
-    </MemoryRouter>,
+    <ImportedDataProvider>
+      <MemoryRouter initialEntries={["/explore"]}>
+        <Explore />
+      </MemoryRouter>
+    </ImportedDataProvider>,
   );
 }
 
@@ -182,5 +189,132 @@ describe("Explore page", () => {
     expect(rowCountSpans(655).length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { name: "Reset to defaults" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Clear all filters" })).toBeDisabled();
+  });
+
+  describe("CSV import overlay", () => {
+    function importFile(contents: string, name = "mine.csv") {
+      const file = new File([contents], name, { type: "text/csv" });
+      fireEvent.change(screen.getByLabelText("CSV file to import"), { target: { files: [file] } });
+    }
+
+    function traceNames(): string[] {
+      return (screen.getByTestId("plotly-stub").getAttribute("data-trace-names") ?? "").split("|");
+    }
+
+    const SAMPLE =
+      "approxTg,Conductivity at 60C,Anion,Sample ID\n-40,1e-4,TFSI,A\n10,3e-5,ClO4,B\n";
+
+    it("offers Import CSV, and no Clear button until something is imported", () => {
+      renderExplore();
+      expect(screen.getByRole("button", { name: "Import CSV" })).toBeEnabled();
+      expect(screen.queryByRole("button", { name: "Clear imported data" })).not.toBeInTheDocument();
+    });
+
+    it("adds an Imported trace after the dataset's traces and summarizes what matched", async () => {
+      renderExplore();
+      const before = traceNames();
+      expect(before).not.toContain("Imported");
+
+      importFile(SAMPLE);
+
+      expect(await screen.findByText("mine.csv")).toBeInTheDocument();
+      expect(screen.getByText(/3 of 4 columns matched/)).toBeInTheDocument();
+      expect(screen.getByText("Ignored: Sample ID")).toBeInTheDocument();
+      expect(traceNames()).toEqual([...before, "Imported"]);
+    });
+
+    it("clearing removes the overlay and returns the plot to its original traces", async () => {
+      renderExplore();
+      const before = traceNames();
+      importFile(SAMPLE);
+      await screen.findByText("mine.csv");
+
+      fireEvent.click(screen.getByRole("button", { name: "Clear imported data" }));
+
+      expect(traceNames()).toEqual(before);
+      expect(screen.queryByText("mine.csv")).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Clear imported data" })).not.toBeInTheDocument();
+    });
+
+    it("hides imported rows that fail an active filter, and says so", async () => {
+      renderExplore();
+      importFile(SAMPLE);
+      await screen.findByText("mine.csv");
+
+      fireEvent.click(screen.getByRole("combobox", { name: "Anion" }));
+      fireEvent.click(screen.getByRole("option", { name: "TFSI" }));
+
+      expect(
+        screen.getByText("1 of 2 imported rows plotted: 1 don't match the active filters."),
+      ).toBeInTheDocument();
+      expect(traceNames()).toContain("Imported");
+    });
+
+    it("names the dataset trace when a continuous color column shares the legend", async () => {
+      renderExplore();
+      selectColumn("Color", "Tg");
+      importFile(SAMPLE);
+      await screen.findByText("mine.csv");
+      expect(traceNames()).toEqual(["Dataset", "Imported"]);
+    });
+
+    it("explains when no columns match, and imports nothing", async () => {
+      renderExplore();
+      importFile("foo,bar\n1,2\n", "wrong.csv");
+
+      expect(
+        await screen.findByText(/None of the column headers in wrong\.csv/),
+      ).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Clear imported data" })).not.toBeInTheDocument();
+      expect(traceNames()).not.toContain("Imported");
+    });
+
+    it("survives navigating to another page and back", async () => {
+      // Same nesting as App.tsx: the provider sits above the router, so
+      // Explore unmounting on a route change doesn't take the import with it.
+      render(
+        <ImportedDataProvider>
+          <MemoryRouter initialEntries={["/explore"]}>
+            <Routes>
+              <Route
+                element={
+                  <>
+                    <Link to="/data">Go to Data</Link>
+                    <Link to="/explore">Go to Explore</Link>
+                    <Outlet />
+                  </>
+                }
+              >
+                <Route path="explore" element={<Explore />} />
+                <Route path="data" element={<p>Data page</p>} />
+              </Route>
+            </Routes>
+          </MemoryRouter>
+        </ImportedDataProvider>,
+      );
+      importFile(SAMPLE);
+      await screen.findByText("mine.csv");
+
+      fireEvent.click(screen.getByRole("link", { name: "Go to Data" }));
+      expect(screen.getByText("Data page")).toBeInTheDocument();
+      expect(screen.queryByTestId("plotly-stub")).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole("link", { name: "Go to Explore" }));
+      expect(await screen.findByText("mine.csv")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Clear imported data" })).toBeInTheDocument();
+      expect(traceNames()).toContain("Imported");
+    });
+
+    it("is untouched by Reset to defaults", async () => {
+      renderExplore();
+      importFile(SAMPLE);
+      await screen.findByText("mine.csv");
+      selectColumn("X axis", "Tg");
+
+      fireEvent.click(screen.getByRole("button", { name: "Reset to defaults" }));
+
+      await waitFor(() => expect(traceNames()).toContain("Imported"));
+      expect(screen.getByText("mine.csv")).toBeInTheDocument();
+    });
   });
 });

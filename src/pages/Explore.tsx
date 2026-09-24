@@ -3,24 +3,28 @@ import { ChartPageLayout } from "@/components/layout/ChartPageLayout";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button, Card, Notice } from "@/components/ui";
 import {
+  buildImportedScatterTrace,
   buildScatterTraces,
   PlotlyChart,
   useChartThemeMode,
   type PlotlyLayout,
   type PlotlyPointClick,
 } from "@/components/charts";
+import { useImportedData } from "@/contexts";
 import { filterRows, ROW_COUNT } from "@/data";
 import { useExploreControls } from "./explore/controls-state";
-import { axisTitle, isCategoricalColumn } from "./explore/columns";
+import { axisTitle, columnLabel, isCategoricalColumn } from "./explore/columns";
 import { ExploreControls } from "./explore/ExploreControls";
 import { PointInspector } from "./explore/PointInspector";
 import {
   axisNoticeMessage,
   buildAxisNotice,
   buildExplorePoints,
+  buildImportedPoints,
   exploreEmptyReason,
   highCardinalityMessage,
   highCardinalityNotice,
+  importedNoticeMessage,
 } from "./explore/plot-data";
 
 export default function Explore() {
@@ -37,6 +41,9 @@ export default function Explore() {
     resetToDefaults,
   } = useExploreControls();
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
+  // Held above the router (see ImportedDataProvider) so it survives page
+  // switches; never written to storage or the URL, so refresh clears it.
+  const { imported } = useImportedData();
   const themeMode = useChartThemeMode();
 
   const filteredRowIndices = useMemo(() => filterRows(resolved.filters), [resolved.filters]);
@@ -54,15 +61,51 @@ export default function Explore() {
     [filteredRowIndices, resolved.x, resolved.xScale, resolved.y, resolved.yScale, resolved.color],
   );
 
+  const importedPoints = useMemo(
+    () =>
+      imported
+        ? buildImportedPoints(
+            imported,
+            resolved.filters,
+            resolved.x,
+            resolved.xScale,
+            resolved.y,
+            resolved.yScale,
+            resolved.color,
+          )
+        : null,
+    [
+      imported,
+      resolved.filters,
+      resolved.x,
+      resolved.xScale,
+      resolved.y,
+      resolved.yScale,
+      resolved.color,
+    ],
+  );
+  const hasOverlay = importedPoints != null && importedPoints.points.length > 0;
+  const importedNotice = importedPoints
+    ? importedNoticeMessage(importedPoints, resolved.x, resolved.y)
+    : null;
+
   // Rebuilt whenever the theme changes: `buildScatterTraces` resolves a
   // category's rank straight to a concrete hex for the current mode, and
   // `PlotlyChart` only repaints its own chrome (axis lines, legend text) on
   // a theme change — it never sees category ranks, so it cannot repaint
-  // trace colors itself.
-  const traces = useMemo(
-    () => buildScatterTraces(seriesInput, themeMode),
-    [seriesInput, themeMode],
-  );
+  // trace colors itself. The overlay goes last so it draws on top.
+  const traces = useMemo(() => {
+    const base = buildScatterTraces(seriesInput, themeMode, {
+      continuousName: hasOverlay ? "Dataset" : undefined,
+    });
+    if (!hasOverlay) return base;
+    return [
+      ...base,
+      buildImportedScatterTrace(importedPoints.points, themeMode, {
+        colorLabel: columnLabel(resolved.color),
+      }),
+    ];
+  }, [seriesInput, themeMode, hasOverlay, importedPoints, resolved.color]);
 
   const xNotice = useMemo(
     () => buildAxisNotice(resolved.x, resolved.xScale, filteredRowIndices),
@@ -74,7 +117,11 @@ export default function Explore() {
   );
   const cardinalityNotice = useMemo(() => highCardinalityNotice(resolved.color), [resolved.color]);
 
-  const emptyReason = exploreEmptyReason(filteredRowIndices.length, plottedCount);
+  // Imported points alone are still worth a chart.
+  const emptyReason = hasOverlay
+    ? null
+    : exploreEmptyReason(filteredRowIndices.length, plottedCount);
+  const continuousWithOverlay = hasOverlay && seriesInput.kind === "continuous";
 
   const layout = useMemo<Partial<PlotlyLayout>>(() => {
     const xCategorical = isCategoricalColumn(resolved.x);
@@ -88,8 +135,16 @@ export default function Explore() {
         title: { text: axisTitle(resolved.y) },
         ...(yCategorical ? {} : { type: resolved.yScale === "log" ? "log" : "linear" }),
       },
+      // A continuous color column puts its colorbar where the legend would
+      // go, so the two-entry Dataset/Imported legend moves above the plot.
+      ...(continuousWithOverlay
+        ? {
+            legend: { orientation: "h", x: 0, xanchor: "left", y: 1.02, yanchor: "bottom" },
+            margin: { t: 48 },
+          }
+        : {}),
     };
-  }, [resolved.x, resolved.y, resolved.xScale, resolved.yScale]);
+  }, [resolved.x, resolved.y, resolved.xScale, resolved.yScale, continuousWithOverlay]);
 
   function handlePointClick(point: PlotlyPointClick) {
     if (typeof point.customdata === "number") setSelectedRow(point.customdata);
@@ -135,6 +190,7 @@ export default function Explore() {
             {cardinalityNotice ? (
               <Notice tone="info">{highCardinalityMessage(cardinalityNotice)}</Notice>
             ) : null}
+            {importedNotice ? <Notice tone="info">{importedNotice}</Notice> : null}
 
             {emptyReason ? (
               <Notice tone="info" title="Nothing to plot">

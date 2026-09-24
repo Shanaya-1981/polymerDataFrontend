@@ -5,6 +5,7 @@ import type { AxisScale } from "@/lib/log-axis";
 import { AxisControl } from "./AxisControl";
 import { columnLabel, getColumnMeta, PLOTTABLE_COLUMN_OPTIONS } from "./columns";
 import { FilterPanel } from "./FilterPanel";
+import { ImportButtons, ImportStatus } from "./ImportControl";
 
 export interface ExploreControlsProps {
   x: string;
@@ -24,7 +25,8 @@ export interface ExploreControlsProps {
   /** Whether every axis, scale, color, and filter is already at its
    *  default — mirrors `onClearFilters`'s own disabled condition below. */
   isAtDefaults: boolean;
-  /** Returns axes, scale, color, and every filter to its default. */
+  /** Returns axes, scale, color, and every filter to its default. Leaves
+   *  the imported CSV alone — it has its own "Clear imported data" button. */
   onReset: () => void;
 }
 
@@ -59,15 +61,15 @@ export function ExploreControls({
           the axes, scale and color too, not just the filters — a broader
           action that needs a name distinct enough neither screen readers
           nor `getByRole` queries can confuse the two. */}
-      <Button
-        variant="outline"
-        size="sm"
-        className="self-start"
-        onClick={onReset}
-        disabled={isAtDefaults}
-      >
-        Reset to defaults
-      </Button>
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={onReset} disabled={isAtDefaults}>
+            Reset to defaults
+          </Button>
+          <ImportButtons />
+        </div>
+        <ImportStatus />
+      </div>
 
       <div className="flex flex-col gap-4">
         <AxisControl
