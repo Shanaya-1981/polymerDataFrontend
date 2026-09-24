@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
-import { parseImportCsv, type ImportedDataset } from "@/pages/explore/csv-import";
+import { parseImportCsv, type ImportedDataset } from "@/components/import";
 import { useImportedData } from "./imported-data-context";
 import { ImportedDataProvider } from "./ImportedDataProvider";
 

@@ -27,13 +27,28 @@ vi.mock("@/components/charts", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/components/charts")>();
   return {
     ...actual,
-    // Trace names are surfaced so the CSV-overlay tests can see what
-    // would reach Plotly without a canvas.
-    PlotlyChart: ({ data }: { data: { name?: string }[] }) => (
-      <div data-testid="plotly-stub" data-trace-names={data.map((t) => t.name ?? "").join("|")} />
+    // Reports what would reach Plotly — each trace's name, legend and
+    // point count, plus the layout's legends — for the CSV-overlay tests.
+    PlotlyChart: ({ data, layout }: PlotlyStubProps) => (
+      <div
+        data-testid="plotly-stub"
+        data-traces={JSON.stringify(
+          data.map((t) => ({
+            name: t.name ?? "",
+            legend: t.legend ?? "legend",
+            points: t.x?.filter((v) => v !== null).length ?? 0,
+          })),
+        )}
+        data-layout={JSON.stringify({ legend: layout?.legend, legend2: layout?.legend2 })}
+      />
     ),
   };
 });
+
+interface PlotlyStubProps {
+  data: { name?: string; legend?: string; x?: unknown[] }[];
+  layout?: Record<string, unknown>;
+}
 
 // jsdom gaps — see Combobox.test.tsx/MultiSelect.test.tsx for the same stubs.
 class ResizeObserverStub implements ResizeObserver {
@@ -197,8 +212,45 @@ describe("Explore page", () => {
       fireEvent.change(screen.getByLabelText("CSV file to import"), { target: { files: [file] } });
     }
 
-    function traceNames(): string[] {
-      return (screen.getByTestId("plotly-stub").getAttribute("data-trace-names") ?? "").split("|");
+    interface StubTrace {
+      name: string;
+      legend: string;
+      points: number;
+    }
+
+    function stubTraces(): StubTrace[] {
+      const json = screen.getByTestId("plotly-stub").getAttribute("data-traces") ?? "[]";
+      return JSON.parse(json) as StubTrace[];
+    }
+
+    function stubLegendTitles(): { legend?: string; legend2?: string } {
+      const json = screen.getByTestId("plotly-stub").getAttribute("data-layout") ?? "{}";
+      const layout = JSON.parse(json) as Record<string, { title?: { text?: string } } | undefined>;
+      return { legend: layout.legend?.title?.text, legend2: layout.legend2?.title?.text };
+    }
+
+    /** The overlay: one trace per formulation in the imported legend, or a
+     *  single "Imported" trace when there's nothing to split by. */
+    function isImported(trace: StubTrace): boolean {
+      return trace.legend === "legend2" || trace.name === "Imported";
+    }
+
+    function importedTraces(): StubTrace[] {
+      return stubTraces().filter(isImported);
+    }
+
+    function importedPointCount(): number {
+      return importedTraces().reduce((sum, trace) => sum + trace.points, 0);
+    }
+
+    /** Anion TFSI + Solvent water + crystalline? na matches no dataset row. */
+    function applyFiltersMatchingNothing() {
+      fireEvent.click(screen.getByRole("combobox", { name: "Anion" }));
+      fireEvent.click(screen.getByRole("option", { name: "TFSI" }));
+      fireEvent.click(screen.getByRole("combobox", { name: "Solvent used" }));
+      fireEvent.click(screen.getByRole("option", { name: "water" }));
+      fireEvent.click(screen.getByRole("combobox", { name: "crystalline?" }));
+      fireEvent.click(screen.getByRole("option", { name: "na" }));
     }
 
     const SAMPLE =
@@ -210,44 +262,96 @@ describe("Explore page", () => {
       expect(screen.queryByRole("button", { name: "Clear imported data" })).not.toBeInTheDocument();
     });
 
-    it("adds an Imported trace after the dataset's traces and summarizes what matched", async () => {
+    it("adds one imported trace per formulation after the dataset's, and summarizes what matched", async () => {
       renderExplore();
-      const before = traceNames();
-      expect(before).not.toContain("Imported");
+      const before = stubTraces();
+      expect(before.some(isImported)).toBe(false);
 
       importFile(SAMPLE);
 
       expect(await screen.findByText("mine.csv")).toBeInTheDocument();
       expect(screen.getByText(/3 of 4 columns matched/)).toBeInTheDocument();
       expect(screen.getByText("Ignored: Sample ID")).toBeInTheDocument();
-      expect(traceNames()).toEqual([...before, "Imported"]);
+      // Colored by Anion (the default): TFSI and ClO4 each get an entry, in
+      // the dataset's own order, in a legend of their own.
+      expect(stubTraces().slice(0, before.length)).toEqual(before);
+      expect(importedTraces()).toEqual([
+        { name: "TFSI", legend: "legend2", points: 1 },
+        { name: "ClO4", legend: "legend2", points: 1 },
+      ]);
+      expect(stubLegendTitles()).toEqual({ legend: "<b>Dataset</b>", legend2: "<b>Imported</b>" });
+    });
+
+    it("keeps a single Imported entry in the main legend when there's no category to split by", async () => {
+      renderExplore();
+      importFile("approxTg,Conductivity at 60C\n-40,1e-4\n10,3e-5\n"); // no Anion column
+      await screen.findByText("mine.csv");
+
+      expect(importedTraces()).toEqual([{ name: "Imported", legend: "legend", points: 2 }]);
+      expect(stubLegendTitles()).toEqual({ legend: undefined, legend2: undefined });
+    });
+
+    it("gives rows without a value for the color column their own entry, last", async () => {
+      renderExplore();
+      importFile("approxTg,Conductivity at 60C,Anion\n-40,1e-4,\n10,3e-5,ClO4\n");
+      await screen.findByText("mine.csv");
+
+      expect(importedTraces().map((trace) => trace.name)).toEqual(["ClO4", "No Anion"]);
+    });
+
+    it("re-splits imported rows when the color column changes", async () => {
+      renderExplore();
+      importFile(
+        "approxTg,Conductivity at 60C,Anion,Solvent used\n-40,1e-4,TFSI,water\n10,3e-5,ClO4,water\n",
+      );
+      await screen.findByText("mine.csv");
+
+      selectColumn("Color", "Solvent used");
+
+      expect(importedTraces()).toEqual([{ name: "water", legend: "legend2", points: 2 }]);
     });
 
     it("clearing removes the overlay and returns the plot to its original traces", async () => {
       renderExplore();
-      const before = traceNames();
+      const before = stubTraces();
       importFile(SAMPLE);
       await screen.findByText("mine.csv");
 
       fireEvent.click(screen.getByRole("button", { name: "Clear imported data" }));
 
-      expect(traceNames()).toEqual(before);
+      expect(stubTraces()).toEqual(before);
+      expect(stubLegendTitles()).toEqual({ legend: undefined, legend2: undefined });
       expect(screen.queryByText("mine.csv")).not.toBeInTheDocument();
       expect(screen.queryByRole("button", { name: "Clear imported data" })).not.toBeInTheDocument();
     });
 
-    it("hides imported rows that fail an active filter, and says so", async () => {
+    it("keeps every imported row on the chart whatever the filters, without a filter notice", async () => {
       renderExplore();
-      importFile(SAMPLE);
+      importFile(SAMPLE); // one TFSI row, one ClO4 row
       await screen.findByText("mine.csv");
 
       fireEvent.click(screen.getByRole("combobox", { name: "Anion" }));
       fireEvent.click(screen.getByRole("option", { name: "TFSI" }));
 
-      expect(
-        screen.getByText("1 of 2 imported rows plotted: 1 don't match the active filters."),
-      ).toBeInTheDocument();
-      expect(traceNames()).toContain("Imported");
+      expect(importedPointCount()).toBe(2);
+      expect(screen.queryByText(/imported rows plotted/)).not.toBeInTheDocument();
+    });
+
+    it("still charts the imported points when the filters match no dataset row, and says so", async () => {
+      renderExplore();
+      importFile(SAMPLE);
+      await screen.findByText("mine.csv");
+
+      applyFiltersMatchingNothing();
+
+      expect(screen.getByText("Only your imported data is shown")).toBeInTheDocument();
+      expect(screen.getByText("No rows match the selected filters.")).toBeInTheDocument();
+      expect(stubTraces().every(isImported)).toBe(true);
+      expect(importedPointCount()).toBe(2);
+
+      fireEvent.click(screen.getByRole("button", { name: "Clear filters" }));
+      expect(screen.queryByText("Only your imported data is shown")).not.toBeInTheDocument();
+      expect(importedPointCount()).toBe(2);
     });
 
     it("names the dataset trace when a continuous color column shares the legend", async () => {
@@ -255,7 +359,8 @@ describe("Explore page", () => {
       selectColumn("Color", "Tg");
       importFile(SAMPLE);
       await screen.findByText("mine.csv");
-      expect(traceNames()).toEqual(["Dataset", "Imported"]);
+      expect(stubTraces().map((trace) => trace.name)).toEqual(["Dataset", "Imported"]);
+      expect(stubLegendTitles().legend2).toBeUndefined();
     });
 
     it("explains when no columns match, and imports nothing", async () => {
@@ -266,7 +371,7 @@ describe("Explore page", () => {
         await screen.findByText(/None of the column headers in wrong\.csv/),
       ).toBeInTheDocument();
       expect(screen.queryByRole("button", { name: "Clear imported data" })).not.toBeInTheDocument();
-      expect(traceNames()).not.toContain("Imported");
+      expect(importedTraces()).toEqual([]);
     });
 
     it("survives navigating to another page and back", async () => {
@@ -302,7 +407,7 @@ describe("Explore page", () => {
       fireEvent.click(screen.getByRole("link", { name: "Go to Explore" }));
       expect(await screen.findByText("mine.csv")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "Clear imported data" })).toBeInTheDocument();
-      expect(traceNames()).toContain("Imported");
+      expect(importedPointCount()).toBe(2);
     });
 
     it("is untouched by Reset to defaults", async () => {
@@ -313,7 +418,7 @@ describe("Explore page", () => {
 
       fireEvent.click(screen.getByRole("button", { name: "Reset to defaults" }));
 
-      await waitFor(() => expect(traceNames()).toContain("Imported"));
+      await waitFor(() => expect(importedPointCount()).toBe(2));
       expect(screen.getByText("mine.csv")).toBeInTheDocument();
     });
   });

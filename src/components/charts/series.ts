@@ -18,7 +18,7 @@ import {
   slotForRank,
 } from "@/styles/chart-palette";
 import type { ChartThemeMode } from "./theme";
-import type { ColorScale, Data } from "./plotly";
+import type { ColorScale, Data, Layout } from "./plotly";
 
 const OTHER_LABEL = "Other";
 
@@ -239,11 +239,31 @@ export interface ImportedPoint {
 }
 
 export const IMPORTED_TRACE_NAME = "Imported";
-const IMPORTED_MARKER_SIZE = 13;
+const IMPORTED_HOVERTEMPLATE = `${IMPORTED_TRACE_NAME}, %{text}<br>x: %{x}<br>y: %{y}<extra></extra>`;
 
 /** User-supplied text ends up in Plotly's pseudo-HTML hover labels. */
 function escapeHoverText(value: string): string {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/** The "<br>Anion: TFSI" tail of an imported point's hover text. */
+function importedColorText(colorLabel: string | undefined, value: number | string | null): string {
+  if (!colorLabel) return "";
+  const shown = value == null ? "—" : escapeHoverText(String(value));
+  return `<br>${escapeHoverText(colorLabel)}: ${shown}`;
+}
+
+/** `IMPORTED_SLOT`'s outlined star, shared by both overlay builders. */
+function importedMarker(mode: ChartThemeMode, size: number) {
+  return {
+    color: mode === "dark" ? IMPORTED_SLOT.dark : IMPORTED_SLOT.light,
+    symbol: IMPORTED_SLOT.symbol,
+    size,
+    line: {
+      color: mode === "dark" ? IMPORTED_SLOT.outlineDark : IMPORTED_SLOT.outlineLight,
+      width: 1.5,
+    },
+  };
 }
 
 /**
@@ -259,7 +279,6 @@ export function buildImportedScatterTrace(
   options: Pick<ScatterTraceOptions, "traceType"> & { colorLabel?: string } = {},
 ): Data {
   const traceType = options.traceType ?? DEFAULT_TRACE_TYPE;
-  const { colorLabel } = options;
   return {
     type: traceType,
     mode: "markers",
@@ -267,23 +286,158 @@ export function buildImportedScatterTrace(
     showlegend: true,
     x: points.map((p) => p.x),
     y: points.map((p) => p.y),
-    text: points.map((p) => {
-      const row = `row ${p.rowNumber}`;
-      if (!colorLabel) return row;
-      const value = p.colorValue == null ? "—" : escapeHoverText(String(p.colorValue));
-      return `${row}<br>${escapeHoverText(colorLabel)}: ${value}`;
-    }),
-    marker: {
-      color: mode === "dark" ? IMPORTED_SLOT.dark : IMPORTED_SLOT.light,
-      symbol: IMPORTED_SLOT.symbol,
-      size: IMPORTED_MARKER_SIZE,
-      line: {
-        color: mode === "dark" ? IMPORTED_SLOT.outlineDark : IMPORTED_SLOT.outlineLight,
-        width: 1.5,
-      },
-    },
-    hovertemplate: `${IMPORTED_TRACE_NAME}, %{text}<br>x: %{x}<br>y: %{y}<extra></extra>`,
+    text: points.map(
+      (p) => `row ${p.rowNumber}${importedColorText(options.colorLabel, p.colorValue)}`,
+    ),
+    marker: importedMarker(mode, 13),
+    hovertemplate: IMPORTED_HOVERTEMPLATE,
   };
+}
+
+/** One imported row's conductivity curve, already on the Temperature
+ *  page's x-axis. `x`, `y` and `temperaturesC` are equal length. */
+export interface ImportedLineSample {
+  x: readonly number[];
+  y: readonly number[];
+  /** Measurement temperature (°C) behind each point, for hover text. */
+  temperaturesC: readonly number[];
+  /** 1-based data-row number in the imported file (header excluded). */
+  rowNumber: number;
+  /** This row's value for the current color column (hover text only). */
+  colorValue: string | null;
+}
+
+/**
+ * The Temperature page's overlay: every imported row's curve concatenated
+ * into one `null`-separated trace (as `buildNullSeparatedGroups` does per
+ * color slot), drawn as a line through the same outlined stars as the
+ * Explore overlay. `text` stays index-aligned with `x`/`y`, holding `""`
+ * at each separator. No `customdata`, for the reason given on
+ * `buildImportedScatterTrace` — here it would be worse than a no-op, since
+ * `resolveClickedPoint` matches on the same transformed x values dataset
+ * rows use.
+ */
+export function buildImportedLineTrace(
+  samples: readonly ImportedLineSample[],
+  mode: ChartThemeMode,
+  options: Pick<ScatterTraceOptions, "traceType"> & { colorLabel?: string } = {},
+): Data {
+  const traceType = options.traceType ?? DEFAULT_TRACE_TYPE;
+  const x: (number | null)[] = [];
+  const y: (number | null)[] = [];
+  const text: string[] = [];
+
+  for (const sample of samples) {
+    if (sample.x.length === 0) continue;
+    if (x.length > 0) {
+      x.push(null);
+      y.push(null);
+      text.push("");
+    }
+    const colorText = importedColorText(options.colorLabel, sample.colorValue);
+    sample.x.forEach((value, i) => {
+      x.push(value);
+      y.push(sample.y[i]);
+      text.push(`row ${sample.rowNumber}, ${sample.temperaturesC[i]} °C${colorText}`);
+    });
+  }
+
+  const marker = importedMarker(mode, 10);
+  return {
+    type: traceType,
+    mode: "lines+markers",
+    name: IMPORTED_TRACE_NAME,
+    showlegend: true,
+    x,
+    y,
+    text,
+    connectgaps: false,
+    line: { color: marker.color, width: 2 },
+    marker,
+    hovertemplate: IMPORTED_HOVERTEMPLATE,
+  };
+}
+
+/** Imported rows sharing one value of the page's color column (e.g. every
+ *  TFSI row) — one toggleable legend entry each. */
+export interface ImportedGroup<T> {
+  /** The category, or `null` for rows with no value in that column. */
+  label: string | null;
+  items: readonly T[];
+}
+
+/** Plotly's id for a second legend — the imported rows' own. */
+const IMPORTED_LEGEND_ID = "legend2";
+
+/**
+ * Whether imported traces get their own legend: yes as soon as any row has
+ * a category to toggle it by. A lone unlabelled group — a numeric color
+ * column, or a file without the color column — stays a single "Imported"
+ * entry in the main legend.
+ */
+export function hasImportedLegend(groups: readonly ImportedGroup<unknown>[]): boolean {
+  return groups.some((group) => group.label !== null);
+}
+
+/**
+ * Layout for `hasImportedLegend` charts: the imported entries as a titled
+ * row above the plot, clear of the dataset's legend on the right however
+ * long either gets, and a matching title on the dataset's. With two
+ * legends Plotly makes each title clickable — a click toggles that whole
+ * legend, a double-click shows it alone — so hiding all imported rows is
+ * still one click, as it was with the single "Imported" entry.
+ */
+export const IMPORTED_LEGEND_LAYOUT = {
+  legend: { title: { text: "<b>Dataset</b>" } },
+  [IMPORTED_LEGEND_ID]: {
+    title: { text: `<b>${IMPORTED_TRACE_NAME}</b>` },
+    orientation: "h",
+    x: 0,
+    xanchor: "left",
+    y: 1.02,
+    yanchor: "bottom",
+  },
+} satisfies Record<string, Partial<Layout>["legend"]>;
+
+/** Legend name for one imported group — rows with no value get their own. */
+function importedGroupName(label: string | null, colorLabel: string | undefined): string {
+  return label ?? `No ${colorLabel ?? "value"}`;
+}
+
+/** Move a trace into the imported legend under `name`. Which legend a trace
+ *  belongs to (`legend`) postdates @types/plotly.js, hence the cast. */
+function inImportedLegend(trace: Data, name: string): Data {
+  return { ...trace, name, legend: IMPORTED_LEGEND_ID } as Data;
+}
+
+/**
+ * `buildImportedScatterTrace` once per group: one trace per formulation in
+ * the imported legend, each toggled on its own, or the single "Imported"
+ * trace when there is nothing to split by (see `hasImportedLegend`).
+ */
+export function buildImportedScatterTraces(
+  groups: readonly ImportedGroup<ImportedPoint>[],
+  mode: ChartThemeMode,
+  options: Pick<ScatterTraceOptions, "traceType"> & { colorLabel?: string } = {},
+): Data[] {
+  const traces = groups.map((group) => buildImportedScatterTrace(group.items, mode, options));
+  if (!hasImportedLegend(groups)) return traces;
+  return traces.map((trace, i) =>
+    inImportedLegend(trace, importedGroupName(groups[i].label, options.colorLabel)),
+  );
+}
+
+/** `buildImportedLineTrace` once per group — see `buildImportedScatterTraces`. */
+export function buildImportedLineTraces(
+  groups: readonly ImportedGroup<ImportedLineSample>[],
+  mode: ChartThemeMode,
+  options: Pick<ScatterTraceOptions, "traceType"> & { colorLabel?: string } = {},
+): Data[] {
+  const traces = groups.map((group) => buildImportedLineTrace(group.items, mode, options));
+  if (!hasImportedLegend(groups)) return traces;
+  return traces.map((trace, i) =>
+    inImportedLegend(trace, importedGroupName(groups[i].label, options.colorLabel)),
+  );
 }
 
 /** One sample's full line (e.g. one row's conductivity-vs-temperature
@@ -360,9 +514,16 @@ export function buildNullSeparatedGroups(samples: readonly LineSample[]): NullSe
   return Array.from(groups.values()).sort((a, b) => a.key - b.key);
 }
 
+/** Marker diameter on the Temperature page's curves: enough to show where
+ *  each real measurement sits on its line, small enough that all 5,225 of
+ *  them don't bury the lines. */
+const TEMPERATURE_MARKER_SIZE = 4;
+
 /**
  * `buildNullSeparatedGroups` plus the theme-resolved color/name each group
- * needs to become a Plotly line trace — the Temperature page's entry point.
+ * needs to become a Plotly trace — the Temperature page's entry point. A
+ * small same-colored dot marks every measurement, so a curve shows where
+ * data exists and where the line is only joining it up.
  */
 export function buildTemperatureLineTraces(
   samples: readonly LineSample[],
@@ -370,17 +531,21 @@ export function buildTemperatureLineTraces(
   options: Pick<ScatterTraceOptions, "traceType"> = {},
 ): Data[] {
   const traceType = options.traceType ?? DEFAULT_TRACE_TYPE;
-  return buildNullSeparatedGroups(samples).map((group): Data => ({
-    type: traceType,
-    mode: "lines",
-    name: group.label,
-    x: group.x,
-    y: group.y,
-    customdata: group.customdata,
-    connectgaps: false,
-    line: { color: resolveSlotColor(group.key, mode), width: 1.5 },
-    hovertemplate: `${group.label}<br>x: %{x}<br>y: %{y}<extra></extra>`,
-  }));
+  return buildNullSeparatedGroups(samples).map((group): Data => {
+    const color = resolveSlotColor(group.key, mode);
+    return {
+      type: traceType,
+      mode: "lines+markers",
+      name: group.label,
+      x: group.x,
+      y: group.y,
+      customdata: group.customdata,
+      connectgaps: false,
+      line: { color, width: 1.5 },
+      marker: { color, size: TEMPERATURE_MARKER_SIZE, symbol: "circle" },
+      hovertemplate: `${group.label}<br>x: %{x}<br>y: %{y}<extra></extra>`,
+    };
+  });
 }
 
 /** A square, symmetric correlation matrix — the forML-CSV-derived 36×36

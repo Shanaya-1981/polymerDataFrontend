@@ -17,7 +17,6 @@ import {
   type FrozenCategoryColumnId,
   type NumericColumnId,
 } from "@/data";
-import { filterRowIndices, type FilterSelections } from "@/lib/filtering";
 import { applyAxisScale, type AxisScale } from "@/lib/log-axis";
 import type {
   CategoricalPoint,
@@ -27,7 +26,7 @@ import type {
 } from "@/components/charts";
 import { MAX_CATEGORICAL_SLOTS } from "@/styles/chart-palette";
 import { axisTitle, getColumnMeta } from "./columns";
-import type { ImportedDataset } from "./csv-import";
+import type { ImportedDataset } from "@/components/import";
 
 // ---------------------------------------------------------------------------
 // Log-axis hazard — DATA-SPEC.md §3
@@ -188,7 +187,8 @@ export function buildExplorePoints(
 }
 
 // ---------------------------------------------------------------------------
-// User-imported rows (csv-import.ts) — same axis rules as the dataset
+// User-imported rows (`@/components/import`) — same axis rules as the
+// dataset, but never filtered
 // ---------------------------------------------------------------------------
 
 /** One column of an imported file, or `undefined` if the file lacked it. */
@@ -205,28 +205,25 @@ function importedColumn(
 export interface ImportedPointsResult {
   readonly points: readonly ImportedPoint[];
   readonly totalCount: number;
-  /** Rows passing the active filters — `<= totalCount`. */
-  readonly matchingFilterCount: number;
   /** Axes whose column the file doesn't have at all. */
   readonly missingAxes: readonly ("X" | "Y")[];
 }
 
 /**
- * Imported rows as overlay points for the current view: filtered with the
- * same AND-across/OR-within rule as the dataset (a row lacking a filtered
- * column fails that filter), then run through the same `plottableXY` gate —
- * missing values and non-positive values on a log axis never plot.
+ * Imported rows as overlay points for the current view. The dataset
+ * filters deliberately don't apply — they narrow the literature, and the
+ * user's own rows stay visible against whatever slice they pick. Only the
+ * same `plottableXY` gate as the dataset does: missing values and
+ * non-positive values on a log axis never plot.
  */
 export function buildImportedPoints(
   imported: ImportedDataset,
-  filters: FilterSelections,
   xColumnId: string,
   xScale: AxisScale,
   yColumnId: string,
   yScale: AxisScale,
   colorColumnId: string,
 ): ImportedPointsResult {
-  const rowIndices = filterRowIndices(imported.rowCount, imported.categorical, filters);
   const xColumn = importedColumn(imported, xColumnId);
   const yColumn = importedColumn(imported, yColumnId);
   const colorColumn = importedColumn(imported, colorColumnId);
@@ -237,19 +234,14 @@ export function buildImportedPoints(
 
   const points: ImportedPoint[] = [];
   if (xColumn && yColumn) {
-    for (const row of rowIndices) {
+    for (let row = 0; row < imported.rowCount; row++) {
       const xy = plottableXY(xColumn, yColumn, row, xScale, yScale);
       if (!xy) continue;
       points.push({ x: xy.x, y: xy.y, rowNumber: row + 1, colorValue: colorColumn?.[row] ?? null });
     }
   }
 
-  return {
-    points,
-    totalCount: imported.rowCount,
-    matchingFilterCount: rowIndices.length,
-    missingAxes,
-  };
+  return { points, totalCount: imported.rowCount, missingAxes };
 }
 
 /**
@@ -271,16 +263,12 @@ export function importedNoticeMessage(
   }
 
   const plotted = result.points.length;
-  if (plotted === result.totalCount) return null;
-
-  const filteredOut = result.totalCount - result.matchingFilterCount;
-  const unplottable = result.matchingFilterCount - plotted;
-  const reasons: string[] = [];
-  if (filteredOut > 0) reasons.push(`${filteredOut} don't match the active filters`);
-  if (unplottable > 0) {
-    reasons.push(`${unplottable} have a missing X or Y value, or one a log axis can't show (≤ 0)`);
-  }
-  return `${plotted} of ${result.totalCount} imported rows plotted: ${reasons.join("; ")}.`;
+  const unplottable = result.totalCount - plotted;
+  if (unplottable === 0) return null;
+  return (
+    `${plotted} of ${result.totalCount} imported rows plotted: ${unplottable} ` +
+    `${unplottable === 1 ? "has" : "have"} a missing X or Y value, or one a log axis can't show (≤ 0).`
+  );
 }
 
 // ---------------------------------------------------------------------------

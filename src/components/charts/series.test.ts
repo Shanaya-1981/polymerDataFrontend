@@ -11,13 +11,20 @@ import {
   buildCategoricalScatterTraces,
   buildContinuousScatterTrace,
   buildCorrelationHeatmapTrace,
+  buildImportedLineTrace,
+  buildImportedLineTraces,
   buildImportedScatterTrace,
+  buildImportedScatterTraces,
   buildNullSeparatedGroups,
   buildScatterTraces,
   buildTemperatureLineTraces,
+  hasImportedLegend,
+  IMPORTED_LEGEND_LAYOUT,
   resolveSlotColor,
   type CategoricalPoint,
   type ContinuousPoint,
+  type ImportedGroup,
+  type ImportedLineSample,
   type ImportedPoint,
   type LineSample,
 } from "./series";
@@ -52,6 +59,7 @@ interface LineTraceShape {
   y: (number | null)[];
   customdata: (number | null)[];
   line: { color: string; width?: number };
+  marker?: { color?: string; size?: number; symbol?: string };
   connectgaps?: boolean;
 }
 interface HeatmapTraceShape {
@@ -324,7 +332,7 @@ describe("buildTemperatureLineTraces", () => {
     { x: [3], y: [30], rank: 3, category: "ClO4", rowIndex: 2 },
   ];
 
-  it("emits one line trace per null-separated group, colored via resolveSlotColor", () => {
+  it("emits one line-and-marker trace per null-separated group, colored via resolveSlotColor", () => {
     const groups = buildNullSeparatedGroups(samples);
     const traces = buildTemperatureLineTraces(samples, "light").map((t) =>
       shape<LineTraceShape>(t),
@@ -332,7 +340,7 @@ describe("buildTemperatureLineTraces", () => {
 
     expect(traces).toHaveLength(groups.length);
     traces.forEach((trace, i) => {
-      expect(trace.mode).toBe("lines");
+      expect(trace.mode).toBe("lines+markers");
       expect(trace.type).toBe("scatter");
       expect(trace.connectgaps).toBe(false);
       expect(trace.name).toBe(groups[i].label);
@@ -343,12 +351,25 @@ describe("buildTemperatureLineTraces", () => {
     });
   });
 
+  it("marks each measurement with a small circle in its line's color", () => {
+    const traces = buildTemperatureLineTraces(samples, "light").map((t) =>
+      shape<LineTraceShape>(t),
+    );
+    for (const trace of traces) {
+      expect(trace.marker?.color).toBe(trace.line.color);
+      expect(trace.marker?.symbol).toBe("circle");
+      expect(trace.marker?.size).toBeGreaterThanOrEqual(4);
+      expect(trace.marker?.size).toBeLessThanOrEqual(5);
+    }
+  });
+
   it("respects a traceType override and dark mode", () => {
     const [trace] = buildTemperatureLineTraces(samples, "dark", { traceType: "scattergl" }).map(
       (t) => shape<LineTraceShape>(t),
     );
     expect(trace.type).toBe("scattergl");
     expect(trace.line.color).toBe(resolveSlotColor(0, "dark"));
+    expect(trace.marker?.color).toBe(resolveSlotColor(0, "dark"));
   });
 });
 
@@ -467,5 +488,171 @@ describe("buildImportedScatterTrace", () => {
       ),
     );
     expect(trace.text[0]).toBe("row 1<br>Anion: &lt;b&gt;x&lt;/b&gt; &amp; y");
+  });
+});
+
+describe("buildImportedLineTrace", () => {
+  interface ImportedLineTraceShape {
+    type: string;
+    mode: string;
+    name: string;
+    showlegend: boolean;
+    x: (number | null)[];
+    y: (number | null)[];
+    text: string[];
+    customdata?: unknown;
+    connectgaps: boolean;
+    line: { color: string; width: number };
+    marker: MarkerShape & { line: { color: string; width: number } };
+  }
+
+  const samples: ImportedLineSample[] = [
+    { x: [3.3, 3.0], y: [1e-5, 1e-4], temperaturesC: [30, 60], rowNumber: 1, colorValue: "TFSI" },
+    { x: [], y: [], temperaturesC: [], rowNumber: 2, colorValue: "ClO4" },
+    { x: [2.9], y: [2e-5], temperaturesC: [70], rowNumber: 3, colorValue: null },
+  ];
+
+  it("joins every row into one trace, null-separated, skipping empty rows", () => {
+    const trace = shape<ImportedLineTraceShape>(buildImportedLineTrace(samples, "light"));
+    expect(trace.x).toEqual([3.3, 3.0, null, 2.9]);
+    expect(trace.y).toEqual([1e-5, 1e-4, null, 2e-5]);
+    expect(trace.connectgaps).toBe(false);
+  });
+
+  it("keeps hover text index-aligned with x/y, naming row, temperature and color value", () => {
+    const trace = shape<ImportedLineTraceShape>(
+      buildImportedLineTrace(samples, "light", { colorLabel: "Anion" }),
+    );
+    expect(trace.text).toEqual([
+      "row 1, 30 °C<br>Anion: TFSI",
+      "row 1, 60 °C<br>Anion: TFSI",
+      "",
+      "row 3, 70 °C<br>Anion: —",
+    ]);
+    expect(trace.text).toHaveLength(trace.x.length);
+  });
+
+  it("draws a line through outlined stars in the overlay color, with its own legend entry", () => {
+    for (const mode of ["light", "dark"] as const) {
+      const trace = shape<ImportedLineTraceShape>(buildImportedLineTrace(samples, mode));
+      expect(trace.type).toBe("scatter");
+      expect(trace.mode).toBe("lines+markers");
+      expect(trace.name).toBe("Imported");
+      expect(trace.showlegend).toBe(true);
+      expect(trace.line.color).toBe(IMPORTED_SLOT[mode]);
+      expect(trace.marker.color).toBe(IMPORTED_SLOT[mode]);
+      expect(trace.marker.symbol).toBe("star");
+      expect(trace.marker.line.width).toBeGreaterThan(0);
+    }
+  });
+
+  it("carries no customdata, so a click can't resolve to a dataset row", () => {
+    const trace = shape<ImportedLineTraceShape>(buildImportedLineTrace(samples, "light"));
+    expect(trace.customdata).toBeUndefined();
+  });
+
+  it("escapes user-supplied text in hover labels", () => {
+    const trace = shape<ImportedLineTraceShape>(
+      buildImportedLineTrace(
+        [{ x: [1], y: [1], temperaturesC: [30], rowNumber: 1, colorValue: "<i>x</i>" }],
+        "light",
+        { colorLabel: "Anion" },
+      ),
+    );
+    expect(trace.text).toEqual(["row 1, 30 °C<br>Anion: &lt;i&gt;x&lt;/i&gt;"]);
+  });
+});
+
+describe("imported legend: one entry per formulation", () => {
+  interface LegendTraceShape {
+    name: string;
+    legend?: string;
+    x: unknown[];
+    marker: { color: string; symbol: string };
+  }
+
+  const tfsi: ImportedPoint = { x: 1, y: 1e-4, rowNumber: 1, colorValue: "TFSI" };
+  const clo4: ImportedPoint = { x: 2, y: 2e-5, rowNumber: 2, colorValue: "ClO4" };
+  const blank: ImportedPoint = { x: 3, y: 3e-6, rowNumber: 3, colorValue: null };
+
+  it("splits labelled groups into their own legend, one trace each, in group order", () => {
+    const groups: ImportedGroup<ImportedPoint>[] = [
+      { label: "TFSI", items: [tfsi] },
+      { label: "ClO4", items: [clo4] },
+      { label: null, items: [blank] },
+    ];
+    const traces = buildImportedScatterTraces(groups, "light", { colorLabel: "Anion" }).map((t) =>
+      shape<LegendTraceShape>(t),
+    );
+    expect(traces.map((t) => [t.name, t.legend, t.x])).toEqual([
+      ["TFSI", "legend2", [1]],
+      ["ClO4", "legend2", [2]],
+      ["No Anion", "legend2", [3]],
+    ]);
+    // Every group keeps the overlay's look; only the legend entry differs.
+    for (const trace of traces) {
+      expect(trace.marker.color).toBe(IMPORTED_SLOT.light);
+      expect(trace.marker.symbol).toBe("star");
+    }
+  });
+
+  it("keeps a lone unlabelled group as the single Imported trace in the main legend", () => {
+    const [trace, ...rest] = buildImportedScatterTraces(
+      [{ label: null, items: [tfsi, clo4] }],
+      "light",
+    ).map((t) => shape<LegendTraceShape>(t));
+    expect(rest).toEqual([]);
+    expect(trace.name).toBe("Imported");
+    expect(trace.legend).toBeUndefined();
+  });
+
+  it("does the same for Temperature's line traces", () => {
+    const line = (rowNumber: number, colorValue: string | null): ImportedLineSample => ({
+      x: [3.3],
+      y: [1e-5],
+      temperaturesC: [30],
+      rowNumber,
+      colorValue,
+    });
+    const split = buildImportedLineTraces(
+      [
+        { label: "TFSI", items: [line(1, "TFSI")] },
+        { label: "ClO4", items: [line(2, "ClO4"), line(3, "ClO4")] },
+      ],
+      "dark",
+    ).map((t) => shape<LegendTraceShape>(t));
+    expect(split.map((t) => [t.name, t.legend, t.x])).toEqual([
+      ["TFSI", "legend2", [3.3]],
+      ["ClO4", "legend2", [3.3, null, 3.3]],
+    ]);
+
+    const single = buildImportedLineTraces([{ label: null, items: [line(1, null)] }], "dark");
+    expect(single.map((t) => shape<LegendTraceShape>(t).name)).toEqual(["Imported"]);
+  });
+
+  it("hasImportedLegend is true once any group has a label", () => {
+    expect(hasImportedLegend([])).toBe(false);
+    expect(hasImportedLegend([{ label: null, items: [tfsi] }])).toBe(false);
+    expect(hasImportedLegend([{ label: "TFSI", items: [tfsi] }])).toBe(true);
+    expect(
+      hasImportedLegend([
+        { label: "TFSI", items: [tfsi] },
+        { label: null, items: [blank] },
+      ]),
+    ).toBe(true);
+  });
+
+  it("lays the imported legend out as a titled row above the plot, and titles the dataset's", () => {
+    expect(IMPORTED_LEGEND_LAYOUT).toEqual({
+      legend: { title: { text: "<b>Dataset</b>" } },
+      legend2: {
+        title: { text: "<b>Imported</b>" },
+        orientation: "h",
+        x: 0,
+        xanchor: "left",
+        y: 1.02,
+        yanchor: "bottom",
+      },
+    });
   });
 });

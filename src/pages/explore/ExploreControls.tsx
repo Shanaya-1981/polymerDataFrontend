@@ -5,7 +5,7 @@ import type { AxisScale } from "@/lib/log-axis";
 import { AxisControl } from "./AxisControl";
 import { columnLabel, getColumnMeta, PLOTTABLE_COLUMN_OPTIONS } from "./columns";
 import { FilterPanel } from "./FilterPanel";
-import { ImportButtons, ImportStatus } from "./ImportControl";
+import { ImportButtons, ImportStatus } from "@/components/import";
 
 export interface ExploreControlsProps {
   x: string;

@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState, type ReactNode } from "react";
-import type { ImportedDataset } from "@/pages/explore/csv-import";
+import type { ImportedDataset } from "@/components/import";
 import { ImportedDataContext } from "./imported-data-context";
 
 /**
- * Holds the Explore page's imported CSV above the router, so it survives
- * navigating to another page and back. Plain React state and nothing else —
+ * Holds the imported CSV above the router, so it survives navigating to
+ * another page and back, and both chart pages overlay the same file. Plain React state and nothing else —
  * no storage, no URL — so a browser refresh still clears it.
  */
 export function ImportedDataProvider({ children }: { children: ReactNode }) {

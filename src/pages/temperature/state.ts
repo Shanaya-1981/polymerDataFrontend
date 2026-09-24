@@ -1,6 +1,6 @@
 /**
  * Control-state modeling for the Temperature page: which columns are valid
- * choices for the X-axis mode / "color by" control / multi-select filters,
+ * choices for the X-axis mode / y-axis / "color by" control / multi-select filters,
  * plus guards that re-validate values coming back out of the URL.
  *
  * `useUrlState` (`@/lib/url-state`) does NOT validate a param against a
@@ -27,6 +27,26 @@ export const TEMPERATURE_MODE_OPTIONS: readonly RadioOption[] = TEMPERATURE_MODE
   value: mode,
   label: mode,
 }));
+
+/**
+ * What the y-axis shows. `sigma` is conductivity itself on a log axis (the
+ * original site's only view); `logSigma` plots log₁₀ σ on a linear axis —
+ * the same curves, labelled the way papers usually print them, with
+ * readable decimal values in hover text.
+ */
+export const TEMPERATURE_Y_AXES = ["sigma", "logSigma"] as const;
+export type TemperatureYAxis = (typeof TEMPERATURE_Y_AXES)[number];
+
+export const DEFAULT_TEMPERATURE_Y_AXIS: TemperatureYAxis = "sigma";
+
+export function isTemperatureYAxis(value: string): value is TemperatureYAxis {
+  return (TEMPERATURE_Y_AXES as readonly string[]).includes(value);
+}
+
+export const TEMPERATURE_Y_AXIS_OPTIONS: readonly RadioOption[] = [
+  { value: "sigma", label: "σ (log axis)" },
+  { value: "logSigma", label: "log(σ / S cm⁻¹)" },
+];
 
 /**
  * The 4 categorical columns offered as "color by" on this page.

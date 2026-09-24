@@ -7,15 +7,19 @@ import { useUrlState, type UrlStateValue } from "@/lib/url-state";
 import {
   DEFAULT_TEMPERATURE_COLOR_COLUMN,
   DEFAULT_TEMPERATURE_MODE,
+  DEFAULT_TEMPERATURE_Y_AXIS,
   isTemperatureColorColumn,
   isTemperatureMode,
+  isTemperatureYAxis,
   TEMPERATURE_FILTER_COLUMN_IDS,
   type TemperatureColorColumn,
   type TemperatureFilterColumnId,
+  type TemperatureYAxis,
 } from "./state";
 
 export interface ResolvedTemperatureControls {
   mode: TemperatureMode;
+  yAxis: TemperatureYAxis;
   colorColumn: TemperatureColorColumn;
   filters: FilterSelections;
 }
@@ -23,6 +27,7 @@ export interface ResolvedTemperatureControls {
 export interface TemperatureControlsState {
   resolved: ResolvedTemperatureControls;
   setMode: (mode: TemperatureMode) => void;
+  setYAxis: (yAxis: TemperatureYAxis) => void;
   setColorColumn: (column: TemperatureColorColumn) => void;
   setFilter: (columnId: TemperatureFilterColumnId, values: readonly string[]) => void;
   clearFilters: () => void;
@@ -35,7 +40,7 @@ export interface TemperatureControlsState {
    */
   isAtDefaults: boolean;
   /**
-   * Resets mode, color, and every filter to its default in one call, and
+   * Resets mode, y-axis, color, and every filter to its default in one call, and
    * forgets this route's remembered search (`@/lib/route-memory`), so the
    * next nav click back to `/temperature` doesn't bring the old state back.
    */
@@ -53,6 +58,7 @@ type FilterPatch = Partial<Record<TemperatureFilterColumnId, readonly string[]>>
 interface TemperatureUrlState {
   [key: string]: UrlStateValue;
   mode: string;
+  y: string;
   color: string;
   doi: readonly string[];
   polymerFamily: readonly string[];
@@ -63,6 +69,7 @@ interface TemperatureUrlState {
 
 const TEMPERATURE_URL_DEFAULTS: TemperatureUrlState = {
   mode: DEFAULT_TEMPERATURE_MODE,
+  y: DEFAULT_TEMPERATURE_Y_AXIS,
   color: DEFAULT_TEMPERATURE_COLOR_COLUMN,
   doi: [],
   polymerFamily: [],
@@ -72,14 +79,15 @@ const TEMPERATURE_URL_DEFAULTS: TemperatureUrlState = {
 };
 
 /**
- * URL-backed state for the Temperature page's controls: X-axis mode, "color
- * by" column, and the 5 combinable multi-select filters — mirrors the
+ * URL-backed state for the Temperature page's controls: X-axis mode, y-axis,
+ * "color by" column, and the 5 combinable multi-select filters — mirrors the
  * sibling Explore page's `useExploreControls` shape (`resolved` + setters)
  * so both chart pages read the same way.
  *
  * `useUrlState` (`@/lib/url-state`) only fills in a default for an *absent*
  * URL param — it does not validate against a union — so `mode`/`color` are
- * re-checked with `isTemperatureMode`/`isTemperatureColorColumn` before use,
+ * re-checked with `isTemperatureMode`/`isTemperatureYAxis`/
+ * `isTemperatureColorColumn` before use,
  * falling back to the default rather than trusting a hand-edited URL like
  * `?mode=bogus`.
  */
@@ -90,6 +98,9 @@ export function useTemperatureControls(): TemperatureControlsState {
   const mode: TemperatureMode = isTemperatureMode(urlState.mode)
     ? urlState.mode
     : DEFAULT_TEMPERATURE_MODE;
+  const yAxis: TemperatureYAxis = isTemperatureYAxis(urlState.y)
+    ? urlState.y
+    : DEFAULT_TEMPERATURE_Y_AXIS;
   const colorColumn: TemperatureColorColumn = isTemperatureColorColumn(urlState.color)
     ? urlState.color
     : DEFAULT_TEMPERATURE_COLOR_COLUMN;
@@ -113,6 +124,10 @@ export function useTemperatureControls(): TemperatureControlsState {
 
   const setMode = useCallback(
     (next: TemperatureMode) => patchUrlState({ mode: next }),
+    [patchUrlState],
+  );
+  const setYAxis = useCallback(
+    (next: TemperatureYAxis) => patchUrlState({ y: next }),
     [patchUrlState],
   );
   const setColorColumn = useCallback(
@@ -141,8 +156,9 @@ export function useTemperatureControls(): TemperatureControlsState {
   const hasActiveFilters = TEMPERATURE_FILTER_COLUMN_IDS.some((id) => filters[id].length > 0);
 
   return {
-    resolved: { mode, colorColumn, filters },
+    resolved: { mode, yAxis, colorColumn, filters },
     setMode,
+    setYAxis,
     setColorColumn,
     setFilter,
     clearFilters,

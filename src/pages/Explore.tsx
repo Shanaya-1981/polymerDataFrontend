@@ -3,13 +3,16 @@ import { ChartPageLayout } from "@/components/layout/ChartPageLayout";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button, Card, Notice } from "@/components/ui";
 import {
-  buildImportedScatterTrace,
+  buildImportedScatterTraces,
   buildScatterTraces,
+  hasImportedLegend,
+  IMPORTED_LEGEND_LAYOUT,
   PlotlyChart,
   useChartThemeMode,
   type PlotlyLayout,
   type PlotlyPointClick,
 } from "@/components/charts";
+import { groupImportedByCategory } from "@/components/import";
 import { useImportedData } from "@/contexts";
 import { filterRows, ROW_COUNT } from "@/data";
 import { useExploreControls } from "./explore/controls-state";
@@ -66,7 +69,6 @@ export default function Explore() {
       imported
         ? buildImportedPoints(
             imported,
-            resolved.filters,
             resolved.x,
             resolved.xScale,
             resolved.y,
@@ -74,17 +76,18 @@ export default function Explore() {
             resolved.color,
           )
         : null,
-    [
-      imported,
-      resolved.filters,
-      resolved.x,
-      resolved.xScale,
-      resolved.y,
-      resolved.yScale,
-      resolved.color,
-    ],
+    [imported, resolved.x, resolved.xScale, resolved.y, resolved.yScale, resolved.color],
   );
   const hasOverlay = importedPoints != null && importedPoints.points.length > 0;
+  // One legend entry per formulation when coloring by a category, like the
+  // dataset's own; a numeric color column leaves nothing to split by.
+  const importedGroups = useMemo(() => {
+    if (!importedPoints || importedPoints.points.length === 0) return [];
+    return isCategoricalColumn(resolved.color)
+      ? groupImportedByCategory(importedPoints.points, resolved.color, (p) => p.colorValue)
+      : [{ label: null, items: importedPoints.points }];
+  }, [importedPoints, resolved.color]);
+  const separateImportedLegend = hasImportedLegend(importedGroups);
   const importedNotice = importedPoints
     ? importedNoticeMessage(importedPoints, resolved.x, resolved.y)
     : null;
@@ -94,18 +97,17 @@ export default function Explore() {
   // `PlotlyChart` only repaints its own chrome (axis lines, legend text) on
   // a theme change — it never sees category ranks, so it cannot repaint
   // trace colors itself. The overlay goes last so it draws on top.
-  const traces = useMemo(() => {
-    const base = buildScatterTraces(seriesInput, themeMode, {
-      continuousName: hasOverlay ? "Dataset" : undefined,
-    });
-    if (!hasOverlay) return base;
-    return [
-      ...base,
-      buildImportedScatterTrace(importedPoints.points, themeMode, {
+  const traces = useMemo(
+    () => [
+      ...buildScatterTraces(seriesInput, themeMode, {
+        continuousName: hasOverlay ? "Dataset" : undefined,
+      }),
+      ...buildImportedScatterTraces(importedGroups, themeMode, {
         colorLabel: columnLabel(resolved.color),
       }),
-    ];
-  }, [seriesInput, themeMode, hasOverlay, importedPoints, resolved.color]);
+    ],
+    [seriesInput, themeMode, hasOverlay, importedGroups, resolved.color],
+  );
 
   const xNotice = useMemo(
     () => buildAxisNotice(resolved.x, resolved.xScale, filteredRowIndices),
@@ -117,10 +119,10 @@ export default function Explore() {
   );
   const cardinalityNotice = useMemo(() => highCardinalityNotice(resolved.color), [resolved.color]);
 
-  // Imported points alone are still worth a chart.
-  const emptyReason = hasOverlay
-    ? null
-    : exploreEmptyReason(filteredRowIndices.length, plottedCount);
+  // Why no dataset point is on the chart, if none is. Imported points
+  // alone are still worth a chart, so with an overlay this becomes a
+  // notice above it instead of replacing it.
+  const emptyReason = exploreEmptyReason(filteredRowIndices.length, plottedCount);
   const continuousWithOverlay = hasOverlay && seriesInput.kind === "continuous";
 
   const layout = useMemo<Partial<PlotlyLayout>>(() => {
@@ -143,8 +145,18 @@ export default function Explore() {
             margin: { t: 48 },
           }
         : {}),
+      // Never together with the branch above: a numeric color column leaves
+      // imported rows nothing to split by, so they stay in the main legend.
+      ...(separateImportedLegend ? IMPORTED_LEGEND_LAYOUT : {}),
     };
-  }, [resolved.x, resolved.y, resolved.xScale, resolved.yScale, continuousWithOverlay]);
+  }, [
+    resolved.x,
+    resolved.y,
+    resolved.xScale,
+    resolved.yScale,
+    continuousWithOverlay,
+    separateImportedLegend,
+  ]);
 
   function handlePointClick(point: PlotlyPointClick) {
     if (typeof point.customdata === "number") setSelectedRow(point.customdata);
@@ -193,7 +205,10 @@ export default function Explore() {
             {importedNotice ? <Notice tone="info">{importedNotice}</Notice> : null}
 
             {emptyReason ? (
-              <Notice tone="info" title="Nothing to plot">
+              <Notice
+                tone="info"
+                title={hasOverlay ? "Only your imported data is shown" : "Nothing to plot"}
+              >
                 <div className="flex flex-col gap-3">
                   <p>
                     {emptyReason === "no-rows-match-filters"
@@ -212,7 +227,8 @@ export default function Explore() {
                   ) : null}
                 </div>
               </Notice>
-            ) : (
+            ) : null}
+            {!emptyReason || hasOverlay ? (
               <Card className="p-2 sm:p-4">
                 <PlotlyChart
                   data={traces}
@@ -222,7 +238,7 @@ export default function Explore() {
                   className="h-[60vh] min-h-[420px]"
                 />
               </Card>
-            )}
+            ) : null}
           </div>
         }
         inspector={<PointInspector rowIndex={selectedRow} onDismiss={() => setSelectedRow(null)} />}

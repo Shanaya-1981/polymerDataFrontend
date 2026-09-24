@@ -1,13 +1,13 @@
 import { useRef, type ChangeEvent } from "react";
 import { Button, Notice } from "@/components/ui";
 import { useImportedData } from "@/contexts";
-import { columnLabel } from "./columns";
+import { COLUMN_BY_ID } from "@/data";
 import { importErrorMessage, readImportFile, type ImportedDataset } from "./csv-import";
 
 /**
  * "Import CSV" plus, once something is loaded, "Clear imported data".
  * Returns bare siblings so they share a wrapping row with "Reset to
- * defaults" in `ExploreControls`. The file input is reached through a ref,
+ * defaults" in each chart page's controls. The file input is reached through a ref,
  * never an id: `ChartPageLayout` can mount the controls twice (sidebar and
  * mobile sheet).
  */
@@ -78,7 +78,7 @@ function ImportSummary({ imported }: { imported: ImportedDataset }) {
         {rowCount === 1 ? "row" : "rows"} · {matchedColumnIds.length} of{" "}
         {matchedColumnIds.length + ignoredHeaders.length} columns matched
       </p>
-      <p>Matched: {matchedColumnIds.map(columnLabel).join(", ")}</p>
+      <p>Matched: {matchedColumnIds.map((id) => COLUMN_BY_ID[id].label).join(", ")}</p>
       {ignoredHeaders.length > 0 ? (
         <p>
           Ignored: {listed.join(", ")}

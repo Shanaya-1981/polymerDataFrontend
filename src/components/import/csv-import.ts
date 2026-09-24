@@ -78,9 +78,9 @@ const canonicalCategoryCache = new Map<FrozenCategoryColumnId, ReadonlyMap<strin
 
 /**
  * Snap a category to the dataset's own spelling when they differ only by
- * case ("tfsi" -> "TFSI"), so an imported row still matches the Anion
- * filter and lands on the same category-axis tick. Unknown values pass
- * through unchanged.
+ * case ("tfsi" -> "TFSI"), so an imported row lands on the same
+ * category-axis tick as the dataset's. Unknown values pass through
+ * unchanged.
  */
 function canonicalCategory(columnId: FrozenCategoryColumnId, value: string): string {
   let lookup = canonicalCategoryCache.get(columnId);

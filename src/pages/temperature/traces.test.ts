@@ -1,13 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { buildTemperatureLineTraces, type PlotlyData } from "@/components/charts";
+import { parseImportCsv, type ImportedDataset } from "@/components/import";
+import { getTemperatureSeries, NUMERIC_COLUMN_IDS, TEMPERATURES_C } from "@/data";
 import { MAX_CATEGORICAL_SLOTS } from "@/styles/chart-palette";
-import type { TemperatureMode } from "@/lib/transforms";
+import { transformTemperature, type TemperatureMode } from "@/lib/transforms";
 import { DEFAULT_TEMPERATURE_COLOR_COLUMN, TEMPERATURE_COLOR_COLUMN_IDS } from "./state";
 import {
+  buildImportedLineSamples,
   buildLineSamples,
+  CONDUCTIVITY_COLUMN_IDS,
   countSamplePoints,
   formatConductivity,
+  importedTemperatureNotice,
   resolveClickedPoint,
+  TEMPERATURE_Y_AXIS_TITLES,
+  toYValue,
 } from "./traces";
 
 /**
@@ -139,5 +146,228 @@ describe("formatConductivity", () => {
 
   it("handles a positive/zero exponent", () => {
     expect(formatConductivity(1.5e2)).toEqual({ mantissa: "1.50", exponent: 2 });
+  });
+});
+
+describe("CONDUCTIVITY_COLUMN_IDS", () => {
+  it("finds a numeric column for every one of the 22 measurement temperatures", () => {
+    expect(CONDUCTIVITY_COLUMN_IDS).toHaveLength(22);
+    expect(CONDUCTIVITY_COLUMN_IDS).toHaveLength(TEMPERATURES_C.length);
+    for (const id of CONDUCTIVITY_COLUMN_IDS) {
+      expect(id).toBeDefined();
+      expect(NUMERIC_COLUMN_IDS).toContain(id);
+    }
+    expect(CONDUCTIVITY_COLUMN_IDS[TEMPERATURES_C.indexOf(30)]).toBe("conductivityAt30C");
+  });
+});
+
+function importCsv(lines: string[]): ImportedDataset {
+  const result = parseImportCsv(lines.join("\n"), "mine.csv");
+  if (!result.ok) throw new Error(result.error);
+  return result.data;
+}
+
+describe("buildImportedLineSamples", () => {
+  const imported = importCsv([
+    "Sample,Tg,Anion,Conductivity at 30C,Conductivity at 60C,Conductivity at 90C",
+    "A,-40,TFSI,1e-5,1e-4,1e-3", // row 1: plots everywhere
+    "B,,ClO4,2e-6,2e-5,", // row 2: no Tg — Arrhenius/T only
+    "C,10,TFSI,,,", // row 3: no conductivity at all
+    "D,-20,TFSI,0,5e-5,-1e-6", // row 4: two values a log axis can't show
+    "E,80,ClO4,3e-6,4e-6,5e-6", // row 5: T = Tg - 50 at 30 °C
+  ]);
+
+  it("transforms each point exactly as the dataset's own series do", () => {
+    const result = buildImportedLineSamples(imported, "Arrhenius", "anion");
+    const [first] = result.samples;
+    expect(first.rowNumber).toBe(1);
+    expect(first.temperaturesC).toEqual([30, 60, 90]);
+    expect(first.x).toEqual([30, 60, 90].map((t) => transformTemperature("Arrhenius", t, null)));
+    expect(first.y).toEqual([1e-5, 1e-4, 1e-3]);
+    expect(first.colorValue).toBe("TFSI");
+
+    // Same x as a dataset point measured at the same temperature.
+    const datasetPointAt30 = getTemperatureSeries("Arrhenius")
+      .flatMap((series) => series.points)
+      .find((point) => point.temperatureC === 30);
+    expect(first.x[0]).toBe(datasetPointAt30?.x);
+  });
+
+  it("Arrhenius and T skip no row for lacking Tg, only rows with nothing to draw", () => {
+    for (const mode of ["Arrhenius", "T"] as const) {
+      const result = buildImportedLineSamples(imported, mode, "anion");
+      expect(result.samples.map((s) => s.rowNumber)).toEqual([1, 2, 4, 5]);
+      expect(result.missingTgCount).toBe(0);
+      expect(result.noConductivityCount).toBe(1);
+      expect(result.nonPositiveCount).toBe(2);
+      expect(result.undefinedXCount).toBe(0);
+    }
+  });
+
+  it("drops conductivity ≤ 0 point by point, keeping the rest of the row", () => {
+    const result = buildImportedLineSamples(imported, "T", "anion");
+    const rowD = result.samples.find((s) => s.rowNumber === 4);
+    expect(rowD?.x).toEqual([60]);
+    expect(rowD?.y).toEqual([5e-5]);
+  });
+
+  it("T/Tg uses the raw Tg and skips rows without one", () => {
+    const result = buildImportedLineSamples(imported, "T/Tg", "anion");
+    expect(result.samples.map((s) => s.rowNumber)).toEqual([1, 4, 5]);
+    expect(result.samples[0].x).toEqual(
+      [30, 60, 90].map((t) => transformTemperature("T/Tg", t, -40)),
+    );
+    expect(result.missingTgCount).toBe(1);
+    expect(result.noConductivityCount).toBe(1);
+  });
+
+  it("VFT drops the point where T − Tg + 50 is 0", () => {
+    const result = buildImportedLineSamples(imported, "VFT", "anion");
+    const rowE = result.samples.find((s) => s.rowNumber === 5);
+    expect(rowE?.temperaturesC).toEqual([60, 90]);
+    expect(rowE?.x).toEqual([1000 / 30, 1000 / 60]);
+    expect(result.undefinedXCount).toBe(1);
+  });
+
+  it("carries the current color column's value, or null if the file lacks it", () => {
+    const byAnion = buildImportedLineSamples(imported, "Arrhenius", "anion");
+    expect(byAnion.samples.map((s) => s.colorValue)).toEqual(["TFSI", "ClO4", "TFSI", "ClO4"]);
+    const byFamily = buildImportedLineSamples(imported, "Arrhenius", "polymerFamily");
+    expect(byFamily.samples.every((s) => s.colorValue === null)).toBe(true);
+  });
+
+  it("reports a file with no conductivity columns, and plots nothing", () => {
+    const result = buildImportedLineSamples(
+      importCsv(["Tg,Anion", "-40,TFSI"]),
+      "Arrhenius",
+      "anion",
+    );
+    expect(result.missingColumns).toEqual(["conductivity"]);
+    expect(result.samples).toEqual([]);
+  });
+
+  it("reports a missing Tg column only in the modes that need it", () => {
+    const noTg = importCsv(["approxTg,Conductivity at 30C", "-40,1e-5"]);
+    expect(buildImportedLineSamples(noTg, "Arrhenius", "anion").missingColumns).toEqual([]);
+    const vft = buildImportedLineSamples(noTg, "VFT", "anion");
+    expect(vft.missingColumns).toEqual(["tg"]);
+    expect(vft.hasApproxTg).toBe(true);
+    expect(vft.samples).toEqual([]);
+  });
+});
+
+describe("importedTemperatureNotice", () => {
+  const imported = importCsv([
+    "Tg,Anion,Conductivity at 30C,Conductivity at 60C",
+    "-40,TFSI,1e-5,1e-4",
+    ",ClO4,2e-6,2e-5",
+    "10,TFSI,,",
+    "-20,TFSI,0,5e-5",
+    "80,ClO4,3e-6,4e-6",
+  ]);
+
+  it("is null when every imported row and point is plotted", () => {
+    const clean = importCsv(["Tg,Conductivity at 30C", "-40,1e-5", "-20,2e-5"]);
+    const result = buildImportedLineSamples(clean, "VFT", "anion");
+    expect(importedTemperatureNotice(result, "VFT")).toBeNull();
+  });
+
+  it("explains hidden rows and points in Arrhenius", () => {
+    const result = buildImportedLineSamples(imported, "Arrhenius", "anion");
+    expect(importedTemperatureNotice(result, "Arrhenius")).toBe(
+      "4 of 5 imported rows plotted: 1 has no conductivity value this plot can show. " +
+        "1 imported conductivity value ≤ 0 hidden — the log axis can't show them.",
+    );
+  });
+
+  it("adds the Tg and VFT-specific reasons in VFT", () => {
+    const result = buildImportedLineSamples(imported, "VFT", "anion");
+    expect(importedTemperatureNotice(result, "VFT")).toBe(
+      "3 of 5 imported rows plotted: 1 has no Tg, which VFT needs; 1 has no conductivity value " +
+        "this plot can show. 1 imported conductivity value ≤ 0 hidden — the log axis can't show " +
+        "them. 1 imported point at T = Tg − 50 hidden — 1000/(T − Tg + 50) has no value there.",
+    );
+  });
+
+  it("names the missing conductivity columns", () => {
+    const result = buildImportedLineSamples(importCsv(["Tg", "-40"]), "T", "anion");
+    expect(importedTemperatureNotice(result, "T")).toBe(
+      'The imported file has no conductivity columns (such as "Conductivity at 30C"), so its ' +
+        "rows can't be plotted against temperature.",
+    );
+  });
+
+  it("names the missing Tg column, and points out approxTg isn't used here", () => {
+    const withApprox = importCsv(["approxTg,Conductivity at 30C", "-40,1e-5"]);
+    expect(
+      importedTemperatureNotice(buildImportedLineSamples(withApprox, "T/Tg", "anion"), "T/Tg"),
+    ).toBe(
+      'T/Tg needs each sample\'s Tg, and the imported file has no "Tg" column. ' +
+        "This view uses Tg, not approxTg.",
+    );
+
+    const without = importCsv(["Conductivity at 30C", "1e-5"]);
+    expect(
+      importedTemperatureNotice(buildImportedLineSamples(without, "VFT", "anion"), "VFT"),
+    ).toBe('VFT needs each sample\'s Tg, and the imported file has no "Tg" column.');
+  });
+});
+
+describe("the log σ y-axis", () => {
+  it("titles each y-axis with its unit", () => {
+    expect(TEMPERATURE_Y_AXIS_TITLES).toEqual({
+      sigma: "Conductivity (S cm<sup>-1</sup>)",
+      logSigma: "log(σ / S cm<sup>-1</sup>)",
+    });
+  });
+
+  it("toYValue leaves σ alone on the log axis and takes log₁₀ for log σ", () => {
+    expect(toYValue(3.98e-8, "sigma")).toBe(3.98e-8);
+    expect(toYValue(1e-4, "logSigma")).toBe(-4);
+    expect(toYValue(3.98e-8, "logSigma")).toBeCloseTo(-7.4001, 4);
+  });
+
+  it("maps every dataset point to log₁₀ σ without adding, dropping or moving any", () => {
+    for (const mode of Object.keys(EXPECTED_POINTS) as TemperatureMode[]) {
+      const sigma = buildLineSamples(mode, DEFAULT_TEMPERATURE_COLOR_COLUMN, {}, "sigma");
+      const logSigma = buildLineSamples(mode, DEFAULT_TEMPERATURE_COLOR_COLUMN, {}, "logSigma");
+      expect(countSamplePoints(logSigma)).toBe(EXPECTED_POINTS[mode]);
+      expect(logSigma.map((s) => s.x)).toEqual(sigma.map((s) => s.x));
+      expect(logSigma.map((s) => s.y)).toEqual(sigma.map((s) => s.y.map(Math.log10)));
+    }
+  });
+
+  it("maps imported points the same way, still dropping σ ≤ 0 first", () => {
+    const imported = importCsv([
+      "Tg,Conductivity at 30C,Conductivity at 60C",
+      "-40,1e-5,1e-4",
+      "-20,0,5e-5",
+    ]);
+    const result = buildImportedLineSamples(imported, "Arrhenius", "anion", "logSigma");
+    expect(result.samples.map((s) => s.y)).toEqual([[-5, -4], [Math.log10(5e-5)]]);
+    expect(result.nonPositiveCount).toBe(1);
+    expect(importedTemperatureNotice(result, "Arrhenius", "logSigma")).toBe(
+      "1 imported conductivity value ≤ 0 hidden — log σ is undefined for them.",
+    );
+  });
+
+  it("resolves a click on a log σ plot back to the raw conductivity", () => {
+    const [sample] = buildLineSamples(
+      "Arrhenius",
+      DEFAULT_TEMPERATURE_COLOR_COLUMN,
+      {},
+      "logSigma",
+    );
+    const resolved = resolveClickedPoint(
+      "Arrhenius",
+      sample.rowIndex,
+      sample.x[0],
+      sample.y[0],
+      "logSigma",
+    );
+    // The exact stored value — not 10 ** log σ, which drifts in the last digits.
+    const [raw] = buildLineSamples("Arrhenius", DEFAULT_TEMPERATURE_COLOR_COLUMN, {}, "sigma");
+    expect(resolved?.rowIndex).toBe(sample.rowIndex);
+    expect(resolved?.conductivity).toBe(raw.y[0]);
   });
 });

@@ -3,8 +3,11 @@ import { TEMPERATURE_MODES } from "@/lib/transforms";
 import {
   isTemperatureColorColumn,
   isTemperatureMode,
+  isTemperatureYAxis,
   TEMPERATURE_COLOR_COLUMN_IDS,
   TEMPERATURE_FILTER_COLUMN_IDS,
+  TEMPERATURE_Y_AXES,
+  TEMPERATURE_Y_AXIS_OPTIONS,
 } from "./state";
 
 describe("isTemperatureMode", () => {
@@ -35,5 +38,19 @@ describe("TEMPERATURE_FILTER_COLUMN_IDS", () => {
     expect([...TEMPERATURE_FILTER_COLUMN_IDS].sort()).toEqual(
       ["doi", "polymerFamily", "anion", "crystalline", "solventUsed"].sort(),
     );
+  });
+});
+
+describe("isTemperatureYAxis", () => {
+  it("accepts both y-axes, each of which has a control option", () => {
+    for (const yAxis of TEMPERATURE_Y_AXES) expect(isTemperatureYAxis(yAxis)).toBe(true);
+    expect(TEMPERATURE_Y_AXIS_OPTIONS.map((option) => option.value)).toEqual([
+      ...TEMPERATURE_Y_AXES,
+    ]);
+  });
+
+  it("rejects a hand-edited URL value", () => {
+    expect(isTemperatureYAxis("log")).toBe(false);
+    expect(isTemperatureYAxis("")).toBe(false);
   });
 });

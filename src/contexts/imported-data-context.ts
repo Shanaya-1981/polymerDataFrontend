@@ -1,8 +1,9 @@
 import { createContext, useContext } from "react";
 // Type-only on purpose: the provider is mounted in App.tsx, i.e. the entry
 // chunk, and a value import of csv-import.ts would drag papaparse and the
-// whole dataset into every cold page load. Parsing stays in the Explore chunk.
-import type { ImportedDataset } from "@/pages/explore/csv-import";
+// whole dataset into every cold page load. Parsing stays in the chart pages'
+// lazily loaded chunks.
+import type { ImportedDataset } from "@/components/import";
 
 export interface ImportedDataContextValue {
   /** The session-only CSV overlay, if one is loaded. */
