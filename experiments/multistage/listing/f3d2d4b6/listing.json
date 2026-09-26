@@ -1,0 +1,240 @@
+{
+  "formulations": [
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li > 30",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F1"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 6",
+      "quote": "salt weight fractions lower than 0.28 (O/Li > 6)",
+      "id": "F2"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 4",
+      "quote": "salt weight fractions lower than 0.28 (O/Li > 6)",
+      "id": "F3"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 8",
+      "quote": "salt weight fractions lower than 0.28 (O/Li > 6)",
+      "id": "F4"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 12",
+      "quote": "salt weight fractions lower than 0.28 (O/Li > 6)",
+      "id": "F5"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 20",
+      "quote": "salt weight fractions lower than 0.28 (O/Li > 6)",
+      "id": "F6"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 36",
+      "quote": "salt weight fractions lower than 0.28 (O/Li > 6)",
+      "id": "F7"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 100",
+      "quote": "salt weight fractions lower than 0.28 (O/Li > 6)",
+      "id": "F8"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li > 30",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F9"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 4",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F10"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 6",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F11"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 8",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F12"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 12",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F13"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 20",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F14"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 30",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F15"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 36",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F16"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 40",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F17"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 60",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F18"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 80",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F19"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 100",
+      "quote": "electrolytes with O/Li ratios ranging from 4 to 100",
+      "id": "F20"
+    }
+  ],
+  "totals": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 110.8,
+    "prompt_tokens": 9592,
+    "read_tokens": 8222,
+    "cached_tokens": 1370,
+    "output_tokens": 1395
+  },
+  "quote_check": {
+    "returned": 20,
+    "kept": 20,
+    "quote_not_found": 0,
+    "duplicates": 0
+  },
+  "errors": []
+}

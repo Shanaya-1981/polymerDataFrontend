@@ -1,0 +1,15 @@
+{
+  "paper_id": "f3d2d4b6",
+  "source_pdf": "experiments/tier_comparison/f3d2d4b6-fauteux1988/f3d2d4b6-fauteux1988.pdf",
+  "mineru_doc_id": "98d12ad",
+  "tier": "advanced",
+  "text_tier": null,
+  "figure_tier": null,
+  "page_range": "1-6",
+  "figures": [],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:34:44.671550Z",
+  "duration_seconds": 168.17469854210503,
+  "wait_retries": 0,
+  "num_tables": 8
+}

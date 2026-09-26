@@ -1,0 +1,80 @@
+{
+  "arm": {
+    "name": "C-qwen3.5-4b-figures",
+    "question": "Do figures help at 8 GB, and do they fit?",
+    "tier": 8,
+    "provider": "openai_compatible",
+    "model_file": "models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+    "mmproj": "models/qwen3.5-4b/mmproj-F16.gguf",
+    "image_max_tokens": 512,
+    "ctx": 65536,
+    "cache_type": "q8_0",
+    "include_figures": true
+  },
+  "server_command": [
+    "llama-server",
+    "-m",
+    "models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+    "-c",
+    "65536",
+    "-np",
+    "1",
+    "--reasoning",
+    "off",
+    "--offline",
+    "--no-webui",
+    "--port",
+    "8080",
+    "-lv",
+    "4",
+    "--log-file",
+    "experiments/local_llm/C-qwen3.5-4b-figures/server.log",
+    "--mmproj",
+    "models/qwen3.5-4b/mmproj-F16.gguf",
+    "--image-max-tokens",
+    "512",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "llama_cpp": "version: 0.4.1 (build 10964, commit b29c606e2)",
+  "memory_breakdown_mib": {
+    "devices": {
+      "MTL0 (Apple M4)": {
+        "self": 4132,
+        "model": 2603,
+        "context": 1138,
+        "compute": 390
+      }
+    },
+    "host": {
+      "self": 645,
+      "model": 497,
+      "context": 0,
+      "compute": 148
+    }
+  },
+  "memory": {
+    "device_self_mib": 4132,
+    "host_self_mib": 645,
+    "mmproj_mib": 641,
+    "total_mib": 5418,
+    "tier_budget_mib": 5461,
+    "fits_tier": true
+  },
+  "peak_footprint_mib": 8635.0,
+  "finished_at": "2026-09-23T04:44:35.089232+00:00",
+  "papers": [
+    "bdf71b01",
+    "f3d2d4b6",
+    "6ca669ae",
+    "1dba839e",
+    "663ed327",
+    "2c7161a7",
+    "0a3655ba",
+    "5feba0f9",
+    "170fead2",
+    "569ebb10"
+  ]
+}

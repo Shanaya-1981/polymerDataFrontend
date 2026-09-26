@@ -1,0 +1,109 @@
+# Local-LLM benchmark arms. An arm = one model + one set of settings, run
+# over the pinned 10-paper sample (experiments/tier_comparison/sample.json).
+#
+# The runner (pipeline/experiments/run_local_llm_benchmark.py) starts
+# llama-server itself from these fields, so every arm is reproducible from
+# this file alone:
+#
+#   llama-server -m <model_file> [--mmproj <mmproj> --image-max-tokens N]
+#     -c <ctx> -np 1 [-ctk/-ctv <cache_type>] --reasoning off --offline ...
+#
+# tier: the RAM size (GB) of the machine this arm is meant for. Its memory
+# budget is 2/3 of that (what macOS lets the GPU use on 8-32 GB machines);
+# the runner reads llama.cpp's own memory breakdown and reports whether the
+# arm fits.
+#
+# ctx: context window in tokens. 48K covers every sample paper text-only,
+# including the model's output; with figures, 64K (5feba0f9 has 32 crops).
+
+defaults:
+  port: 8080
+  # Same sampling for every arm, so arms differ only in model and inputs.
+  # presence_penalty 0: the same anion and units correctly repeat in every
+  # record. cache_prompt false: each paper's timing is a cold read -- with the
+  # cache on, a repeated prompt skipped 6,901 of its 6,905 tokens (0.13 s
+  # instead of 24 s), and every paper shares the ~2K-token system prompt.
+  temperature: 0.2
+  presence_penalty: 0.0
+  seed: 0
+  max_tokens: 24576
+  timeout: 3600
+  extra_body:
+    cache_prompt: false
+    chat_template_kwargs:
+      enable_thinking: false
+
+arms:
+  A-qwen3.5-4b:
+    question: Can an 8 GB machine do this at all?
+    tier: 8
+    provider: openai_compatible
+    model_file: models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf
+    ctx: 49152
+    include_figures: false
+
+  B-nuextract3-q4:
+    question: Does extraction fine-tuning beat its base model (arm A)?
+    tier: 8
+    provider: nuextract
+    model_file: models/nuextract3/NuExtract3-Q4_K_M.gguf
+    ctx: 49152
+    include_figures: false
+
+  C-qwen3.5-4b-figures:
+    question: Do figures help at 8 GB, and do they fit?
+    tier: 8
+    provider: openai_compatible
+    model_file: models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf
+    mmproj: models/qwen3.5-4b/mmproj-F16.gguf
+    # Caps the tokens one crop can take; only the largest crops (up to
+    # ~1,860 tokens at 1200x1560) are downscaled. A typical 660x460 crop
+    # costs ~294.
+    image_max_tokens: 512
+    ctx: 65536
+    # An 8-bit KV cache halves context memory; needed for 64K to fit the
+    # 8 GB budget with the vision encoder loaded.
+    cache_type: q8_0
+    include_figures: true
+
+  D-qwen3.5-9b:
+    question: What does 16 GB buy?
+    tier: 16
+    provider: openai_compatible
+    model_file: models/qwen3.5-9b/Qwen3.5-9B-Q4_K_M.gguf
+    ctx: 49152
+    include_figures: false
+
+  E-qwen3.5-9b-figures:
+    question: Do figures help at 16 GB?
+    tier: 16
+    provider: openai_compatible
+    model_file: models/qwen3.5-9b/Qwen3.5-9B-Q4_K_M.gguf
+    mmproj: models/qwen3.5-9b/mmproj-F16.gguf
+    image_max_tokens: 512
+    ctx: 65536
+    include_figures: true
+
+  F-gemma4-12b:
+    question: A non-Chinese option at 16 GB, from a different model family
+    tier: 16
+    provider: openai_compatible
+    model_file: models/gemma4-12b/gemma-4-12b-it-qat-q4_0.gguf
+    ctx: 49152
+    include_figures: false
+
+  G-gemma4-e2b:
+    question: A non-Chinese option at 8 GB
+    tier: 8
+    provider: openai_compatible
+    model_file: models/gemma4-e2b/gemma-4-E2B_q4_0-it.gguf
+    ctx: 49152
+    include_figures: false
+
+  H-nuextract3-q8:
+    question: What does 4-bit compression cost (vs arm B)?
+    tier: 16
+    provider: nuextract
+    model_file: models/nuextract3/NuExtract3-Q8_0.gguf
+    ctx: 49152
+    include_figures: false

@@ -1,0 +1,33 @@
+{
+  "model_name": "models/nuextract3/NuExtract3-Q4_K_M.gguf",
+  "stop_reason": "stop",
+  "include_figures": false,
+  "images_attached": 0,
+  "usage": {
+    "completion_tokens": 903,
+    "prompt_tokens": 13329,
+    "total_tokens": 14232,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cache_write_tokens": null,
+      "cached_tokens": 0,
+      "image_tokens": null,
+      "text_tokens": null
+    },
+    "wall_seconds": 123.04,
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 13329,
+      "prompt_ms": 68895.396,
+      "prompt_per_token_ms": 5.168834571235651,
+      "prompt_per_second": 193.46720933282685,
+      "predicted_n": 903,
+      "predicted_ms": 53619.385,
+      "predicted_per_token_ms": 59.44499445676275,
+      "predicted_per_second": 16.822274257714817
+    }
+  },
+  "validation_errors": [],
+  "raw_text": "{\"formulations\": [{\"Polymer system Notes\": \"Poly(ethylene carbonate) (PEC) with a carbonate unit to total unit ratio of approximately 95%.\", \"Polymer family\": \"carbonate\", \"Polymer\": \"poly(ethylene carbonate)\", \"SMILES descriptor 1\": null, \"SMILES descriptor 2\": null, \"Comonomer percentage\": 95, \"Average functional group per monomer\": 1, \"Anion\": \"TFSI\", \"Li:monomer\": 80, \"Li:functional group\": 0.125, \"salt wt%\": null, \"Tg\": null, \"Tg polymer without salt\": null, \"Tm\": null, \"Tm start\": null, \"Tm end\": null, \"% crystallinity\": null, \"crystalline?\": null, \"Conductivity at 0C\": null, \"Conductivity at 15C\": null, \"Conductivity at 20C\": null, \"Conductivity at 21C\": null, \"Conductivity at 25C\": null, \"Conductivity at 27C\": null, \"Conductivity at 30C\": null, \"Conductivity at 35C\": null, \"Conductivity at 40C\": null, \"Conductivity at 45C\": null, \"Conductivity at 50C\": null, \"Conductivity at 55C\": null, \"Conductivity at 60C\": null, \"Conductivity at 65C\": null, \"Conductivity at 70C\": null, \"Conductivity at 75C\": null, \"Conductivity at 80C\": null, \"Conductivity at 85C\": null, \"Conductivity at 90C\": null, \"Conductivity at 100C\": null, \"Conductivity at 110C\": null, \"Conductivity at 125C\": null, \"Transference number\": 0.63, \"T for transference\": 80, \"Transference notes\": \"The highest transference number was measured at 80 mol% salt concentration.\", \"storage modulus\": null, \"T for storage mod\": null, \"youngs modulus (Mpa)\": null, \"viscosity (mPa s)\": null, \"VFT prefactor (S/cm*T^(1/2))\": null, \"VFT activation energy (K)\": null, \"VFT T0 (degC)\": null, \"VFT Notes (above temp)\": null, \"VFT prefactor with set T0\": null, \"VFT activation energy with fixed T0 (K)\": null, \"Fixed T0 (degC)\": null, \"Arrhenius Ea (eV) low T\": null, \"Arrhenius Ea (eV) high T\": null, \"Arrhenius Ea (eV) low T me\": null, \"Arrhenius prefactor low T me (S/cm)\": null, \"Arrhenius Ea (eV)\": null, \"Arrhenius prefactor (S/cm)\": null, \"Arrhenius notes\": null, \"Li diffusion coefficient cm^2/s\": null, \"temperature for D_Li\": null, \"X-ray structural data (aggregate? Distance?)\": null, \"PDI\": null, \"Polymer Mn (kDa)\": 37000, \"Polymer Mw (kDa)\": null, \"chain architecture\": null, \"Solvent used\": \"acetonitrile\", \"drying temp\": \"60\", \"drying time (h)\": \"24\", \"drying vacuum\": \"yes\", \"Notes\": \"The PEC was dissolved in acetonitrile with Li salts. The solution was cast and dried in a vacuum at 60\u00b0C for 24 hours.\", \"DOI\": \"10.1149/2.0211502jes\", \"Reference\": \"Journal of The Electrochemical Society, 162 (2) A3133-A3136 (2015)\"}]}"
+}

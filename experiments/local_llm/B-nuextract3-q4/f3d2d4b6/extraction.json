@@ -1,0 +1,16 @@
+{
+  "paper_id": "f3d2d4b6",
+  "formulations": [
+    {
+      "Polymer system Notes": "High purity PEO (HP-PEO) with MW ≈ 1×10⁶, synthesized using an anionic initiator.",
+      "Polymer family": "polyether",
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Solvent used": "acetonitrile",
+      "drying temp": "45–50°C",
+      "drying time (h)": "48",
+      "drying vacuum": "high",
+      "Notes": "The HP-PEO-based electrolytes are not thermodynamically stable at the reducing potential of metallic lithium. The passivating film characteristics are more dependent on the lithium salt purity than on that of the polymer."
+    }
+  ]
+}

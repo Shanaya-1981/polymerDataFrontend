@@ -1,0 +1,15 @@
+{
+  "paper_id": "663ed327",
+  "status": "ok",
+  "error": null,
+  "n_formulations": 1,
+  "stop_reason": "stop",
+  "images_attached": 0,
+  "prompt_tokens": 13913,
+  "completion_tokens": 875,
+  "cache_n": 0,
+  "prompt_per_second": 194.4,
+  "predicted_per_second": 16.92,
+  "wall_seconds": 123.55,
+  "finished_at": "2026-09-23T02:27:00.865237+00:00"
+}

@@ -1,0 +1,56 @@
+{
+  "paper_id": "5feba0f9",
+  "formulations": [
+    {
+      "Polymer system Notes": "PEO-LiCF3SO3 system. Intermediate compound stoichiometry debated (3.5:1 vs 4:1). Eutectic composition approximated at O/Li ~100.",
+      "Polymer family": "ether",
+      "Polymer": "poly(ethylene oxide)",
+      "SMILES descriptor 1": "COC",
+      "Average functional group per monomer": 1.0,
+      "Anion": "TFSI",
+      "Tm": "none",
+      "crystalline?": "no",
+      "chain architecture": "linear",
+      "Solvent used": "acetonitrile",
+      "drying temp": "95-100",
+      "drying time (h)": "48",
+      "drying vacuum": "partial",
+      "Notes": "Salt mass fractions ranged from 0.11 to 0.47. Activation energy constant at ~0.7 eV for T > 60C. Intermediate compound stoichiometry appears to be less than 4 (approx 3.5).",
+      "Reference": "Robitaille, C. D., & Fauteux, D. (1986). Phase Diagrams and Conductivity Characterization of Some PEO-LiX Electrolytes. J. Electrochem. Soc., 133, 315-325."
+    },
+    {
+      "Polymer system Notes": "PEO-LiClO4 system. Intermediate compounds P(EO3LiClO4) and P(EO6LiClO4) formed. Monotectic behavior observed.",
+      "Polymer family": "ether",
+      "Polymer": "poly(ethylene oxide)",
+      "SMILES descriptor 1": "COC",
+      "Average functional group per monomer": 1.0,
+      "Anion": "ClO4",
+      "Tm": "none",
+      "crystalline?": "no",
+      "chain architecture": "linear",
+      "Solvent used": "acetonitrile",
+      "drying temp": "95-100",
+      "drying time (h)": "48",
+      "drying vacuum": "partial",
+      "Notes": "Salt mass fractions ranged from 0.11 to 0.45. Activation energy ~0.7 eV for high concentrations, ~0.3 eV for diluted. Conductivity maximum at X ~ 0.18 (O/Li ~ 12).",
+      "Reference": "Robitaille, C. D., & Fauteux, D. (1986). Phase Diagrams and Conductivity Characterization of Some PEO-LiX Electrolytes. J. Electrochem. Soc., 133, 315-325."
+    },
+    {
+      "Polymer system Notes": "PEO-LiAsF6 system. Intermediate compounds P(EO3LiAsF6) and P(EO6LiAsF6) formed. Isomorphous with P(EO6LiClO4).",
+      "Polymer family": "ether",
+      "Polymer": "poly(ethylene oxide)",
+      "SMILES descriptor 1": "COC",
+      "Average functional group per monomer": 1.0,
+      "Anion": "AsF6",
+      "Tm": "none",
+      "crystalline?": "no",
+      "chain architecture": "linear",
+      "Solvent used": "acetonitrile",
+      "drying temp": "95-100",
+      "drying time (h)": "48",
+      "drying vacuum": "partial",
+      "Notes": "Salt mass fractions ranged from 0.04 to 0.36. Electrolytes with X > 0.35 were thermally unstable (blackening, conductivity increase). Activation energy ~0.6-0.7 eV. Conductivity maximum at X ~ 0.18.",
+      "Reference": "Robitaille, C. D., & Fauteux, D. (1986). Phase Diagrams and Conductivity Characterization of Some PEO-LiX Electrolytes. J. Electrochem. Soc., 133, 315-325."
+    }
+  ]
+}

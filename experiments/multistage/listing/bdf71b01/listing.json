@@ -1,0 +1,42 @@
+{
+  "formulations": [
+    {
+      "Polymer": "Amorphous PEO copolymer",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "Li:O = 24:1",
+      "quote": "Amorphous PEO: LiClO4 - 24:1",
+      "id": "F1"
+    },
+    {
+      "Polymer": "Amorphous PEO copolymer",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "Li:O = 8:1",
+      "quote": "Amorphous PEO: LiClO4 - 8:1",
+      "id": "F2"
+    }
+  ],
+  "totals": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 35.6,
+    "prompt_tokens": 6245,
+    "read_tokens": 6245,
+    "cached_tokens": 0,
+    "output_tokens": 436
+  },
+  "quote_check": {
+    "returned": 6,
+    "kept": 2,
+    "quote_not_found": 4,
+    "duplicates": 0
+  },
+  "errors": []
+}

@@ -1,0 +1,33 @@
+{
+  "model_name": "models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+  "stop_reason": "stop",
+  "include_figures": false,
+  "images_attached": 0,
+  "usage": {
+    "completion_tokens": 1111,
+    "prompt_tokens": 6929,
+    "total_tokens": 8040,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cache_write_tokens": null,
+      "cached_tokens": 0,
+      "image_tokens": null,
+      "text_tokens": null
+    },
+    "wall_seconds": 77.77,
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 6929,
+      "prompt_ms": 27248.589,
+      "prompt_per_token_ms": 3.9325427911675566,
+      "prompt_per_second": 254.28839636430348,
+      "predicted_n": 1111,
+      "predicted_ms": 50464.982,
+      "predicted_per_token_ms": 45.46394774774775,
+      "predicted_per_second": 21.995450231211812
+    }
+  },
+  "validation_errors": [],
+  "raw_text": "{\n  \"formulations\": [\n    {\n      \"Polymer system Notes\": \"Amorphous oxyethylene\u2013oxymethylene copolymer with randomly-spaced oxy-methylene units inserted into linear PEO chain (n~9, m~600).\",\n      \"Polymer family\": \"ether\",\n      \"Polymer\": \"Amorphous PEO copolymer\",\n      \"SMILES descriptor 1\": \"COC\",\n      \"SMILES descriptor 2\": \"COC\",\n      \"Comonomer percentage\": null,\n      \"Average functional group per monomer\": null,\n      \"Anion\": \"ClO4\",\n      \"Li:monomer\": null,\n      \"Li:functional group\": null,\n      \"salt wt%\": null,\n      \"Tg\": null,\n      \"Tg polymer without salt\": null,\n      \"Tm\": \"none\",\n      \"Tm start\": null,\n      \"Tm end\": null,\n      \"% crystallinity\": null,\n      \"crystalline?\": \"no\",\n      \"Conductivity at 0C\": null,\n      \"Conductivity at 15C\": null,\n      \"Conductivity at 20C\": null,\n      \"Conductivity at 21C\": null,\n      \"Conductivity at 25C\": null,\n      \"Conductivity at 27C\": null,\n      \"Conductivity at 30C\": null,\n      \"Conductivity at 35C\": null,\n      \"Conductivity at 40C\": null,\n      \"Conductivity at 45C\": null,\n      \"Conductivity at 50C\": null,\n      \"Conductivity at 55C\": null,\n      \"Conductivity at 60C\": null,\n      \"Conductivity at 65C\": null,\n      \"Conductivity at 70C\": null,\n      \"Conductivity at 75C\": null,\n      \"Conductivity at 80C\": null,\n      \"Conductivity at 85C\": null,\n      \"Conductivity at 90C\": null,\n      \"Conductivity at 100C\": null,\n      \"Conductivity at 110C\": null,\n      \"Conductivity at 125C\": null,\n      \"Transference number\": null,\n      \"T for transference\": null,\n      \"Transference notes\": null,\n      \"storage modulus\": null,\n      \"T for storage mod\": null,\n      \"youngs modulus (Mpa)\": null,\n      \"viscosity (mPa s)\": null,\n      \"VFT prefactor (S/cm*T^(1/2))\": null,\n      \"VFT activation energy (K)\": null,\n      \"VFT T0 (degC)\": null,\n      \"VFT Notes (above temp)\": null,\n      \"VFT prefactor with set T0\": null,\n      \"VFT activation energy with fixed T0 (K)\": null,\n      \"Fixed T0 (degC)\": null,\n      \"Arrhenius Ea (eV) low T\": null,\n      \"Arrhenius Ea (eV) high T\": null,\n      \"Arrhenius Ea (eV) low T me\": null,\n      \"Arrhenius prefactor low T me (S/cm)\": null,\n      \"Arrhenius Ea (eV)\": null,\n      \"Arrhenius prefactor (S/cm)\": null,\n      \"Arrhenius notes\": null,\n      \"Li diffusion coefficient cm^2/s\": null,\n      \"temperature for D_Li\": null,\n      \"X-ray structural data (aggregate? Distance?)\": null,\n      \"PDI\": null,\n      \"Polymer Mn (kDa)\": null,\n      \"Polymer Mw (kDa)\": null,\n      \"chain architecture\": \"linear\",\n      \"Solvent used\": \"acetonitrile\",\n      \"drying temp\": \"80\",\n      \"drying time (h)\": \"24\",\n      \"drying vacuum\": \"yes\",\n      \"Notes\": \"Conductivity data reported as log10(sigma) vs dopant level (Li:O ratio) in Fig. 5. Specific formulations tested include Li:O ratios of 24:1, 16:1, 12:1, 8:1, 64:1, and 1:1. Salt concentration is not explicitly stated as weight percent in the text, only as molar ratios. Conductivity values are read from Fig. 5 table.\",\n      \"DOI\": null,\n      \"Reference\": \"E. Linden and J.R. Owen, Solid State Ionics 28-30 (1988) 994-1000\"\n    }\n  ]\n}"
+}

@@ -1,0 +1,20 @@
+{
+  "paper_id": "bdf71b01",
+  "formulations": [
+    {
+      "Polymer system Notes": "Amorphous oxyethylene-oxymethylene copolymer with randomly-spaced oxy-methylene units inserted into a linear PEO chain.",
+      "Polymer family": "ether",
+      "Polymer": "oxyethylene–oxymethylene copolymer",
+      "SMILES descriptor 1": "COC",
+      "Anion": "ClO4",
+      "salt wt%": 3.0,
+      "crystalline?": "no",
+      "chain architecture": "linear",
+      "Solvent used": "acetonitrile",
+      "drying temp": "80",
+      "drying time (h)": "24",
+      "drying vacuum": "yes",
+      "Notes": "Conductivity was measured as a function of dopant concentration at temperatures between 20 and 50°C. The polymer shows a large interfacial impedance characteristic of a reaction product between the polymer and lithium."
+    }
+  ]
+}

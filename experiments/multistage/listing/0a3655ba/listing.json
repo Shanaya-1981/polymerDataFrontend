@@ -1,0 +1,86 @@
+{
+  "formulations": [
+    {
+      "Polymer": "poly(AN-co-BuA)",
+      "Anion": "I",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "1.2 molar ratio of salt to AN m.u.",
+      "quote": "The salt concentration varied from 10 to 80 mol % with respect to the AN m.u. in the copolymer. In the cases of PMMA and PBuA, the molar ratio of salt to MMA or BuA m.u. was 1.2. When the salt was ...",
+      "id": "F1"
+    },
+    {
+      "Polymer": "poly(AN-co-BuA)",
+      "Anion": "N(CF3SO2)2",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "1.2 molar ratio of salt to AN m.u.",
+      "quote": "The results of DSC and FTIR studies of electrolytes comprising various lithium salts at the molar ratio of the salt to the AN m.u. in the copolymer (or to the MMA m.u. in PMMA or BuA m.u. in PBuA) of ",
+      "id": "F2"
+    },
+    {
+      "Polymer": "poly(AN-co-BuA)",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "1.2 molar ratio of salt to AN m.u.",
+      "quote": "The electrolytes involving this salt have a milky coloring and are rigid. The DSC and FTIR studies show a multiphase structure of this system and very weak interactions with the polymer matrix (Table ",
+      "id": "F3"
+    },
+    {
+      "Polymer": "poly(AN-co-BuA)",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "1.2 molar ratio of salt to AN m.u.",
+      "quote": "The electrolytes involving this salt have a milky coloring and are rigid. The DSC and FTIR studies show a multiphase structure of this system and very weak interactions with the polymer matrix (Table ",
+      "id": "F4"
+    },
+    {
+      "Polymer": "poly(AN-co-BuA)",
+      "Anion": "BF4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "1.2 molar ratio of salt to AN m.u.",
+      "quote": "The electrolytes involving this salt have a milky coloring and are rigid. The DSC and FTIR studies show a multiphase structure of this system and very weak interactions with the polymer matrix (Table ",
+      "id": "F5"
+    },
+    {
+      "Polymer": "poly(AN-co-BuA)",
+      "Anion": "AlCl4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "1.2 molar ratio of salt to AN m.u.",
+      "quote": "The electrolytes involving this salt have a milky coloring and are rigid. The DSC and FTIR studies show a multiphase structure of this system and very weak interactions with the polymer matrix (Table ",
+      "id": "F6"
+    }
+  ],
+  "totals": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 423.1,
+    "prompt_tokens": 19770,
+    "read_tokens": 18400,
+    "cached_tokens": 1370,
+    "output_tokens": 6342
+  },
+  "quote_check": {
+    "returned": 60,
+    "kept": 6,
+    "quote_not_found": 1,
+    "duplicates": 53
+  },
+  "errors": []
+}

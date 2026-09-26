@@ -1,13 +1,21 @@
 # Pipeline configuration.
 #
 # llm.provider selects which LLMClient implementation the factory
-# (pipeline/extraction/llm_client/factory.py) builds. Switching to a
-# self-hosted model later (e.g. on a compute cluster) means changing
-# `provider` to `openai_compatible` and filling in `base_url`/`model`
-# below -- no pipeline code changes.
+# (pipeline/extraction/llm_client/factory.py) builds. Switching provider is
+# a config change here -- no pipeline code changes.
 
 llm:
-  provider: anthropic  # anthropic | openai_compatible
+  # openai_compatible = an on-device model served by llama.cpp's
+  # `llama-server` (or Ollama / LM Studio) on this machine. The end users'
+  # lab machines can't reach outside websites, so a local model is the
+  # default; `anthropic` needs ANTHROPIC_API_KEY in .env.
+  provider: openai_compatible  # anthropic | openai_compatible
+
+  # Attach the figure crops to the request. false = text-only: the paper's
+  # markdown (tables included, with MinerU's `~` rows digitised off plots)
+  # plus each figure's caption, but no images. A text-only request is much
+  # smaller, and a server started without --mmproj can't read images at all.
+  include_figures: false
 
   anthropic:
     # Deliberate cost/quality tradeoff, not a default: Sonnet 5 is
@@ -18,13 +26,78 @@ llm:
     model: claude-sonnet-5
 
   openai_compatible:
-    # Fill these in when pointing at a self-hosted vLLM/TGI/Ollama server.
-    base_url: http://localhost:8000/v1
-    model: null
+    # A llama-server started as, e.g.:
+    #   llama-server -m models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf -c 49152 -np 1 \
+    #     --reasoning off --offline --port 8080
+    # Always pass -c: without it llama-server's --fit (on by default) may
+    # shrink the context window to fit memory, and a paper that no longer
+    # fits comes back as an HTTP 400.
+    base_url: http://localhost:8080/v1
+    # llama-server serves whichever model it was started with and only
+    # echoes this name back; it is recorded with each extraction.
+    model: qwen3.5-4b-q4_k_m
     api_key: null  # most self-hosted servers ignore this
 
+    # The openai SDK's own defaults are 600 s then two automatic retries of
+    # the whole request -- ~30 minutes lost when a slow paper overruns.
+    timeout: 3600
+    max_retries: 0
+    # Room for ~30 fully filled formulation records. Hitting it is reported
+    # as `output_truncated`, never silently accepted.
+    max_tokens: 24576
+    temperature: 0.2
+    # 0 on purpose: a presence penalty pushes the model away from tokens it
+    # has already written, but in this output the same anion, polymer and
+    # units correctly repeat in every record. (Qwen recommends 1.5 for chat.)
+    presence_penalty: 0.0
+    seed: 0
+    # Sent as-is in the request body. Thinking is off for extraction: it can
+    # add thousands of tokens, and llama.cpp does not enforce the JSON
+    # schema while a model is thinking.
+    extra_body:
+      chat_template_kwargs:
+        enable_thinking: false
+
 mineru:
-  tier: standard
+  # Empirically compared standard vs advanced on a "difficult" 1988 scanned
+  # paper (dense equations, older OCR-unfriendly scan quality): advanced
+  # fixed a garbled OCR artifact in the body text AND extracted a real
+  # numeric data table that standard tier missed entirely (0 tables found;
+  # that data was left unreadable inside an image crop instead). Advanced
+  # costs ~2.3x the parse time on that paper but is local compute -- no
+  # per-call API cost, only wall-clock -- and this corpus (polymer
+  # chemistry papers, many decades old) is squarely the "difficult
+  # documents" case the mineru skill recommends it for. See
+  # study_session/session08.md for the full comparison.
+  tier: advanced
+
+  # Second tier, used *only* to crop figures; text and tables still come
+  # from `tier` above. Set to null for single-tier parsing.
+  #
+  # Measured across the 10-paper benchmark sample
+  # (experiments/tier_comparison/SUMMARY.md): `advanced` reads data
+  # points off plots into tables, and having done so emits no crop for that
+  # chart -- it kept 33 figures where `standard` kept 115. On two papers it
+  # emitted 311 and 62 rows of digitised chart data and zero crops, and one
+  # of those digitisations had its axis misread by a factor of ten
+  # (1000/T spanning 27.3-100, i.e. T = 10-37 K). So the tier producing the
+  # wrong numbers had also discarded the only image that could catch them.
+  # Parsing twice costs wall-clock on local compute and no API spend.
+  figure_tier: standard
+
+  # MinerU sometimes reads a degree *ring* as the digit zero, so "45 °C"
+  # arrives as a superscript "45" followed by a superscript "0" and then
+  # "C" -- which reads literally as 450 °C. Setting this true recovers the
+  # intended value.
+  #
+  # The rule keys on the zero being in a *superscript group immediately
+  # before the unit letter*, never on the magnitude of the number: there is
+  # no plausibility threshold anywhere in the code, so a genuine 450 °C,
+  # 1200 °C or 800-1000 °C passes through untouched. Every rewrite it does
+  # make is listed by `pipeline.scripts.clean_parsed_math` so it can be
+  # reviewed on a new corpus. Set false to disable the inference entirely
+  # and leave such spans exactly as MinerU produced them.
+  recover_degree_as_zero: true
 
 paths:
   papers_dir: papers

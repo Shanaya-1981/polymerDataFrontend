@@ -1,0 +1,64 @@
+{
+  "paper_id": "1dba839e",
+  "source_pdf": "experiments/tier_comparison/1dba839e-tominaga2015/1dba839e-tominaga2015.pdf",
+  "mineru_doc_id": "d87dfd8",
+  "tier": "standard",
+  "text_tier": null,
+  "figure_tier": null,
+  "page_range": "1-4",
+  "figures": [
+    {
+      "locator": "doc:d87dfd8/tier:standard/page:1/block:4",
+      "page": 1,
+      "block": 4,
+      "image_path": "figures/page1-block4.png",
+      "caption": null,
+      "source_tier": null
+    },
+    {
+      "locator": "doc:d87dfd8/tier:standard/page:2/block:3",
+      "page": 2,
+      "block": 3,
+      "image_path": "figures/page2-block3.png",
+      "caption": "Figure 1. Dependence on salt concentration of $: t _ { + }$ for PEC-Li salt electrolytes.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:d87dfd8/tier:standard/page:2/block:10",
+      "page": 2,
+      "block": 10,
+      "image_path": "figures/page2-block10.png",
+      "caption": "Figure 2. Relation between dissolved anion radius and $t _ { + }$ for PEC-Li salt electrolytes with different salt concentrations in each electrolyte system.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:d87dfd8/tier:standard/page:2/block:14",
+      "page": 2,
+      "block": 14,
+      "image_path": "figures/page2-block14.png",
+      "caption": "Figure 3. Dependence on salt concentration of $\\mathbf { \\sigma _ { L i } }$ for PEC-Li salt electrolytes.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:d87dfd8/tier:standard/page:3/block:3",
+      "page": 3,
+      "block": 3,
+      "image_path": "figures/page3-block3.png",
+      "caption": "Figure 4. FT-IR spectra $( 2 0 0 0 { \\sim } 7 0 0 \\; \\mathrm { c m } ^ { - 1 } )$ of neat PEC and the electrolytes at a salt concentration of 40 mol%.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:d87dfd8/tier:standard/page:3/block:7",
+      "page": 3,
+      "block": 7,
+      "image_path": "figures/page3-block7.png",
+      "caption": "Figure 5. Structural image of interactions of $\\mathrm { L i ^ { + } }$ with carbonate groups in PEC-Li salt electrolyte at a salt concentration of 40 mol%.",
+      "source_tier": null
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:05:53.051727Z",
+  "duration_seconds": 25.877704459009692,
+  "wait_retries": 0,
+  "num_tables": 1
+}

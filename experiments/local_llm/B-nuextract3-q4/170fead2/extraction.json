@@ -1,0 +1,15 @@
+{
+  "paper_id": "170fead2",
+  "formulations": [
+    {
+      "Polymer system Notes": "PEO-LiTFSI system. Supersaturation was achieved by heating mixtures above the melting point of LiTFSI (234 °C) and then quenching them.",
+      "Polymer family": "ether",
+      "Polymer": "PEO",
+      "Comonomer percentage": 100.0,
+      "Average functional group per monomer": 1.0,
+      "Anion": "TFSI",
+      "crystalline?": "no",
+      "Notes": "The conductivity data for this system were listed in Table 4. The reduced conductivity σR was calculated at T - Tg = 110 °C."
+    }
+  ]
+}

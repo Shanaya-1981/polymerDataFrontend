@@ -1,0 +1,33 @@
+{
+  "model_name": "models/nuextract3/NuExtract3-Q4_K_M.gguf",
+  "stop_reason": "stop",
+  "include_figures": false,
+  "images_attached": 0,
+  "usage": {
+    "completion_tokens": 882,
+    "prompt_tokens": 19580,
+    "total_tokens": 20462,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cache_write_tokens": null,
+      "cached_tokens": 0,
+      "image_tokens": null,
+      "text_tokens": null
+    },
+    "wall_seconds": 160.03,
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 19580,
+      "prompt_ms": 107592.542,
+      "prompt_per_token_ms": 5.495022574055159,
+      "prompt_per_second": 181.9828738687111,
+      "predicted_n": 882,
+      "predicted_ms": 52248.065,
+      "predicted_per_token_ms": 59.30540862656073,
+      "predicted_per_second": 16.861868473023833
+    }
+  },
+  "validation_errors": [],
+  "raw_text": "{\"formulations\": [{\"Polymer system Notes\": \"PEO-LiClO4 electrolyte with [EO]/[Li] = 9\", \"Polymer family\": \"ether\", \"Polymer\": \"PEO\", \"SMILES descriptor 1\": null, \"SMILES descriptor 2\": null, \"Comonomer percentage\": 100, \"Average functional group per monomer\": 1, \"Anion\": \"ClO4\", \"Li:monomer\": 0.111, \"Li:functional group\": 0.111, \"salt wt%\": null, \"Tg\": -31.28, \"Tg polymer without salt\": null, \"Tm\": null, \"Tm start\": null, \"Tm end\": null, \"% crystallinity\": 0.93, \"crystalline?\": \"no\", \"Conductivity at 0C\": null, \"Conductivity at 15C\": null, \"Conductivity at 20C\": null, \"Conductivity at 21C\": null, \"Conductivity at 25C\": null, \"Conductivity at 27C\": null, \"Conductivity at 30C\": null, \"Conductivity at 35C\": null, \"Conductivity at 40C\": null, \"Conductivity at 45C\": null, \"Conductivity at 50C\": null, \"Conductivity at 55C\": null, \"Conductivity at 60C\": null, \"Conductivity at 65C\": null, \"Conductivity at 70C\": null, \"Conductivity at 75C\": null, \"Conductivity at 80C\": null, \"Conductivity at 85C\": null, \"Conductivity at 90C\": null, \"Conductivity at 100C\": null, \"Conductivity at 110C\": null, \"Conductivity at 125C\": null, \"Transference number\": null, \"T for transference\": null, \"Transference notes\": null, \"storage modulus\": null, \"T for storage mod\": null, \"youngs modulus (Mpa)\": null, \"viscosity (mPa s)\": null, \"VFT prefactor (S/cm*T^(1/2))\": null, \"VFT activation energy (K)\": null, \"VFT T0 (degC)\": null, \"VFT Notes (above temp)\": null, \"VFT prefactor with set T0\": null, \"VFT activation energy with fixed T0 (K)\": null, \"Fixed T0 (degC)\": null, \"Arrhenius Ea (eV) low T\": 1.18, \"Arrhenius Ea (eV) high T\": null, \"Arrhenius Ea (eV) low T me\": null, \"Arrhenius prefactor low T me (S/cm)\": null, \"Arrhenius Ea (eV)\": 1.18, \"Arrhenius prefactor (S/cm)\": null, \"Arrhenius notes\": \"The dc electrical conductivity follows the Arrhenius relation.\", \"Li diffusion coefficient cm^2/s\": null, \"temperature for D_Li\": null, \"X-ray structural data (aggregate? Distance?)\": null, \"PDI\": null, \"Polymer Mn (kDa)\": null, \"Polymer Mw (kDa)\": null, \"chain architecture\": null, \"Solvent used\": \"acetonitrile\", \"drying temp\": \"60 \u00b0C\", \"drying time (h)\": \"36 h\", \"drying vacuum\": \"high\", \"Notes\": \"The amorphous phase is dominant in this composition compared to other electrolytes studied.\", \"DOI\": \"10.1063/1.3428389\", \"Reference\": \"Journal of Applied Physics 107, 104113 (2010)\"}]}"
+}

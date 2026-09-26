@@ -1,0 +1,24 @@
+{
+  "paper_id": "bdf71b01",
+  "formulations": [
+    {
+      "Polymer system Notes": "Amorphous oxyethylene–oxymethylene copolymer (similar to PEO but with randomly spaced oxy-methylene units to prevent crystallization).",
+      "Polymer family": "ether",
+      "Polymer": "oxyethylene–oxymethylene copolymer",
+      "SMILES descriptor 1": "COC",
+      "SMILES descriptor 2": "C",
+      "Comonomer percentage": 100.0,
+      "Average functional group per monomer": 1.0,
+      "Anion": "ClO4",
+      "salt wt%": 3.0,
+      "Tm": "none",
+      "crystalline?": "no",
+      "chain architecture": "linear",
+      "Solvent used": "acetonitrile",
+      "drying temp": "80",
+      "drying time (h)": "24",
+      "drying vacuum": "yes",
+      "Notes": "Salt concentration given as ~3 wt%. Li:O ratios reported in text and tables (e.g., 24:1, 16:1, 12:1, 8:1, 64:1). Conductivity data provided in log10(S/cm) format in Fig. 5. No specific conductivity values converted to S/cm for the requested temperatures (0-125C) are explicitly stated in the text or tables for this formulation; only log10 values at 20, 25, 30, 35, 40, 45, 50C are available in Fig. 5. The paper mentions conductivities > 10^-5 S/cm at 25C but does not give a specific value for this exact formulation in the text. The '~' values in tables (e.g., Fig. 1, Fig. 3, Fig. 4) are digit化的/"
+    }
+  ]
+}

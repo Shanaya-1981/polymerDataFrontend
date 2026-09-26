@@ -1,0 +1,89 @@
+=== 17:43:28 START A-qwen3.5-4b
+[A-qwen3.5-4b] Can an 8 GB machine do this at all?
+[A-qwen3.5-4b] starting: llama-server -m models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf -c 49152 -np 1 --reasoning off --offline --no-webui --port 8080 -lv 4 --log-file experiments/local_llm/A-qwen3.5-4b/server.log
+[A-qwen3.5-4b] n_ctx=49152  memory: {'device_self_mib': 4493, 'host_self_mib': 613, 'mmproj_mib': 0, 'total_mib': 5106, 'tier_budget_mib': 5461, 'fits_tier': True}
+[A-qwen3.5-4b] 1/10 bdf71b01: already done, skipping (--redo to force)
+[A-qwen3.5-4b] 2/10 f3d2d4b6: already done, skipping (--redo to force)
+[A-qwen3.5-4b] 3/10 6ca669ae: already done, skipping (--redo to force)
+[A-qwen3.5-4b] 4/10 1dba839e: ok  4 formulations  293.19s  in=12315 out=4509  decode=18.74 tok/s  
+[A-qwen3.5-4b] 5/10 663ed327: ok  4 formulations  300.49s  in=12899 out=4453  decode=18.63 tok/s  
+[A-qwen3.5-4b] 6/10 2c7161a7: ok  3 formulations  274.11s  in=18566 out=3313  decode=18.27 tok/s  
+[A-qwen3.5-4b] 7/10 0a3655ba: failed  None formulations  1675.44s  in=20454 out=24576  decode=15.65 tok/s  RuntimeError: Extraction failed for 0a3655ba: ['output_truncated: generation stopped at the token limit (24576 tokens), so the JSON is cut off']
+[A-qwen3.5-4b] 8/10 5feba0f9: ok  3 formulations  362.0s  in=24694 out=3268  decode=15.03 tok/s  
+[A-qwen3.5-4b] 9/10 170fead2: ok  4 formulations  499.25s  in=27778 out=4341  decode=13.25 tok/s  
+[A-qwen3.5-4b] 10/10 569ebb10: ok  7 formulations  707.27s  in=27527 out=7496  decode=13.8 tok/s  
+experiments/local_llm/A-qwen3.5-4b: 9/10 papers extracted
+  formulations: matched 21/127 golden (recall 0.1654), 45 predicted (precision 0.4667); direct 8, rank 13, anion-only 0
+  group               accuracy   loose  recall   cells(matched/all)  extra
+  identity                0.41    0.41    0.08     106/558            5
+  thermal                 0.20    0.20    0.07      44/138           23
+  conductivity            0.00    0.00    0.00     147/913            0
+  transport               0.50    0.50    0.19      12/32             2
+  molecular_weight        0.00    0.00    0.00      17/194            5
+  processing              0.46    0.46    0.08      74/444            0
+  classification          0.52    0.52    0.09      63/381            0
+  fits                    0.08    0.08    0.01      74/548            0
+  curator_computed        0.53    0.53    0.08      59/408            4
+  HEADLINE                0.18    0.18    0.03     326/1835          35
+=== 18:52:03 END A-qwen3.5-4b
+=== 18:53:03 START B-nuextract3-q4
+[B-nuextract3-q4] Does extraction fine-tuning beat its base model (arm A)?
+[B-nuextract3-q4] starting: llama-server -m models/nuextract3/NuExtract3-Q4_K_M.gguf -c 49152 -np 1 --reasoning off --offline --no-webui --port 8080 -lv 4 --log-file experiments/local_llm/B-nuextract3-q4/server.log
+[B-nuextract3-q4] n_ctx=49152  memory: {'device_self_mib': 4462, 'host_self_mib': 613, 'mmproj_mib': 0, 'total_mib': 5075, 'tier_budget_mib': 5461, 'fits_tier': True}
+[B-nuextract3-q4] 1/10 bdf71b01: ok  1 formulations  57.76s  in=7943 out=844  decode=26.69 tok/s  
+[B-nuextract3-q4] 2/10 f3d2d4b6: ok  1 formulations  83.84s  in=11290 out=835  decode=21.64 tok/s  
+[B-nuextract3-q4] 3/10 6ca669ae: failed  None formulations  1645.0s  in=13688 out=24576  decode=15.57 tok/s  RuntimeError: Extraction failed for 6ca669ae: ['output_truncated: generation stopped at the token limit (24576 tokens), so the JSON is cut off']
+[B-nuextract3-q4] 4/10 1dba839e: ok  1 formulations  123.04s  in=13329 out=903  decode=16.82 tok/s  
+[B-nuextract3-q4] 5/10 663ed327: ok  1 formulations  123.55s  in=13913 out=875  decode=16.92 tok/s  
+[B-nuextract3-q4] 6/10 2c7161a7: ok  1 formulations  160.03s  in=19580 out=882  decode=16.86 tok/s  
+[B-nuextract3-q4] 7/10 0a3655ba: ok  1 formulations  174.25s  in=21468 out=820  decode=15.48 tok/s  
+[B-nuextract3-q4] 8/10 5feba0f9: ok  1 formulations  229.81s  in=25708 out=953  decode=15.87 tok/s  
+[B-nuextract3-q4] 9/10 170fead2: ok  1 formulations  224.4s  in=28792 out=830  decode=15.47 tok/s  
+[B-nuextract3-q4] 10/10 569ebb10: ok  7 formulations  580.5s  in=28541 out=6080  decode=14.86 tok/s  
+experiments/local_llm/B-nuextract3-q4: 9/10 papers extracted
+  formulations: matched 5/127 golden (recall 0.0394), 15 predicted (precision 0.3333); direct 1, rank 4, anion-only 0
+  group               accuracy   loose  recall   cells(matched/all)  extra
+  identity                0.42    0.42    0.02      24/558            4
+  thermal                 0.44    0.44    0.03       9/138            0
+  conductivity            0.00    0.00    0.00      39/913            0
+  transport               0.17    0.17    0.03       6/32             3
+  molecular_weight        0.00    0.00    0.00       7/194            2
+  processing              0.85    0.85    0.04      20/444            0
+  classification          0.40    0.40    0.02      15/381            0
+  fits                    0.07    0.07    0.00      30/548            0
+  curator_computed        0.14    0.14    0.00      14/408            1
+  HEADLINE                0.18    0.18    0.01      85/1835           9
+=== 19:49:51 END B-nuextract3-q4
+=== 19:50:51 START C-qwen3.5-4b-figures
+[C-qwen3.5-4b-figures] Do figures help at 8 GB, and do they fit?
+[C-qwen3.5-4b-figures] starting: llama-server -m models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf -c 65536 -np 1 --reasoning off --offline --no-webui --port 8080 -lv 4 --log-file experiments/local_llm/C-qwen3.5-4b-figures/server.log --mmproj models/qwen3.5-4b/mmproj-F16.gguf --image-max-tokens 512 -ctk q8_0 -ctv q8_0
+[C-qwen3.5-4b-figures] n_ctx=65536  memory: {'device_self_mib': 4132, 'host_self_mib': 645, 'mmproj_mib': 641, 'total_mib': 5418, 'tier_budget_mib': 5461, 'fits_tier': True}
+[C-qwen3.5-4b-figures] 1/10 bdf71b01: ok  1 formulations  103.39s  in=12196 out=1201  decode=22.92 tok/s  
+[C-qwen3.5-4b-figures] 2/10 f3d2d4b6: ok  12 formulations  894.16s  in=13555 out=13061  decode=15.88 tok/s  
+[C-qwen3.5-4b-figures] 3/10 6ca669ae: ok  13 formulations  956.78s  in=15777 out=13464  decode=15.58 tok/s  
+[C-qwen3.5-4b-figures] 4/10 1dba839e: ok  4 formulations  486.98s  in=14359 out=4502  decode=12.39 tok/s  
+[C-qwen3.5-4b-figures] 5/10 663ed327: ok  7 formulations  712.81s  in=18245 out=7501  decode=13.5 tok/s  
+[C-qwen3.5-4b-figures] 6/10 2c7161a7: ok  3 formulations  441.78s  in=25029 out=3287  decode=16.58 tok/s  
+[C-qwen3.5-4b-figures] 7/10 0a3655ba: failed  None formulations  1568.59s  in=23597 out=24576  decode=17.14 tok/s  RuntimeError: Extraction failed for 0a3655ba: ['output_truncated: generation stopped at the token limit (24576 tokens), so the JSON is cut off']
+[C-qwen3.5-4b-figures] 8/10 5feba0f9: ok  3 formulations  442.51s  in=37667 out=3009  decode=16.17 tok/s  
+[C-qwen3.5-4b-figures] 9/10 170fead2: ok  4 formulations  496.72s  in=35985 out=4014  decode=15.64 tok/s  
+[C-qwen3.5-4b-figures] 10/10 569ebb10: ok  7 formulations  715.09s  in=35028 out=7491  decode=15.5 tok/s  
+experiments/local_llm/C-qwen3.5-4b-figures: 9/10 papers extracted
+  formulations: matched 34/127 golden (recall 0.2677), 54 predicted (precision 0.6296); direct 23, rank 11, anion-only 0
+  group               accuracy   loose  recall   cells(matched/all)  extra
+  identity                0.63    0.63    0.18     161/558           25
+  thermal                 0.38    0.38    0.15      55/138           26
+  conductivity            0.02    0.03    0.00     230/913            6
+  transport               0.50    0.50    0.19      12/32             4
+  molecular_weight        0.04    0.04    0.01      45/194           12
+  processing              0.61    0.61    0.15     112/444           14
+  classification          0.61    0.61    0.16     102/381            0
+  fits                    0.04    0.04    0.01     146/548            0
+  curator_computed        0.51    0.51    0.12      96/408           10
+  HEADLINE                0.27    0.27    0.07     503/1835          73
+=== 21:44:35 END C-qwen3.5-4b-figures
+=== 21:45:35 START D-qwen3.5-9b
+[D-qwen3.5-9b] What does 16 GB buy?
+[D-qwen3.5-9b] starting: llama-server -m models/qwen3.5-9b/Qwen3.5-9B-Q4_K_M.gguf -c 49152 -np 1 --reasoning off --offline --no-webui --port 8080 -lv 4 --log-file experiments/local_llm/D-qwen3.5-9b/server.log
+[D-qwen3.5-9b] n_ctx=49152  memory: {'device_self_mib': 6744, 'host_self_mib': 673, 'mmproj_mib': 0, 'total_mib': 7417, 'tier_budget_mib': 10923, 'fits_tier': True}
+[D-qwen3.5-9b] 1/10 bdf71b01: ok  1 formulations  108.57s  in=6929 out=1007  decode=14.84 tok/s  

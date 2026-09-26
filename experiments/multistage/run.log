@@ -1,0 +1,83 @@
+starting: llama-server -m models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf -c 49152 -np 1 --reasoning off --offline --no-webui --port 8080 -lv 4 --log-file experiments/multistage/server.log
+[1/10] bdf71b01
+  listing quote check: {'returned': 6, 'kept': 2, 'quote_not_found': 4, 'duplicates': 0}
+  listing: 2 formulations, 35.6s
+  per_group: ok  6 calls  106.9s  read=8954 written=2006  
+  per_formulation: ok  3 calls  74.2s  read=8079 written=1196  
+[2/10] f3d2d4b6
+  listing quote check: {'returned': 20, 'kept': 20, 'quote_not_found': 0, 'duplicates': 0}
+  listing: 20 formulations, 110.8s
+  per_formulation: ok  21 calls  1699.8s  read=38204 written=28107  
+  per_group: ok  6 calls  248.1s  read=11259 written=3840  
+[3/10] 6ca669ae
+  listing quote check: {'returned': 10, 'kept': 8, 'quote_not_found': 0, 'duplicates': 2}
+  listing: 8 formulations, 106.3s
+  per_group: ok  6 calls  204.5s  read=13499 written=2748  
+  per_formulation: ok  9 calls  1430.7s  read=17956 written=26026  
+[4/10] 1dba839e
+  listing quote check: {'returned': 12, 'kept': 12, 'quote_not_found': 0, 'duplicates': 0}
+  listing: 12 formulations, 96.7s
+  per_formulation: ok  13 calls  1255.2s  read=26383 written=22026  
+  per_group: ok  6 calls  187.0s  read=13143 written=2492  
+[5/10] 663ed327
+  listing quote check: {'returned': 6, 'kept': 6, 'quote_not_found': 0, 'duplicates': 0}
+  listing: 6 formulations, 82.3s
+  per_group: ok  6 calls  149.8s  read=13631 written=1675  
+  per_formulation: ok  7 calls  437.0s  read=16347 written=7075  
+[6/10] 2c7161a7
+  listing quote check: {'returned': 12, 'kept': 12, 'quote_not_found': 0, 'duplicates': 0}
+  listing: 12 formulations, 131.2s
+  per_formulation: ok  13 calls  1242.6s  read=32922 written=20665  
+  per_group: ok  6 calls  446.7s  read=19418 written=6848  
+[7/10] 0a3655ba
+  listing quote check: {'returned': 60, 'kept': 6, 'quote_not_found': 1, 'duplicates': 53}
+  listing: 6 formulations, 423.1s
+  per_group: ok  6 calls  521.5s  read=21247 written=7922  
+  per_formulation: ok  7 calls  1458.7s  read=23902 written=25565  
+[8/10] 5feba0f9
+  listing quote check: {'returned': 8, 'kept': 7, 'quote_not_found': 1, 'duplicates': 0}
+  listing: 7 formulations, 151.8s
+  per_formulation: ok  8 calls  1208.7s  read=31376 written=19288  
+  per_group: ok  6 calls  279.3s  read=25427 written=2758  
+[9/10] 170fead2
+  listing quote check: {'returned': 38, 'kept': 7, 'quote_not_found': 31, 'duplicates': 0}
+  listing: 7 formulations, 317.7s
+  per_group: ok  6 calls  574.2s  read=28502 written=7670  
+  per_formulation: ok  8 calls  1891.4s  read=32143 written=30839  
+[10/10] 569ebb10
+  listing quote check: {'returned': 60, 'kept': 3, 'quote_not_found': 0, 'duplicates': 57}
+  listing: 3 formulations, 349.3s
+  per_formulation: ok  4 calls  1097.8s  read=28992 written=17360  
+  per_group: ok  6 calls  486.6s  read=28185 written=6233  
+
+== per_group
+experiments/multistage/per_group: 10/10 papers extracted
+  formulations: matched 6/127 golden (recall 0.0472), 83 predicted (precision 0.0723); direct 0, rank 6, anion-only 0
+  group               accuracy   loose  recall   cells(matched/all)  extra
+  identity                0.20    0.20    0.01      30/558            0
+  thermal                 0.00    0.00    0.00       7/138           23
+  conductivity            0.00    0.00    0.00      65/913            2
+  transport                  -       -    0.00       0/32             0
+  molecular_weight           -       -    0.00       0/194            0
+  processing              0.75    0.75    0.03      16/444            0
+  classification          0.56    0.56    0.03      18/381            0
+  fits                    0.00    0.00    0.00      23/548            0
+  curator_computed        0.00    0.00    0.00      18/408            0
+  HEADLINE                0.06    0.06    0.00     102/1835          25
+
+== per_formulation
+experiments/multistage/per_formulation: 10/10 papers extracted
+  formulations: matched 6/127 golden (recall 0.0472), 83 predicted (precision 0.0723); direct 0, rank 6, anion-only 0
+  group               accuracy   loose  recall   cells(matched/all)  extra
+  identity                0.20    0.20    0.01      30/558            0
+  thermal                 0.00    0.00    0.00       7/138           21
+  conductivity            0.00    0.00    0.00      65/913            2
+  transport                  -       -    0.00       0/32            12
+  molecular_weight           -       -    0.00       0/194           12
+  mechanical                 -       -       -       0/0             12
+  processing              0.62    0.62    0.02      16/444            4
+  classification          0.44    0.44    0.02      18/381            0
+  fits                    0.00    0.00    0.00      23/548           20
+  curator_computed        0.00    0.00    0.00      18/408            0
+  HEADLINE                0.06    0.06    0.00     102/1835          47
+Wrote experiments/multistage/SUMMARY.md

@@ -1,0 +1,15 @@
+{
+  "paper_id": "0a3655ba",
+  "status": "failed",
+  "error": "RuntimeError: Extraction failed for 0a3655ba: ['output_truncated: generation stopped at the token limit (24576 tokens), so the JSON is cut off']",
+  "n_formulations": null,
+  "stop_reason": "length",
+  "images_attached": 0,
+  "prompt_tokens": 20454,
+  "completion_tokens": 24576,
+  "cache_n": 0,
+  "prompt_per_second": 195.4,
+  "predicted_per_second": 15.65,
+  "wall_seconds": 1675.44,
+  "finished_at": "2026-09-23T01:25:53.703013+00:00"
+}

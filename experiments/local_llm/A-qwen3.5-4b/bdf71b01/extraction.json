@@ -1,0 +1,22 @@
+{
+  "paper_id": "bdf71b01",
+  "formulations": [
+    {
+      "Polymer system Notes": "Amorphous oxyethylene–oxymethylene copolymer with randomly-spaced oxy-methylene units inserted into linear PEO chain (n~9, m~600).",
+      "Polymer family": "ether",
+      "Polymer": "Amorphous PEO copolymer",
+      "SMILES descriptor 1": "COC",
+      "SMILES descriptor 2": "COC",
+      "Anion": "ClO4",
+      "Tm": "none",
+      "crystalline?": "no",
+      "chain architecture": "linear",
+      "Solvent used": "acetonitrile",
+      "drying temp": "80",
+      "drying time (h)": "24",
+      "drying vacuum": "yes",
+      "Notes": "Conductivity data reported as log10(sigma) vs dopant level (Li:O ratio) in Fig. 5. Specific formulations tested include Li:O ratios of 24:1, 16:1, 12:1, 8:1, 64:1, and 1:1. Salt concentration is not explicitly stated as weight percent in the text, only as molar ratios. Conductivity values are read from Fig. 5 table.",
+      "Reference": "E. Linden and J.R. Owen, Solid State Ionics 28-30 (1988) 994-1000"
+    }
+  ]
+}

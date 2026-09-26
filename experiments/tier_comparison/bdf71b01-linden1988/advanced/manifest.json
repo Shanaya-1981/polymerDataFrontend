@@ -1,0 +1,32 @@
+{
+  "paper_id": "bdf71b01",
+  "source_pdf": "experiments/tier_comparison/bdf71b01-linden1988/bdf71b01-linden1988.pdf",
+  "mineru_doc_id": "9be25e5",
+  "tier": "advanced",
+  "text_tier": null,
+  "figure_tier": null,
+  "page_range": "1-7",
+  "figures": [
+    {
+      "locator": "doc:9be25e5/tier:advanced/page:1/block:7",
+      "page": 1,
+      "block": 7,
+      "image_path": "figures/page1-block7.png",
+      "caption": "Fig. 1. (a) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - uncorrected complex impedance spectrum from thin cell; (b) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - corrected complex impedance spectrum from thin cell; (c) Crystalline PEO: $\\mathrm{LiClO_4 - 8:1}$ - corrected complex impedance spectrum from thin cell.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:9be25e5/tier:advanced/page:2/block:3",
+      "page": 2,
+      "block": 3,
+      "image_path": "figures/page2-block3.png",
+      "caption": "Fig. 1. (a) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - uncorrected complex impedance spectrum from thin cell; (b) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - corrected complex impedance spectrum from thin cell; (c) Crystalline PEO: $\\mathrm{LiClO_4 - 8:1}$ - corrected complex impedance spectrum from thin cell.",
+      "source_tier": null
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:29:42.128105Z",
+  "duration_seconds": 182.191549167037,
+  "wait_retries": 1,
+  "num_tables": 6
+}

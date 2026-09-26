@@ -106,15 +106,39 @@ FIELD_NAME_TO_COLUMN: dict[str, str] = {slugify(c): c for c in REPORTED_COLUMNS}
 assert len(FIELD_NAME_TO_COLUMN) == len(REPORTED_COLUMNS), "slugify() produced a field-name collision"
 
 
+# Upper bound on every text field, enforced by the JSON schema -- which
+# llama.cpp compiles into the output grammar, so a longer string cannot be
+# generated at all. Without it the first bdf71b01 re-run spent 10,000+ tokens
+# writing `SMILES descriptor 1` as the whole polymer chain
+# ("CCOCCOCCOCC...") instead of the repeat-unit fragment the golden set uses
+# ("COC"), and would have run to the token limit. Bounds are generous
+# relative to the golden set's own longest values.
+_DEFAULT_MAX_CHARS = 300
+_MAX_CHARS: dict[str, int] = {
+    "SMILES descriptor 1": 120,
+    "SMILES descriptor 2": 120,
+    "Polymer system Notes": 600,
+    "Transference notes": 600,
+    "VFT Notes (above temp)": 600,
+    "Arrhenius notes": 600,
+    "Notes": 600,
+    "Reference": 600,
+}
+# The golden set's largest paper has 32 formulations.
+MAX_FORMULATIONS = 80
+
+
 def _build_formulation_record() -> type[BaseModel]:
     fields: dict[str, tuple[type, Field]] = {}
     for column in REPORTED_COLUMNS:
         field_name = slugify(column)
-        field_type = float if column in _FLOAT_COLUMNS else str
-        fields[field_name] = (
-            field_type | None,
-            Field(default=None, alias=column),
-        )
+        if column in _FLOAT_COLUMNS:
+            fields[field_name] = (float | None, Field(default=None, alias=column))
+        else:
+            fields[field_name] = (
+                str | None,
+                Field(default=None, alias=column, max_length=_MAX_CHARS.get(column, _DEFAULT_MAX_CHARS)),
+            )
     model = create_model(
         "FormulationRecord",
         __config__=ConfigDict(populate_by_name=True, extra="forbid"),
@@ -126,15 +150,33 @@ def _build_formulation_record() -> type[BaseModel]:
 FormulationRecord = _build_formulation_record()
 
 
+_FORMULATIONS_DESCRIPTION = (
+    "One entry per distinct formulation reported in the paper "
+    "(a formulation = one specific polymer + salt + concentration "
+    "combination). Most papers report several -- e.g. the same "
+    "polymer at multiple salt loadings, or multiple anions."
+)
+
+
+class ExtractedFormulations(BaseModel):
+    """What the model is asked to produce -- and nothing it can't know.
+
+    `paper_id` is deliberately absent. It is the pipeline's own hash-prefixed
+    identifier (e.g. `bdf71b01`), which appears nowhere in the paper, so a
+    model asked for it can only invent one: the first local run returned
+    `"Linden_Owen_1988_Amorphous_PEO"`. The pipeline attaches the real ID in
+    `PaperExtractionResult` instead.
+    """
+
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
+
+    formulations: list[FormulationRecord] = Field(description=_FORMULATIONS_DESCRIPTION, max_length=MAX_FORMULATIONS)
+
+
 class PaperExtractionResult(BaseModel):
+    """One paper's extraction as saved to extraction.json."""
+
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
 
     paper_id: str
-    formulations: list[FormulationRecord] = Field(
-        description=(
-            "One entry per distinct formulation reported in the paper "
-            "(a formulation = one specific polymer + salt + concentration "
-            "combination). Most papers report several -- e.g. the same "
-            "polymer at multiple salt loadings, or multiple anions."
-        )
-    )
+    formulations: list[FormulationRecord] = Field(description=_FORMULATIONS_DESCRIPTION, max_length=MAX_FORMULATIONS)

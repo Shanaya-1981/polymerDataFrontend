@@ -1,0 +1,33 @@
+{
+  "model_name": "models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+  "stop_reason": "stop",
+  "include_figures": true,
+  "images_attached": 10,
+  "usage": {
+    "completion_tokens": 1201,
+    "prompt_tokens": 12196,
+    "total_tokens": 13397,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cache_write_tokens": null,
+      "cached_tokens": 0,
+      "image_tokens": null,
+      "text_tokens": null
+    },
+    "wall_seconds": 103.39,
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 12196,
+      "prompt_ms": 50842.127,
+      "prompt_per_token_ms": 4.168754263693014,
+      "prompt_per_second": 239.87981462695296,
+      "predicted_n": 1201,
+      "predicted_ms": 52353.561,
+      "predicted_per_token_ms": 43.627967500000004,
+      "predicted_per_second": 22.92107694450813
+    }
+  },
+  "validation_errors": [],
+  "raw_text": "{\n  \"formulations\": [\n    {\n      \"Polymer system Notes\": \"Amorphous oxyethylene-oxymethylene copolymer with randomly-spaced oxy-methylene units inserted into linear PEO chain. Formula: -[(CH2-CH2-O)n-CH2-O]-m, where n varies randomly around 9 and m is about 600.\",\n      \"Polymer family\": \"ether\",\n      \"Polymer\": \"Amorphous PEO copolymer\",\n      \"SMILES descriptor 1\": \"COC\",\n      \"SMILES descriptor 2\": \"COC\",\n      \"Comonomer percentage\": null,\n      \"Average functional group per monomer\": null,\n      \"Anion\": \"ClO4\",\n      \"Li:monomer\": 0.0417,\n      \"Li:functional group\": 0.0417,\n      \"salt wt%\": 3,\n      \"Tg\": null,\n      \"Tg polymer without salt\": null,\n      \"Tm\": \"none\",\n      \"Tm start\": null,\n      \"Tm end\": null,\n      \"% crystallinity\": null,\n      \"crystalline?\": \"no\",\n      \"Conductivity at 0C\": null,\n      \"Conductivity at 15C\": null,\n      \"Conductivity at 20C\": 1.0e-0,\n      \"Conductivity at 21C\": null,\n      \"Conductivity at 25C\": 1.0e-0,\n      \"Conductivity at 27C\": null,\n      \"Conductivity at 30C\": 1.0e-0,\n      \"Conductivity at 35C\": 1.0e-0,\n      \"Conductivity at 40C\": 1.0e-0,\n      \"Conductivity at 45C\": 1.0e-0,\n      \"Conductivity at 50C\": 1.0e-0,\n      \"Conductivity at 55C\": null,\n      \"Conductivity at 60C\": null,\n      \"Conductivity at 65C\": null,\n      \"Conductivity at 70C\": null,\n      \"Conductivity at 75C\": null,\n      \"Conductivity at 80C\": null,\n      \"Conductivity at 85C\": null,\n      \"Conductivity at 90C\": null,\n      \"Conductivity at 100C\": null,\n      \"Conductivity at 110C\": null,\n      \"Conductivity at 125C\": null,\n      \"Transference number\": null,\n      \"T for transference\": null,\n      \"Transference notes\": null,\n      \"storage modulus\": null,\n      \"T for storage mod\": null,\n      \"youngs modulus (Mpa)\": null,\n      \"viscosity (mPa s)\": null,\n      \"VFT prefactor (S/cm*T^(1/2))\": null,\n      \"VFT activation energy (K)\": null,\n      \"VFT T0 (degC)\": null,\n      \"VFT Notes (above temp)\": null,\n      \"VFT prefactor with set T0\": null,\n      \"VFT activation energy with fixed T0 (K)\": null,\n      \"Fixed T0 (degC)\": null,\n      \"Arrhenius Ea (eV) low T\": null,\n      \"Arrhenius Ea (eV) high T\": null,\n      \"Arrhenius Ea (eV) low T me\": null,\n      \"Arrhenius prefactor low T me (S/cm)\": null,\n      \"Arrhenius Ea (eV)\": null,\n      \"Arrhenius prefactor (S/cm)\": null,\n      \"Arrhenius notes\": \"Arrhenius plots given in Fig. 4 for various concentrations (Li:O ratios from 64:1 to 1:1).\",\n      \"Li diffusion coefficient cm^2/s\": null,\n      \"temperature for D_Li\": null,\n      \"X-ray structural data (aggregate? Distance?)\": null,\n      \"PDI\": null,\n      \"Polymer Mn (kDa)\": null,\n      \"Polymer Mw (kDa)\": null,\n      \"chain architecture\": \"linear\",\n      \"Solvent used\": \"acetonitrile\",\n      \"drying temp\": \"80\",\n      \"drying time (h)\": \"24\",\n      \"drying vacuum\": \"yes\",\n      \"Notes\": \"Conductivity values read from Fig. 5 (Log10 conductivity vs dopant level). Values are approximate from plot reading. Salt concentration given as Li:O ratio of 24:1 corresponds to ~3 wt% LiClO4. Polymer structure described in Introduction: -[(CH2-CH2-O)n-CH2-O]-m with n~9, m~600.\",\n      \"DOI\": null,\n      \"Reference\": \"E. Linden and J.R. Owen, Solid State Ionics 28-30 (1988) 994-1000\"\n    }\n  ]\n}"
+}

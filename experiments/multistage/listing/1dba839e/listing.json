@@ -1,0 +1,152 @@
+{
+  "formulations": [
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "80 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F1"
+    },
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "60 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F2"
+    },
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "40 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F3"
+    },
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "20 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F4"
+    },
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "40 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F5"
+    },
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "60 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F6"
+    },
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "BF4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "40 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F7"
+    },
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "BF4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "60 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F8"
+    },
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "PF6",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "40 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F9"
+    },
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "PF6",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "5 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F10"
+    },
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "PF6",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "20 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F11"
+    },
+    {
+      "Polymer": "Poly(ethylene carbonate)",
+      "Anion": "PF6",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "60 mol%",
+      "quote": "The values of t+ were greater than 0.5, and increased with increasing concentration to 0.63 at a concentration of 80 mol%.",
+      "id": "F12"
+    }
+  ],
+  "totals": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 96.7,
+    "prompt_tokens": 11631,
+    "read_tokens": 10261,
+    "cached_tokens": 1370,
+    "output_tokens": 991
+  },
+  "quote_check": {
+    "returned": 12,
+    "kept": 12,
+    "quote_not_found": 0,
+    "duplicates": 0
+  },
+  "errors": []
+}

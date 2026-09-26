@@ -1,0 +1,45 @@
+{
+  "paper_id": "0a3655ba",
+  "layout": "per_group",
+  "ran_position": 1,
+  "n_listed": 6,
+  "status": "ok",
+  "error": null,
+  "listing": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 423.1,
+    "prompt_tokens": 19770,
+    "read_tokens": 18400,
+    "cached_tokens": 1370,
+    "output_tokens": 6342
+  },
+  "values": {
+    "calls": 5,
+    "failed_calls": 0,
+    "wall_seconds": 98.4,
+    "prompt_tokens": 100371,
+    "read_tokens": 2847,
+    "cached_tokens": 97524,
+    "output_tokens": 1580
+  },
+  "wall_seconds": 521.5,
+  "calls": 6,
+  "read_tokens": 21247,
+  "prompt_tokens": 120141,
+  "output_tokens": 7922,
+  "dropped_values": [
+    "ALL/not a number for Transference number: '0.5-0.8'",
+    "ALL/not a number for Li diffusion coefficient cm^2/s: 'none'",
+    "ALL/not a number for temperature for D_Li: 'none'",
+    "ALL/not a number for storage modulus: 'none'",
+    "ALL/not a number for T for storage mod: 'none'",
+    "ALL/not a number for youngs modulus (Mpa): 'none'",
+    "ALL/not a number for viscosity (mPa s): 'none'"
+  ],
+  "duplicate_values": 0,
+  "off_grid_points": 0,
+  "placeholders": 0,
+  "implausible_points": 0,
+  "call_errors": []
+}

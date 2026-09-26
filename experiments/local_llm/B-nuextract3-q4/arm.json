@@ -1,0 +1,69 @@
+{
+  "arm": {
+    "name": "B-nuextract3-q4",
+    "question": "Does extraction fine-tuning beat its base model (arm A)?",
+    "tier": 8,
+    "provider": "nuextract",
+    "model_file": "models/nuextract3/NuExtract3-Q4_K_M.gguf",
+    "ctx": 49152,
+    "include_figures": false
+  },
+  "server_command": [
+    "llama-server",
+    "-m",
+    "models/nuextract3/NuExtract3-Q4_K_M.gguf",
+    "-c",
+    "49152",
+    "-np",
+    "1",
+    "--reasoning",
+    "off",
+    "--offline",
+    "--no-webui",
+    "--port",
+    "8080",
+    "-lv",
+    "4",
+    "--log-file",
+    "experiments/local_llm/B-nuextract3-q4/server.log"
+  ],
+  "llama_cpp": "version: 0.4.1 (build 10964, commit b29c606e2)",
+  "memory_breakdown_mib": {
+    "devices": {
+      "MTL0 (Apple M4)": {
+        "self": 4462,
+        "model": 2572,
+        "context": 1586,
+        "compute": 303
+      }
+    },
+    "host": {
+      "self": 613,
+      "model": 497,
+      "context": 0,
+      "compute": 116
+    }
+  },
+  "memory": {
+    "device_self_mib": 4462,
+    "host_self_mib": 613,
+    "mmproj_mib": 0,
+    "total_mib": 5075,
+    "tier_budget_mib": 5461,
+    "fits_tier": true
+  },
+  "peak_footprint_mib": 8740.0,
+  "finished_at": "2026-09-23T02:49:50.471551+00:00",
+  "papers": [
+    "bdf71b01",
+    "f3d2d4b6",
+    "6ca669ae",
+    "1dba839e",
+    "663ed327",
+    "2c7161a7",
+    "0a3655ba",
+    "5feba0f9",
+    "170fead2",
+    "569ebb10"
+  ]
+}

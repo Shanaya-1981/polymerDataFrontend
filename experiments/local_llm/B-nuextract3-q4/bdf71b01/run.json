@@ -1,0 +1,15 @@
+{
+  "paper_id": "bdf71b01",
+  "status": "ok",
+  "error": null,
+  "n_formulations": 1,
+  "stop_reason": "stop",
+  "images_attached": 0,
+  "prompt_tokens": 7943,
+  "completion_tokens": 844,
+  "cache_n": 0,
+  "prompt_per_second": 304.2,
+  "predicted_per_second": 26.69,
+  "wall_seconds": 57.76,
+  "finished_at": "2026-09-23T01:54:05.359579+00:00"
+}

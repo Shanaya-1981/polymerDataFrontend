@@ -1,0 +1,33 @@
+{
+  "model_name": "models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+  "stop_reason": "stop",
+  "include_figures": false,
+  "images_attached": 0,
+  "usage": {
+    "completion_tokens": 1038,
+    "prompt_tokens": 12359,
+    "total_tokens": 13397,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cache_write_tokens": null,
+      "cached_tokens": 0,
+      "image_tokens": null,
+      "text_tokens": null
+    },
+    "wall_seconds": 112.65,
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 12359,
+      "prompt_ms": 57969.017,
+      "prompt_per_token_ms": 4.690429403673436,
+      "prompt_per_second": 213.20009618241414,
+      "predicted_n": 1038,
+      "predicted_ms": 54472.1,
+      "predicted_per_token_ms": 52.52854387656702,
+      "predicted_per_second": 19.037268620082575
+    }
+  },
+  "validation_errors": [],
+  "raw_text": "{\n  \"formulations\": [\n    {\n      \"Polymer system Notes\": \"Poly(ethylene carbonate) (PEC) with carbonate content ~95% of repeat units\",\n      \"Polymer family\": \"carbonate\",\n      \"Polymer\": \"poly(ethylene carbonate)\",\n      \"SMILES descriptor 1\": \"O=C1OCCO1\",\n      \"Average functional group per monomer\": 1,\n      \"Anion\": \"TFSI\",\n      \"Li:monomer\": 0.05,\n      \"Li:functional group\": 0.05,\n      \"salt wt%\": 10,\n      \"Tg\": 60,\n      \"Tg polymer without salt\": 60,\n      \"Tm\": \"none\",\n      \"Conductivity at 80C\": 0.0001,\n      \"Transference number\": 0.63,\n      \"T for transference\": 80,\n      \"Transference notes\": \"read from Fig. 1 and Fig. 2; values for 5, 20, 40, 60, 80 mol% are ~0.57, ~0.59, ~0.63, ~0.59, ~0.57 respectively\",\n      \"Notes\": \"Conductivity at 80C > 10^-4 S/cm (text); Tg decreases with salt concentration (text)\"\n    },\n    {\n      \"Polymer system Notes\": \"Poly(ethylene carbonate) (PEC) with carbonate content ~95% of repeat units\",\n      \"Polymer family\": \"carbonate\",\n      \"Polymer\": \"poly(ethylene carbonate)\",\n      \"SMILES descriptor 1\": \"O=C1OCCO1\",\n      \"Average functional group per monomer\": 1,\n      \"Anion\": \"ClO4\",\n      \"Li:monomer\": 0.05,\n      \"Li:functional group\": 0.05,\n      \"salt wt%\": 10,\n      \"Transference number\": 0.28,\n      \"T for transference\": 80,\n      \"Transference notes\": \"read from Fig. 1 and Fig. 2; value for 5 mol% is ~0.41 (text), others ~0.27-0.24\",\n      \"Notes\": \"Conductivity decreases with concentration (text)\"\n    },\n    {\n      \"Polymer system Notes\": \"Poly(ethylene carbonate) (PEC) with carbonate content ~95% of repeat units\",\n      \"Polymer family\": \"carbonate\",\n      \"Polymer\": \"poly(ethylene carbonate)\",\n      \"SMILES descriptor 1\": \"O=C1OCCO1\",\n      \"Average functional group per monomer\": 1,\n      \"Anion\": \"BF4\",\n      \"Li:monomer\": 0.05,\n      \"Li:functional group\": 0.05,\n      \"salt wt%\": 10,\n      \"Transference number\": 0.22,\n      \"T for transference\": 80,\n      \"Transference notes\": \"read from Fig. 1 and Fig. 2; values for 5, 20, 40, 50, 60 mol% are ~0.17, ~0.22, ~0.17, ~0.16, ~0.12 respectively\",\n      \"Notes\": \"Conductivity decreases with concentration (text)\"\n    },\n    {\n      \"Polymer system Notes\": \"Poly(ethylene carbonate) (PEC) with carbonate content ~95% of repeat units\",\n      \"Polymer family\": \"carbonate\",\n      \"Polymer\": \"poly(ethylene carbonate)\",\n      \"SMILES descriptor 1\": \"O=C1OCCO1\",\n      \"Average functional group per monomer\": 1,\n      \"Anion\": \"PF6\",\n      \"Li:monomer\": 0.05,\n      \"Li:functional group\": 0.05,\n      \"salt wt%\": 10,\n      \"Transference number\": 0.41,\n      \"T for transference\": 80,\n      \"Transference notes\": \"read from Fig. 1 and Fig. 2; value for 5 mol% is ~0.41, others ~0.31, ~0.17\",\n      \"Notes\": \"Conductivity decreases drastically with concentration (text)\"\n    }\n  ]\n}"
+}

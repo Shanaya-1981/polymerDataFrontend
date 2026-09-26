@@ -1,0 +1,80 @@
+{
+  "paper_id": "f3d2d4b6",
+  "source_pdf": "experiments/tier_comparison/f3d2d4b6-fauteux1988/f3d2d4b6-fauteux1988.pdf",
+  "mineru_doc_id": "98d12ad",
+  "tier": "hybrid",
+  "text_tier": "advanced",
+  "figure_tier": "standard",
+  "page_range": "1-6",
+  "figures": [
+    {
+      "locator": "doc:98d12ad/tier:standard/page:2/block:13",
+      "page": 2,
+      "block": 13,
+      "image_path": "figures/standard/page2-block13.png",
+      "caption": "Fig. 1. Isothermal variation of the ionic conductivity as a function of salt weight fraction for C-PEO–LiCF$_3$SO$_3$ (—) and HP-PEO–LiCF$_3$SO$_3$ (---) systems at 85 and 125°C.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:98d12ad/tier:standard/page:3/block:6",
+      "page": 3,
+      "block": 6,
+      "image_path": "figures/standard/page3-block6.png",
+      "caption": "Fig. 2. Variation of the apparent activation energy for the ionic conduction mechanism as a function of salt weight fraction for PEO- $LiCF_{3}SO_{3}$ systems. $T=65^{\\circ}C$ ( $\\odot$ : C-PEO, $\\blacktriangle$: HP-PEO).",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:98d12ad/tier:standard/page:3/block:8",
+      "page": 3,
+      "block": 8,
+      "image_path": "figures/standard/page3-block8.png",
+      "caption": "Fig. 3. Isothermal variation of the ionic conductivity as a function of salt weight fraction for C-PEO-LiClO$_{4}$. (—) and HP-PEO-LiClO$_{4}$ (---) systems at 85 and 125°C.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:98d12ad/tier:standard/page:3/block:11",
+      "page": 3,
+      "block": 11,
+      "image_path": "figures/standard/page3-block11.png",
+      "caption": "Fig. 4. Variation of the apparent activation energy for the ionic conduction mechanism as a function of salt weight fraction for PEO–LiClO₄ systems, T=65°C (○. C-PEO, ▲: HP-PEO).",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:98d12ad/tier:standard/page:4/block:3",
+      "page": 4,
+      "block": 3,
+      "image_path": "figures/standard/page4-block3.png",
+      "caption": "Fig. 5. Variation of the specific concurrence as a function of salt concentration at $T = 105^{\\circ}\\mathrm{C}$.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:98d12ad/tier:standard/page:4/block:13",
+      "page": 4,
+      "block": 13,
+      "image_path": "figures/standard/page4-block13.png",
+      "caption": "Fig. 6. Variation of the interphase resistance as a function of salt weight fraction for HP-PEO-based systems.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:98d12ad/tier:standard/page:5/block:7",
+      "page": 5,
+      "block": 7,
+      "image_path": "figures/standard/page5-block7.png",
+      "caption": "Fig. 7. Intentiostatic polarization of the $\\mathrm{Li^{0} / HP - PEO - LiCF_3SO_3}$ as a function of temperature.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:98d12ad/tier:standard/page:5/block:11",
+      "page": 5,
+      "block": 11,
+      "image_path": "figures/standard/page5-block11.png",
+      "caption": "Fig. 8. Intentiostatic polarization of the $\\mathrm{Li^{0} / HP - PEO - LiClO_4}$ as a function of temperature.",
+      "source_tier": "standard"
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:34:48.581790Z",
+  "duration_seconds": 0.6356111670611426,
+  "wait_retries": 0,
+  "num_tables": 8
+}
