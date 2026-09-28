@@ -1,0 +1,15 @@
+{
+  "paper_id": "6ca669ae",
+  "source_pdf": "experiments/tier_comparison/6ca669ae-10.1016@0167-27389290292-W/6ca669ae-10.1016@0167-27389290292-W.pdf",
+  "mineru_doc_id": "7fe66fa",
+  "tier": "advanced",
+  "text_tier": null,
+  "figure_tier": null,
+  "page_range": "1-6",
+  "figures": [],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:26:30.413672Z",
+  "duration_seconds": 182.28378095896915,
+  "wait_retries": 1,
+  "num_tables": 8
+}

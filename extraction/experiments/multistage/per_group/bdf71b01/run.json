@@ -1,0 +1,45 @@
+{
+  "paper_id": "bdf71b01",
+  "layout": "per_group",
+  "ran_position": 1,
+  "n_listed": 2,
+  "status": "ok",
+  "error": null,
+  "listing": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 35.6,
+    "prompt_tokens": 6245,
+    "read_tokens": 6245,
+    "cached_tokens": 0,
+    "output_tokens": 436
+  },
+  "values": {
+    "calls": 5,
+    "failed_calls": 0,
+    "wall_seconds": 71.3,
+    "prompt_tokens": 32056,
+    "read_tokens": 2709,
+    "cached_tokens": 29347,
+    "output_tokens": 1570
+  },
+  "wall_seconds": 106.9,
+  "calls": 6,
+  "read_tokens": 8954,
+  "prompt_tokens": 38301,
+  "output_tokens": 2006,
+  "dropped_values": [
+    "concentration: F1: read 'Li:O = 24:1' as 24 oxygens per lithium",
+    "concentration: F2: read 'Li:O = 8:1' as 8 oxygens per lithium",
+    "ALL/not a number for Tg: 'none'",
+    "ALL/not a number for Tg polymer without salt: 'none'",
+    "ALL/not a number for Tm start: 'none'",
+    "ALL/not a number for Tm end: 'none'",
+    "ALL/not a number for % crystallinity: 'none'"
+  ],
+  "duplicate_values": 0,
+  "off_grid_points": 0,
+  "placeholders": 11,
+  "implausible_points": 14,
+  "call_errors": []
+}

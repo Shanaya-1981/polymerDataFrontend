@@ -1,0 +1,89 @@
+{
+  "created_at": "2026-09-22T06:05:14.350413+00:00",
+  "seed": 20260921,
+  "corpus_size": 63,
+  "strata": {
+    "old": {
+      "definition": "published < 1995",
+      "population": 18,
+      "sampled": 5
+    },
+    "modern": {
+      "definition": "published >= 1995",
+      "population": 45,
+      "sampled": 5
+    }
+  },
+  "papers": [
+    {
+      "paper_id": "170fead2",
+      "filename": "170fead2-lascaud1994.pdf",
+      "year": 1994,
+      "stratum": "old",
+      "pdf_size_kb": 1157.9
+    },
+    {
+      "paper_id": "5feba0f9",
+      "filename": "5feba0f9-robitaille1986.pdf",
+      "year": 1986,
+      "stratum": "old",
+      "pdf_size_kb": 1734.2
+    },
+    {
+      "paper_id": "6ca669ae",
+      "filename": "6ca669ae-10.1016@0167-27389290292-W.pdf",
+      "year": 1992,
+      "stratum": "old",
+      "pdf_size_kb": 312.4
+    },
+    {
+      "paper_id": "bdf71b01",
+      "filename": "bdf71b01-linden1988.pdf",
+      "year": 1988,
+      "stratum": "old",
+      "pdf_size_kb": 561.8
+    },
+    {
+      "paper_id": "f3d2d4b6",
+      "filename": "f3d2d4b6-fauteux1988.pdf",
+      "year": 1988,
+      "stratum": "old",
+      "pdf_size_kb": 855.1
+    },
+    {
+      "paper_id": "0a3655ba",
+      "filename": "0a3655ba-10.1021@jp049195d.pdf",
+      "year": 2004,
+      "stratum": "modern",
+      "pdf_size_kb": 127.3
+    },
+    {
+      "paper_id": "1dba839e",
+      "filename": "1dba839e-tominaga2015.pdf",
+      "year": 2015,
+      "stratum": "modern",
+      "pdf_size_kb": 461.0
+    },
+    {
+      "paper_id": "2c7161a7",
+      "filename": "2c7161a7-karmakar2010.pdf",
+      "year": 2010,
+      "stratum": "modern",
+      "pdf_size_kb": 793.2
+    },
+    {
+      "paper_id": "569ebb10",
+      "filename": "569ebb10-schauser2018.pdf",
+      "year": 2018,
+      "stratum": "modern",
+      "pdf_size_kb": 2239.8
+    },
+    {
+      "paper_id": "663ed327",
+      "filename": "663ed327-sun2014.pdf",
+      "year": 2014,
+      "stratum": "modern",
+      "pdf_size_kb": 1193.0
+    }
+  ]
+}

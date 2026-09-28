@@ -1,0 +1,48 @@
+{
+  "paper_id": "663ed327",
+  "source_pdf": "experiments/tier_comparison/663ed327-sun2014/663ed327-sun2014.pdf",
+  "mineru_doc_id": "0470ebf",
+  "tier": "advanced",
+  "text_tier": null,
+  "figure_tier": null,
+  "page_range": "1-5",
+  "figures": [
+    {
+      "locator": "doc:0470ebf/tier:advanced/page:2/block:23",
+      "page": 2,
+      "block": 23,
+      "image_path": "figures/page2-block23.png",
+      "caption": "Fig. 1. Synthesis of PTMC through ring-opening polymerization of trimethylene carbonate catalyzed by Sn(Oct)2.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:0470ebf/tier:advanced/page:3/block:4",
+      "page": 3,
+      "block": 4,
+      "image_path": "figures/page3-block4.png",
+      "caption": "Fig. 2. Ionic conductivity of PTMC/LiTFSI polymer electrolytes a) as a function of temperature (dashed lines represent VTF fits) and b) as a function of salt concentration.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:0470ebf/tier:advanced/page:3/block:6",
+      "page": 3,
+      "block": 6,
+      "image_path": "figures/page3-block6.png",
+      "caption": "Fig. 3. a) Thermogravimetric data for PTMC/LiTFSI polymer electrolytes; b) glass transition temperature of the electrolytes as a function of salt concentration. The annotated numbers refer to the [carbonate]:[Li+] ratio.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:0470ebf/tier:advanced/page:4/block:13",
+      "page": 4,
+      "block": 13,
+      "image_path": "figures/page4-block13.png",
+      "caption": "Fig. 7. SEM micrographs of PTMC<sub>8</sub>LiTFSI electrolyte coated onto a) a LiFePO<sub>4</sub> composite electrode and b) a 3D Cu-nanopillar substrate.",
+      "source_tier": null
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:45:44.235975Z",
+  "duration_seconds": 76.19648583303206,
+  "wait_retries": 0,
+  "num_tables": 3
+}

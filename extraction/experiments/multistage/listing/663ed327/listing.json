@@ -1,0 +1,86 @@
+{
+  "formulations": [
+    {
+      "Polymer": "poly(trimethylene carbonate)",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "PTMC8LiTFSI",
+      "quote": "Electrolyte samples are distinguished by the molar ratio of polymer carbonate units to Li+ ions: PTMCnLiTFSI, n = 2, 3, 5, 8, 13 and 21.",
+      "id": "F1"
+    },
+    {
+      "Polymer": "poly(trimethylene carbonate)",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "PTMC13LiTFSI",
+      "quote": "Electrolyte samples are distinguished by the molar ratio of polymer carbonate units to Li+ ions: PTMCnLiTFSI, n = 2, 3, 5, 8, 13 and 21.",
+      "id": "F2"
+    },
+    {
+      "Polymer": "poly(trimethylene carbonate)",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "PTMC5LiTFSI",
+      "quote": "Electrolyte samples are distinguished by the molar ratio of polymer carbonate units to Li+ ions: PTMCnLiTFSI, n = 2, 3, 5, 8, 13 and 21.",
+      "id": "F3"
+    },
+    {
+      "Polymer": "poly(trimethylene carbonate)",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "PTMC2LiTFSI",
+      "quote": "Electrolyte samples are distinguished by the molar ratio of polymer carbonate units to Li+ ions: PTMCnLiTFSI, n = 2, 3, 5, 8, 13 and 21.",
+      "id": "F4"
+    },
+    {
+      "Polymer": "poly(trimethylene carbonate)",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "PTMC3LiTFSI",
+      "quote": "Electrolyte samples are distinguished by the molar ratio of polymer carbonate units to Li+ ions: PTMCnLiTFSI, n = 2, 3, 5, 8, 13 and 21.",
+      "id": "F5"
+    },
+    {
+      "Polymer": "poly(trimethylene carbonate)",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "PTMC21LiTFSI",
+      "quote": "Electrolyte samples are distinguished by the molar ratio of polymer carbonate units to Li+ ions: PTMCnLiTFSI, n = 2, 3, 5, 8, 13 and 21.",
+      "id": "F6"
+    }
+  ],
+  "totals": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 82.3,
+    "prompt_tokens": 12215,
+    "read_tokens": 10845,
+    "cached_tokens": 1370,
+    "output_tokens": 634
+  },
+  "quote_check": {
+    "returned": 6,
+    "kept": 6,
+    "quote_not_found": 0,
+    "duplicates": 0
+  },
+  "errors": []
+}

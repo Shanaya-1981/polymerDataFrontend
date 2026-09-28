@@ -1,0 +1,40 @@
+{
+  "paper_id": "bdf71b01",
+  "layout": "per_formulation",
+  "ran_position": 2,
+  "n_listed": 2,
+  "status": "ok",
+  "error": null,
+  "listing": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 35.6,
+    "prompt_tokens": 6245,
+    "read_tokens": 6245,
+    "cached_tokens": 0,
+    "output_tokens": 436
+  },
+  "values": {
+    "calls": 2,
+    "failed_calls": 0,
+    "wall_seconds": 38.6,
+    "prompt_tokens": 13798,
+    "read_tokens": 1834,
+    "cached_tokens": 11964,
+    "output_tokens": 760
+  },
+  "wall_seconds": 74.2,
+  "calls": 3,
+  "read_tokens": 8079,
+  "prompt_tokens": 20043,
+  "output_tokens": 1196,
+  "dropped_values": [
+    "concentration: F1: read 'Li:O = 24:1' as 24 oxygens per lithium",
+    "concentration: F2: read 'Li:O = 8:1' as 8 oxygens per lithium"
+  ],
+  "duplicate_values": 0,
+  "off_grid_points": 0,
+  "placeholders": 1,
+  "implausible_points": 0,
+  "call_errors": []
+}

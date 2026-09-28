@@ -1,0 +1,39 @@
+{
+  "arm": {
+    "name": "A-qwen3.5-4b",
+    "question": "Can an 8 GB machine do this at all?",
+    "tier": 8,
+    "provider": "openai_compatible",
+    "model_file": "models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+    "ctx": 49152,
+    "include_figures": false
+  },
+  "server_command": [
+    "llama-server",
+    "-m",
+    "models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+    "-c",
+    "49152",
+    "-np",
+    "1",
+    "--reasoning",
+    "off",
+    "--offline",
+    "--no-webui",
+    "--port",
+    "8080",
+    "-lv",
+    "4",
+    "--log-file",
+    "experiments/multistage/server.log"
+  ],
+  "memory": {
+    "device_self_mib": 4493,
+    "host_self_mib": 613,
+    "mmproj_mib": 0,
+    "total_mib": 5106,
+    "tier_budget_mib": 5461,
+    "fits_tier": true
+  },
+  "started_at": "2026-09-23T06:10:04.275323+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "model_name": "models/qwen3.5-4b/Qwen3.5-4B-Q4_K_M.gguf",
+  "stop_reason": "stop",
+  "include_figures": false,
+  "images_attached": 0,
+  "usage": {
+    "completion_tokens": 1851,
+    "prompt_tokens": 6973,
+    "total_tokens": 8824,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cache_write_tokens": null,
+      "cached_tokens": 0,
+      "image_tokens": null,
+      "text_tokens": null
+    },
+    "wall_seconds": 107.2,
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 6973,
+      "prompt_ms": 25957.045,
+      "prompt_per_token_ms": 3.722507529040585,
+      "prompt_per_second": 268.63612556822244,
+      "predicted_n": 1851,
+      "predicted_ms": 81190.392,
+      "predicted_per_token_ms": 43.886698378378384,
+      "predicted_per_second": 22.785947381557165
+    }
+  },
+  "validation_errors": [],
+  "raw_text": "{\n  \"formulations\": [\n    {\n      \"Polymer system Notes\": \"Amorphous oxyethylene-oxymethylene copolymer with randomly-spaced oxy-methylene units inserted into linear PEO chain (n~9, m~600)\",\n      \"Polymer family\": \"ether, carbonate\",\n      \"Polymer\": \"Amorphous PEO copolymer\",\n      \"SMILES descriptor 1\": \"COC\",\n      \"SMILES descriptor 2\": \"COC\",\n      \"Average functional group per monomer\": 1.0,\n      \"Anion\": \"ClO4\",\n      \"Li:monomer\": 0.0417,\n      \"Li:functional group\": 0.0417,\n      \"salt wt%\": 3.0,\n      \"Tg\": 25,\n      \"Tg polymer without salt\": 25,\n      \"Tm\": \"none\",\n      \"Tm start\": null,\n      \"Tm end\": null,\n      \"% crystallinity\": null,\n      \"crystalline?\": \"no\",\n      \"Conductivity at 20C\": -7.0,\n      \"Conductivity at 21C\": null,\n      \"Conductivity at 25C\": -6.5,\n      \"Conductivity at 27C\": null,\n      \"Conductivity at 30C\": -6.3,\n      \"Conductivity at 35C\": -6.1,\n      \"Conductivity at 40C\": -6.0,\n      \"Conductivity at 45C\": -5.9,\n      \"Conductivity at 50C\": -5.8,\n      \"Conductivity at 100C\": null,\n      \"Conductivity at 110C\": null,\n      \"Conductivity at 125C\": null,\n      \"Transference number\": null,\n      \"T for transference\": null,\n      \"Transference notes\": null,\n      \"storage modulus\": null,\n      \"T for storage mod\": null,\n      \"youngs modulus (Mpa)\": null,\n      \"viscosity (mPa s)\": null,\n      \"VFT prefactor (S/cm*T^(1/2))\": null,\n      \"VFT activation energy (K)\": null,\n      \"VFT T0 (degC)\": null,\n      \"VFT Notes (above temp)\": null,\n      \"VFT prefactor with set T0\": null,\n      \"VFT activation energy with fixed T0 (K)\": null,\n      \"Fixed T0 (degC)\": null,\n      \"Arrhenius Ea (eV) low T\": null,\n      \"Arrhenius Ea (eV) high T\": null,\n      \"Arrhenius Ea (eV) low T me\": null,\n      \"Arrhenius prefactor low T me (S/cm)\": null,\n      \"Arrhenius Ea (eV)\": null,\n      \"Arrhenius prefactor (S/cm)\": null,\n      \"Arrhenius notes\": null,\n      \"Li diffusion coefficient cm^2/s\": null,\n      \"temperature for D_Li\": null,\n      \"X-ray structural data (aggregate? Distance?)\": null,\n      \"PDI\": null,\n      \"Polymer Mn (kDa)\": null,\n      \"Polymer Mw (kDa)\": null,\n      \"chain architecture\": \"linear\",\n      \"Solvent used\": \"acetonitrile\",\n      \"drying temp\": \"80\",\n      \"drying time (h)\": \"24\",\n      \"drying vacuum\": \"yes\",\n      \"Notes\": \"Data in Fig. 5 are log10(\u03c3) values. Conductivity at 20\u00b0C is -7.0 log10(S/cm) = 1.0e-7 S/cm. Conductivity at 50\u00b0C is -5.8 log10(S/cm) = 1.58e-6 S/cm. Salt concentration varies from Li:O=1:64 to 1:24 in Fig. 4 table.\",\n      \"DOI\": null,\n      \"Reference\": \"E. Linden and J.R. Owen, Solid State Ionics 28-30 (1988) 994-1000\"\n    },\n    {\n      \"Polymer system Notes\": \"Crystalline PEO\",\n      \"Polymer family\": \"ether\",\n      \"Polymer\": \"PEO\",\n      \"SMILES descriptor 1\": \"COC\",\n      \"SMILES descriptor 2\": \"COC\",\n      \"Average functional group per monomer\": 1.0,\n      \"Anion\": \"ClO4\",\n      \"Li:monomer\": 0.125,\n      \"Li:functional group\": 0.125,\n      \"salt wt%\": null,\n      \"Tg\": null,\n      \"Tg polymer without salt\": null,\n      \"Tm\": null,\n      \"Tm start\": null,\n      \"Tm end\": null,\n      \"% crystallinity\": null,\n      \"crystalline?\": \"yes\",\n      \"Conductivity at 20C\": null,\n      \"Conductivity at 21C\": null,\n      \"Conductivity at 25C\": null,\n      \"Conductivity at 27C\": null,\n      \"Conductivity at 30C\": null,\n      \"Conductivity at 35C\": null,\n      \"Conductivity at 40C\": null,\n      \"Conductivity at 45C\": null,\n      \"Conductivity at 50C\": null,\n      \"Conductivity at 100C\": null,\n      \"Conductivity at 110C\": null,\n      \"Conductivity at 125C\": null,\n      \"Transference number\": null,\n      \"T for transference\": null,\n      \"Transference notes\": null,\n      \"storage modulus\": null,\n      \"T for storage mod\": null,\n      \"youngs modulus (Mpa)\": null,\n      \"viscosity (mPa s)\": null,\n      \"VFT prefactor (S/cm*T^(1/2))\": null,\n      \"VFT activation energy (K)\": null,\n      \"VFT T0 (degC)\": null,\n      \"VFT Notes (above temp)\": null,\n      \"VFT prefactor with set T0\": null,\n      \"VFT activation energy with fixed T0 (K)\": null,\n      \"Fixed T0 (degC)\": null,\n      \"Arrhenius Ea (eV) low T\": null,\n      \"Arrhenius Ea (eV) high T\": null,\n      \"Arrhenius Ea (eV) low T me\": null,\n      \"Arrhenius prefactor low T me (S/cm)\": null,\n      \"Arrhenius Ea (eV)\": null,\n      \"Arrhenius prefactor (S/cm)\": null,\n      \"Arrhenius notes\": null,\n      \"Li diffusion coefficient cm^2/s\": null,\n      \"temperature for D_Li\": null,\n      \"X-ray structural data (aggregate? Distance?)\": null,\n      \"PDI\": null,\n      \"Polymer Mn (kDa)\": null,\n      \"Polymer Mw (kDa)\": null,\n      \"chain architecture\": \"linear\",\n      \"Solvent used\": null,\n      \"drying temp\": null,\n      \"drying time (h)\": null,\n      \"drying vacuum\": null,\n      \"Notes\": \"Fig. 1c caption mentions Crystalline PEO: LiClO4 - 8:1. No conductivity data provided for this formulation in the text.\",\n      \"DOI\": null,\n      \"Reference\": \"E. Linden and J.R. Owen, Solid State Ionics 28-30 (1988) 994-1000\"\n    }\n  ]\n}"
+}

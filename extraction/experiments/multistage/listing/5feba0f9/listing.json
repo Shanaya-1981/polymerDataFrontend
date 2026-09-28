@@ -1,0 +1,97 @@
+{
+  "formulations": [
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 4",
+      "quote": "The salt mass fractions are between 0.47 and 0.11, corresponding to mole ratios of O/Li = 4 and O/Li = 30, respectively.",
+      "id": "F1"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 30",
+      "quote": "The salt mass fractions are between 0.47 and 0.11, corresponding to mole ratios of O/Li = 4 and O/Li = 30, respectively.",
+      "id": "F2"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "O/Li = 100",
+      "quote": "The salt mass fractions are between 0.47 and 0.11, corresponding to mole ratios of O/Li = 4 and O/Li = 30, respectively.",
+      "id": "F3"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "PEO8LiClO4",
+      "quote": "As observed by optical microscopy and in agreement with the phase diagram in Fig. 9, most of the PEO8LiClO4 mixture melts at the eutectic temperature...",
+      "id": "F4"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "PEO6LiClO4",
+      "quote": "Note that at this stoichiometry there is no diffraction due to pure PEO.",
+      "id": "F5"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "AsF6",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "PEO6LiAsF6",
+      "quote": "For salt concentrations higher than that of PEO6LiAsF6, new lines different from those of the LiAsF6 salt appear.",
+      "id": "F6"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "AsF6",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "PEO3LiAsF6",
+      "quote": "For PEO3LiAsF6 the characteristic lines of PEO6LiAsF6 are no longer observed.",
+      "id": "F7"
+    }
+  ],
+  "totals": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 151.8,
+    "prompt_tokens": 24010,
+    "read_tokens": 22640,
+    "cached_tokens": 1370,
+    "output_tokens": 690
+  },
+  "quote_check": {
+    "returned": 8,
+    "kept": 7,
+    "quote_not_found": 1,
+    "duplicates": 0
+  },
+  "errors": []
+}

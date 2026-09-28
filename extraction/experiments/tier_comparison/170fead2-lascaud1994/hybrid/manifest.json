@@ -1,0 +1,160 @@
+{
+  "paper_id": "170fead2",
+  "source_pdf": "experiments/tier_comparison/170fead2-lascaud1994/170fead2-lascaud1994.pdf",
+  "mineru_doc_id": "b069e72",
+  "tier": "hybrid",
+  "text_tier": "advanced",
+  "figure_tier": "standard",
+  "page_range": "1-9",
+  "figures": [
+    {
+      "locator": "doc:b069e72/tier:advanced/page:2/block:9",
+      "page": 2,
+      "block": 9,
+      "image_path": "figures/advanced/page2-block9.png",
+      "caption": "Figure 1. Schematic diagram of the conductivity cells used in this work. The electrode active diameter is 1 cm and the gap between electrodes is 3 mm. Parts a and b are stainless steel solid cylinders, part c is a 7-mm-thick Teflon ring, and parts d and e are 2-mm-thick Teflon sleeves. Electrolyte thermal expansion takes place through grooves f and g. Vertical dimensions are  $h_{a} = 24$  mm,  $h_{b} = 5$  mm, and  $h_{t} = 32$  mm. Holes i are for three screw bolts inserted in 2-mm-thick Teflon sleeves. Well j is for the thermocouple.",
+      "source_tier": "advanced"
+    },
+    {
+      "locator": "doc:b069e72/tier:advanced/page:3/block:4",
+      "page": 3,
+      "block": 4,
+      "image_path": "figures/advanced/page3-block4.png",
+      "caption": "Figure 2. Phase diagrams of the PEO–LiMPSA (a) and the PEO–LiTFSI (b) systems. The vertical boundaries at  $W_{salt} = 0.52, 0.68$ , and 0.76 in the diagram related to LiTFSI were derived from a calorimetric analysis of the DSC data. They show the formation of 6/1, 3/1, and 2/1 crystalline compounds designated by  $C_{6}$ ,  $C_{3}$ , and  $C_{2}$ , respectively. For EO/Li > 6, the as-cast mixtures related to this salt were either amorphous or semicrytalline as indicated by the  $T_{g}$  tie line. Each diagram shows the low-temperature solubility limit (diamond symbol) derived from the supercooled mixture  $T_{g}$  data (Figure 3).",
+      "source_tier": "advanced"
+    },
+    {
+      "locator": "doc:b069e72/tier:advanced/page:3/block:9",
+      "page": 3,
+      "block": 9,
+      "image_path": "figures/advanced/page3-block9.png",
+      "caption": "Figure 3. $T_g$-composition relationships for melt-quenched, supercooled mixtures of the PEO-LiMPSA and the PEO-LiTFSI systems. PEO-LiMPSA mixture with EO/Li = 8 exhibits supersaturation.",
+      "source_tier": "advanced"
+    },
+    {
+      "locator": "doc:b069e72/tier:advanced/page:4/block:9",
+      "page": 4,
+      "block": 9,
+      "image_path": "figures/advanced/page4-block9.png",
+      "caption": "Figure 5. Phase diagrams of the PEO-KMPSA (a) and the PEO-KTFSI (b) systems. For EO/K < 32, the as-cast mixtures related to KMPSA were either amorphous or semicrystalline as indicated by the $T_g$ tie line. The latter feature also applies to the EO/K > 10 mixtures of the PEO-KTFSI system. The vertical boundaries at $W_{\\text{salt}} = 0.42$ and 0.83 in the diagram related to KTFSI were derived from a calorimetric analysis of the DSC data. They show the formation of 10/1 and 1.5/1 crystalline compounds designated by $C_{10}$ and $C_{1.5}$, respectively. This diagram also shows the low-temperature solubility limit (diamond symbol) derived from the supercooled mixture $T_g$ data (Figure 4).",
+      "source_tier": "advanced"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:2/block:8",
+      "page": 2,
+      "block": 8,
+      "image_path": "figures/standard/page2-block8.png",
+      "caption": "Figure 1. Schematic diagram of the conductivity cells used in this work. The electrode active diameter is 1 cm and the gap between electrodes is 3 mm. Parts a and b are stainless steel solid cylinders, part c is a 7-mm-thick Teflon ring, and parts d and e are 2-mm-thick Teflon sleeves. Electrolyte thermal expansion takes place through grooves f and g. Vertical dimensions are  $h_{a} = 24$  mm,  $h_{b} = 5$  mm, and  $h_{t} = 32$  mm. Holes i are for three screw bolts inserted in 2-mm-thick Teflon sleeves. Well j is for the thermocouple.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:3/block:4",
+      "page": 3,
+      "block": 4,
+      "image_path": "figures/standard/page3-block4.png",
+      "caption": "Figure 2. Phase diagrams of the PEO–LiMPSA (a) and the PEO–LiTFSI (b) systems. The vertical boundaries at  $W_{salt} = 0.52, 0.68$ , and 0.76 in the diagram related to LiTFSI were derived from a calorimetric analysis of the DSC data. They show the formation of 6/1, 3/1, and 2/1 crystalline compounds designated by  $C_{6}$ ,  $C_{3}$ , and  $C_{2}$ , respectively. For EO/Li > 6, the as-cast mixtures related to this salt were either amorphous or semicrytalline as indicated by the  $T_{g}$  tie line. Each diagram shows the low-temperature solubility limit (diamond symbol) derived from the supercooled mixture  $T_{g}$  data (Figure 3).",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:3/block:5",
+      "page": 3,
+      "block": 5,
+      "image_path": "figures/standard/page3-block5.png",
+      "caption": "Figure 2. Phase diagrams of the PEO–LiMPSA (a) and the PEO–LiTFSI (b) systems. The vertical boundaries at  $W_{salt} = 0.52, 0.68$ , and 0.76 in the diagram related to LiTFSI were derived from a calorimetric analysis of the DSC data. They show the formation of 6/1, 3/1, and 2/1 crystalline compounds designated by  $C_{6}$ ,  $C_{3}$ , and  $C_{2}$ , respectively. For EO/Li > 6, the as-cast mixtures related to this salt were either amorphous or semicrytalline as indicated by the  $T_{g}$  tie line. Each diagram shows the low-temperature solubility limit (diamond symbol) derived from the supercooled mixture  $T_{g}$  data (Figure 3).",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:3/block:10",
+      "page": 3,
+      "block": 10,
+      "image_path": "figures/standard/page3-block10.png",
+      "caption": "Figure 3. $T_g$-composition relationships for melt-quenched, supercooled mixtures of the PEO-LiMPSA and the PEO-LiTFSI systems. PEO-LiMPSA mixture with EO/Li = 8 exhibits supersaturation.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:3/block:11",
+      "page": 3,
+      "block": 11,
+      "image_path": "figures/standard/page3-block11.png",
+      "caption": "Figure 3. $T_g$-composition relationships for melt-quenched, supercooled mixtures of the PEO-LiMPSA and the PEO-LiTFSI systems. PEO-LiMPSA mixture with EO/Li = 8 exhibits supersaturation.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:4/block:4",
+      "page": 4,
+      "block": 4,
+      "image_path": "figures/standard/page4-block4.png",
+      "caption": "Figure 4. $T_g$-composition relationships for melt-quenched, supercooled mixtures of the PEO-KMPSA and the PEO-KTFSI systems. PEO-KTFSI mixture with EO/K = 4 exhibits supersaturation.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:4/block:9",
+      "page": 4,
+      "block": 9,
+      "image_path": "figures/standard/page4-block9.png",
+      "caption": "Figure 5. Phase diagrams of the PEO-KMPSA (a) and the PEO-KTFSI (b) systems. For EO/K < 32, the as-cast mixtures related to KMPSA were either amorphous or semicrystalline as indicated by the $T_g$ tie line. The latter feature also applies to the EO/K > 10 mixtures of the PEO-KTFSI system. The vertical boundaries at $W_{\\mathrm{salt}} = 0.42$ and 0.83 in the diagram related to KTFSI were derived from a calorimetric analysis of the DSC data. They show the formation of 10/1 and 1.5/1 crystalline compounds designated by $C_{10}$ and $C_{1.5}$, respectively. This diagram also shows the low-temperature solubility limit (diamond symbol) derived from the supercooled mixture $T_g$ data (Figure 4).",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:4/block:10",
+      "page": 4,
+      "block": 10,
+      "image_path": "figures/standard/page4-block10.png",
+      "caption": "Figure 5. Phase diagrams of the PEO-KMPSA (a) and the PEO-KTFSI (b) systems. For EO/K < 32, the as-cast mixtures related to KMPSA were either amorphous or semicrystalline as indicated by the $T_g$ tie line. The latter feature also applies to the EO/K > 10 mixtures of the PEO-KTFSI system. The vertical boundaries at $W_{\\mathrm{salt}} = 0.42$ and 0.83 in the diagram related to KTFSI were derived from a calorimetric analysis of the DSC data. They show the formation of 10/1 and 1.5/1 crystalline compounds designated by $C_{10}$ and $C_{1.5}$, respectively. This diagram also shows the low-temperature solubility limit (diamond symbol) derived from the supercooled mixture $T_g$ data (Figure 4).",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:5/block:4",
+      "page": 5,
+      "block": 4,
+      "image_path": "figures/standard/page5-block4.png",
+      "caption": "Figure 6. Plots of $T_{\\mathrm{g}}$ as a function of salt weight fraction for supercooled mixtures of the PEO-KMPSA and the PEO-LiTFSI systems. The diamond symbols correspond to supersaturated mixtures of the PEO-LiTFSI system. These mixtures were quenched from a temperature above the melting point of LiTFSI (234 °C). The change of regime at $W_{\\mathrm{salt}} = 0.65$ (EO/K = 3.2 and EO/Li = 3.5) is attributed to the completion of the solvation reaction.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:6/block:10",
+      "page": 6,
+      "block": 10,
+      "image_path": "figures/standard/page6-block10.png",
+      "caption": "Figure 7. Semilogarithmic plots of the conductivity data at 50 and 100 °C as a function of salt concentration (in mol per kg of electrolyte) for amorphous mixtures of the PEO-KMPSA and the PEO-KTFSI systems. The data at the upper end of the concentration range (c = 3.9 mol/kg) correspond to PEO-free KMPSA.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:6/block:13",
+      "page": 6,
+      "block": 13,
+      "image_path": "figures/standard/page6-block13.png",
+      "caption": "Figure 8. Fits of eq 1 to the conductivity data of the PEO-KTFSI system. These fits are based on the same adjustment of $T_0$ as that ($T_0 = T_g - 25^\\circ\\text{C}$) reported in a former work.$^6$ For clarity, the plots are shifted along the vertical axis.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:7/block:4",
+      "page": 7,
+      "block": 4,
+      "image_path": "figures/standard/page7-block4.png",
+      "caption": "Figure 9. Fits of eq 1 to the conductivity data of bulk KMPSA and concentrated mixtures of this salt with PEO. Based on the same adjustment of $T_0$ as that ($T_0 = T_g - 25^\\circ\\text{C}$) used in Figure 8. For clarity, the plots are shifted along the vertical axis.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:7/block:9",
+      "page": 7,
+      "block": 9,
+      "image_path": "figures/standard/page7-block9.png",
+      "caption": "Figure 10. Concentration dependence of the reduced conductivity ( $\\sigma_{R} = \\sigma$  at  $T - T_{g} = 110^{\\circ}C$ ) of the four systems studied in this work (c is in mol per kg of electrolyte).",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:b069e72/tier:standard/page:8/block:7",
+      "page": 8,
+      "block": 7,
+      "image_path": "figures/standard/page8-block7.png",
+      "caption": "Figure 11. Concentration dependence of the ratio  $\\sigma_{R}/c$  computed from the data of Figure 10 (c is in mol per kg of electrolyte and units of  $\\sigma_{R}/c$  are S cm $^{-1}$  kg mol $^{-1}$ ).",
+      "source_tier": "standard"
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:13:21.920932Z",
+  "duration_seconds": 3.5578457079827785,
+  "wait_retries": 0,
+  "num_tables": 7
+}

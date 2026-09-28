@@ -1,0 +1,155 @@
+film,salt,source,golden_index,inv_T_1000_per_K,temperature_C,conductivity_S_per_cm
+DMSO,LiTFSI,paper Fig. 2 (read off image),186,2.595,112.2,0.00155
+DMSO,LiTFSI,paper Fig. 2 (read off image),186,2.708,96.1,0.00117
+DMSO,LiTFSI,paper Fig. 2 (read off image),186,2.863,76.1,0.000794
+DMSO,LiTFSI,paper Fig. 2 (read off image),186,3.009,59.2,0.000427
+DMSO,LiTFSI,paper Fig. 2 (read off image),186,3.171,42.2,0.000245
+DMSO,LiTFSI,paper Fig. 2 (read off image),186,3.421,19.2,4.57e-05
+DMSO,LiTf,paper Fig. 2 (read off image),187,2.596,112.1,0.000129
+DMSO,LiTf,paper Fig. 2 (read off image),187,2.723,94.1,4.68e-05
+DMSO,LiTf,paper Fig. 2 (read off image),187,2.847,78.1,2.88e-05
+DMSO,LiTf,paper Fig. 2 (read off image),187,3.009,59.2,4.17e-06
+DMSO,LiTf,paper Fig. 2 (read off image),187,3.151,44.2,6.92e-07
+DMSO,LiTf,paper Fig. 2 (read off image),187,3.297,30.2,3.98e-08
+DMSO,LiClO₄,paper Fig. 2 (read off image),188,2.602,111.2,0.000676
+DMSO,LiClO₄,paper Fig. 2 (read off image),188,2.722,94.2,0.000282
+DMSO,LiClO₄,paper Fig. 2 (read off image),188,2.862,76.3,0.000151
+DMSO,LiClO₄,paper Fig. 2 (read off image),188,3.009,59.2,1.86e-05
+DMSO,LiClO₄,paper Fig. 2 (read off image),188,3.172,42.1,1.82e-06
+DMSO,LiClO₄,paper Fig. 2 (read off image),188,3.319,28.1,1.41e-07
+water,LiTFSI,paper Fig. 2 (read off image),189,2.568,116.3,0.000269
+water,LiTFSI,paper Fig. 2 (read off image),189,2.694,98.0,4.9e-05
+water,LiTFSI,paper Fig. 2 (read off image),189,2.838,79.2,4.68e-06
+water,LiTFSI,paper Fig. 2 (read off image),189,3.000,60.2,3.63e-07
+water,LiTFSI,paper Fig. 2 (read off image),189,3.162,43.1,1.86e-08
+water,LiTFSI,paper Fig. 2 (read off image),189,3.329,27.2,4.68e-09
+water,LiTf,paper Fig. 2 (read off image),190,2.606,110.6,6.17e-05
+water,LiTf,paper Fig. 2 (read off image),190,2.611,109.8,4.57e-05
+water,LiTf,paper Fig. 2 (read off image),190,2.863,76.1,7.76e-07
+water,LiTf,paper Fig. 2 (read off image),190,3.009,59.2,3.89e-08
+water,LiTf,paper Fig. 2 (read off image),190,3.170,42.3,1e-09
+water,LiTf,paper Fig. 2 (read off image),190,3.308,29.1,8.13e-10
+water,LiClO₄,paper Fig. 2 (read off image),191,2.602,111.2,2.45e-05
+water,LiClO₄,paper Fig. 2 (read off image),191,2.722,94.2,3.31e-06
+water,LiClO₄,paper Fig. 2 (read off image),191,2.862,76.3,3.39e-07
+water,LiClO₄,paper Fig. 2 (read off image),191,2.991,61.2,2.57e-08
+water,LiClO₄,paper Fig. 2 (read off image),191,3.160,43.3,1.05e-09
+water,LiClO₄,paper Fig. 2 (read off image),191,3.341,26.2,3.8e-10
+hot-pressed,LiTFSI,paper Fig. 2 (read off image),192,2.582,114.1,4.57e-05
+hot-pressed,LiTFSI,paper Fig. 2 (read off image),192,2.693,98.2,9.33e-06
+hot-pressed,LiTFSI,paper Fig. 2 (read off image),192,2.847,78.1,9.55e-07
+hot-pressed,LiTFSI,paper Fig. 2 (read off image),192,2.991,61.2,6.76e-08
+hot-pressed,LiTFSI,paper Fig. 2 (read off image),192,3.172,42.1,2.29e-09
+hot-pressed,LiTFSI,paper Fig. 2 (read off image),192,3.319,28.1,1.78e-09
+dried water,LiTFSI,paper Fig. 2 (read off image),,2.588,113.2,1.23e-05
+dried water,LiTFSI,paper Fig. 2 (read off image),,2.700,97.2,1.95e-06
+dried water,LiTFSI,paper Fig. 2 (read off image),,2.846,78.2,1.29e-07
+dried water,LiTFSI,paper Fig. 2 (read off image),,2.991,61.2,4.47e-09
+dried water,LiTFSI,paper Fig. 2 (read off image),,3.152,44.1,7.08e-10
+dried water,LiTFSI,paper Fig. 2 (read off image),,3.320,28.1,2.04e-09
+DMSO,LiTFSI,golden dataset,186,3.411,20,5.03e-05
+DMSO,LiTFSI,golden dataset,186,3.354,25,7.8e-05
+DMSO,LiTFSI,golden dataset,186,3.299,30,0.000114
+DMSO,LiTFSI,golden dataset,186,3.245,35,0.000157
+DMSO,LiTFSI,golden dataset,186,3.193,40,0.000209
+DMSO,LiTFSI,golden dataset,186,3.143,45,0.00027
+DMSO,LiTFSI,golden dataset,186,3.095,50,0.000337
+DMSO,LiTFSI,golden dataset,186,3.047,55,0.000412
+DMSO,LiTFSI,golden dataset,186,3.002,60,0.000494
+DMSO,LiTFSI,golden dataset,186,2.957,65,0.000581
+DMSO,LiTFSI,golden dataset,186,2.914,70,0.000674
+DMSO,LiTFSI,golden dataset,186,2.872,75,0.000771
+DMSO,LiTFSI,golden dataset,186,2.832,80,0.000873
+DMSO,LiTFSI,golden dataset,186,2.792,85,0.000977
+DMSO,LiTFSI,golden dataset,186,2.754,90,0.00108
+DMSO,LiTFSI,golden dataset,186,2.680,100,0.00131
+DMSO,LiTFSI,golden dataset,186,2.610,110,0.00153
+DMSO,LiTf,golden dataset,187,3.299,30,3.76e-08
+DMSO,LiTf,golden dataset,187,3.245,35,1.24e-07
+DMSO,LiTf,golden dataset,187,3.193,40,3.35e-07
+DMSO,LiTf,golden dataset,187,3.143,45,7.76e-07
+DMSO,LiTf,golden dataset,187,3.095,50,1.59e-06
+DMSO,LiTf,golden dataset,187,3.047,55,2.97e-06
+DMSO,LiTf,golden dataset,187,3.002,60,5.11e-06
+DMSO,LiTf,golden dataset,187,2.957,65,8.25e-06
+DMSO,LiTf,golden dataset,187,2.914,70,1.26e-05
+DMSO,LiTf,golden dataset,187,2.872,75,1.85e-05
+DMSO,LiTf,golden dataset,187,2.832,80,2.6e-05
+DMSO,LiTf,golden dataset,187,2.792,85,3.54e-05
+DMSO,LiTf,golden dataset,187,2.754,90,4.68e-05
+DMSO,LiTf,golden dataset,187,2.680,100,7.63e-05
+DMSO,LiTf,golden dataset,187,2.610,110,0.000115
+DMSO,LiClO₄,golden dataset,188,3.299,30,2.14e-07
+DMSO,LiClO₄,golden dataset,188,3.245,35,6.31e-07
+DMSO,LiClO₄,golden dataset,188,3.193,40,1.6e-06
+DMSO,LiClO₄,golden dataset,188,3.143,45,3.6e-06
+DMSO,LiClO₄,golden dataset,188,3.095,50,7.32e-06
+DMSO,LiClO₄,golden dataset,188,3.047,55,1.37e-05
+DMSO,LiClO₄,golden dataset,188,3.002,60,2.41e-05
+DMSO,LiClO₄,golden dataset,188,2.957,65,3.98e-05
+DMSO,LiClO₄,golden dataset,188,2.914,70,6.27e-05
+DMSO,LiClO₄,golden dataset,188,2.872,75,9.45e-05
+DMSO,LiClO₄,golden dataset,188,2.832,80,0.000137
+DMSO,LiClO₄,golden dataset,188,2.792,85,0.000193
+DMSO,LiClO₄,golden dataset,188,2.754,90,0.000264
+water,LiTFSI,golden dataset,189,3.354,25,1.9e-09
+water,LiTFSI,golden dataset,189,3.299,30,4.39e-09
+water,LiTFSI,golden dataset,189,3.245,35,9.88e-09
+water,LiTFSI,golden dataset,189,3.193,40,2.17e-08
+water,LiTFSI,golden dataset,189,3.143,45,4.63e-08
+water,LiTFSI,golden dataset,189,3.095,50,9.67e-08
+water,LiTFSI,golden dataset,189,3.047,55,1.97e-07
+water,LiTFSI,golden dataset,189,3.002,60,3.95e-07
+water,LiTFSI,golden dataset,189,2.957,65,7.72e-07
+water,LiTFSI,golden dataset,189,2.914,70,1.48e-06
+water,LiTFSI,golden dataset,189,2.872,75,2.79e-06
+water,LiTFSI,golden dataset,189,2.832,80,5.17e-06
+water,LiTFSI,golden dataset,189,2.792,85,9.39e-06
+water,LiTFSI,golden dataset,189,2.754,90,1.68e-05
+water,LiTFSI,golden dataset,189,2.680,100,5.13e-05
+water,LiTFSI,golden dataset,189,2.610,110,0.000148
+water,LiTf,golden dataset,190,3.299,30,8.08e-10
+water,LiTf,golden dataset,190,3.193,40,2.13e-09
+water,LiTf,golden dataset,190,3.143,45,5.06e-09
+water,LiTf,golden dataset,190,3.095,50,1.17e-08
+water,LiTf,golden dataset,190,3.047,55,2.63e-08
+water,LiTf,golden dataset,190,3.002,60,5.77e-08
+water,LiTf,golden dataset,190,2.957,65,1.24e-07
+water,LiTf,golden dataset,190,2.914,70,2.6e-07
+water,LiTf,golden dataset,190,2.872,75,5.34e-07
+water,LiTf,golden dataset,190,2.832,80,1.07e-06
+water,LiTf,golden dataset,190,2.792,85,2.12e-06
+water,LiTf,golden dataset,190,2.754,90,4.1e-06
+water,LiTf,golden dataset,190,2.680,100,1.46e-05
+water,LiTf,golden dataset,190,2.610,110,4.85e-05
+water,LiClO₄,golden dataset,191,3.354,25,1.29e-10
+water,LiClO₄,golden dataset,191,3.299,30,3.11e-10
+water,LiClO₄,golden dataset,191,3.245,35,7.28e-10
+water,LiClO₄,golden dataset,191,3.193,40,1.66e-09
+water,LiClO₄,golden dataset,191,3.143,45,3.67e-09
+water,LiClO₄,golden dataset,191,3.095,50,7.95e-09
+water,LiClO₄,golden dataset,191,3.047,55,1.68e-08
+water,LiClO₄,golden dataset,191,3.002,60,3.47e-08
+water,LiClO₄,golden dataset,191,2.957,65,7.01e-08
+water,LiClO₄,golden dataset,191,2.914,70,1.39e-07
+water,LiClO₄,golden dataset,191,2.872,75,2.7e-07
+water,LiClO₄,golden dataset,191,2.832,80,5.14e-07
+water,LiClO₄,golden dataset,191,2.792,85,9.61e-07
+water,LiClO₄,golden dataset,191,2.754,90,1.77e-06
+water,LiClO₄,golden dataset,191,2.680,100,5.69e-06
+water,LiClO₄,golden dataset,191,2.610,110,1.72e-05
+hot-pressed,LiTFSI,golden dataset,192,3.299,30,8.95e-10
+hot-pressed,LiTFSI,golden dataset,192,3.245,35,2e-09
+hot-pressed,LiTFSI,golden dataset,192,3.193,40,4.34e-09
+hot-pressed,LiTFSI,golden dataset,192,3.143,45,9.19e-09
+hot-pressed,LiTFSI,golden dataset,192,3.095,50,1.9e-08
+hot-pressed,LiTFSI,golden dataset,192,3.047,55,3.85e-08
+hot-pressed,LiTFSI,golden dataset,192,3.002,60,7.64e-08
+hot-pressed,LiTFSI,golden dataset,192,2.957,65,1.48e-07
+hot-pressed,LiTFSI,golden dataset,192,2.914,70,2.83e-07
+hot-pressed,LiTFSI,golden dataset,192,2.872,75,5.29e-07
+hot-pressed,LiTFSI,golden dataset,192,2.832,80,9.71e-07
+hot-pressed,LiTFSI,golden dataset,192,2.792,85,1.75e-06
+hot-pressed,LiTFSI,golden dataset,192,2.754,90,3.12e-06
+hot-pressed,LiTFSI,golden dataset,192,2.680,100,9.39e-06
+hot-pressed,LiTFSI,golden dataset,192,2.610,110,2.67e-05

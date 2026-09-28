@@ -1,0 +1,33 @@
+{
+  "model_name": "models/nuextract3/NuExtract3-Q4_K_M.gguf",
+  "stop_reason": "stop",
+  "include_figures": false,
+  "images_attached": 0,
+  "usage": {
+    "completion_tokens": 875,
+    "prompt_tokens": 13913,
+    "total_tokens": 14788,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cache_write_tokens": null,
+      "cached_tokens": 0,
+      "image_tokens": null,
+      "text_tokens": null
+    },
+    "wall_seconds": 123.55,
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 13913,
+      "prompt_ms": 71568.712,
+      "prompt_per_token_ms": 5.144017250053906,
+      "prompt_per_second": 194.40059225880717,
+      "predicted_n": 875,
+      "predicted_ms": 51648.885,
+      "predicted_per_token_ms": 59.09483409610984,
+      "predicted_per_second": 16.92195291340752
+    }
+  },
+  "validation_errors": [],
+  "raw_text": "{\"formulations\": [{\"Polymer system Notes\": \"High-molecular-weight poly(trimethylene carbonate) synthesized via bulk ring-opening polymerization.\", \"Polymer family\": \"polycarbonate\", \"Polymer\": \"poly(trimethylene carbonate)\", \"SMILES descriptor 1\": null, \"SMILES descriptor 2\": null, \"Comonomer percentage\": null, \"Average functional group per monomer\": 1, \"Anion\": \"TFSI\", \"Li:monomer\": null, \"Li:functional group\": null, \"salt wt%\": null, \"Tg\": -15, \"Tg polymer without salt\": -15, \"Tm\": null, \"Tm start\": null, \"Tm end\": null, \"% crystallinity\": null, \"crystalline?\": \"no\", \"Conductivity at 0C\": null, \"Conductivity at 15C\": null, \"Conductivity at 20C\": null, \"Conductivity at 21C\": null, \"Conductivity at 25C\": 1e-0, \"Conductivity at 27C\": null, \"Conductivity at 30C\": null, \"Conductivity at 35C\": null, \"Conductivity at 40C\": null, \"Conductivity at 45C\": null, \"Conductivity at 50C\": null, \"Conductivity at 55C\": null, \"Conductivity at 60C\": 1e-0, \"Conductivity at 65C\": null, \"Conductivity at 70C\": null, \"Conductivity at 75C\": null, \"Conductivity at 80C\": null, \"Conductivity at 85C\": null, \"Conductivity at 90C\": null, \"Conductivity at 100C\": null, \"Conductivity at 110C\": null, \"Conductivity at 125C\": null, \"Transference number\": null, \"T for transference\": null, \"Transference notes\": null, \"storage modulus\": null, \"T for storage mod\": null, \"youngs modulus (Mpa)\": null, \"viscosity (mPa s)\": null, \"VFT prefactor (S/cm*T^(1/2))\": null, \"VFT activation energy (K)\": null, \"VFT T0 (degC)\": null, \"VFT Notes (above temp)\": null, \"VFT prefactor with set T0\": null, \"VFT activation energy with fixed T0 (K)\": null, \"Fixed T0 (degC)\": null, \"Arrhenius Ea (eV) low T\": null, \"Arrhenius Ea (eV) high T\": null, \"Arrhenius Ea (eV) low T me\": null, \"Arrhenius prefactor low T me (S/cm)\": null, \"Arrhenius Ea (eV)\": null, \"Arrhenius prefactor (S/cm)\": null, \"Arrhenius notes\": null, \"Li diffusion coefficient cm^2/s\": null, \"temperature for D_Li\": null, \"X-ray structural data (aggregate? Distance?)\": null, \"PDI\": 1.36, \"Polymer Mn (kDa)\": 368000, \"Polymer Mw (kDa)\": null, \"chain architecture\": \"linear\", \"Solvent used\": \"acetonitrile\", \"drying temp\": \"60\", \"drying time (h)\": null, \"drying vacuum\": null, \"Notes\": \"The electrolytes are electrochemically stable up to 5 V vs. Li/Li+. The cycling performance of LFP half-cells using PTMC/LiTFSI polymer electrolytes is summarized in Figs. 5 and 6.\", \"DOI\": \"10.1016/j.ssi.2013.08.014\", \"Reference\": null}]}"
+}

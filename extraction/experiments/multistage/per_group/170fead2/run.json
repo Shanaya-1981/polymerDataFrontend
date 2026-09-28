@@ -1,0 +1,44 @@
+{
+  "paper_id": "170fead2",
+  "layout": "per_group",
+  "ran_position": 1,
+  "n_listed": 7,
+  "status": "ok",
+  "error": null,
+  "listing": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 317.7,
+    "prompt_tokens": 27094,
+    "read_tokens": 25724,
+    "cached_tokens": 1370,
+    "output_tokens": 3361
+  },
+  "values": {
+    "calls": 5,
+    "failed_calls": 0,
+    "wall_seconds": 256.5,
+    "prompt_tokens": 136646,
+    "read_tokens": 2778,
+    "cached_tokens": 133868,
+    "output_tokens": 4309
+  },
+  "wall_seconds": 574.2,
+  "calls": 6,
+  "read_tokens": 28502,
+  "prompt_tokens": 163740,
+  "output_tokens": 7670,
+  "dropped_values": [
+    "ALL/not a number for VFT prefactor (S/cm*T^(1/2)): 'A (often assumed to vary as T^-1/2)'",
+    "ALL/not a number for VFT activation energy (K): 'B'",
+    "ALL/not a number for VFT T0 (degC): 'T0'",
+    "ALL/not a number for VFT prefactor with set T0: 'A'",
+    "ALL/not a number for VFT activation energy with fixed T0 (K): 'B'",
+    "ALL/not a number for Fixed T0 (degC): 'T0'"
+  ],
+  "duplicate_values": 0,
+  "off_grid_points": 13,
+  "placeholders": 14,
+  "implausible_points": 0,
+  "call_errors": []
+}

@@ -1,0 +1,108 @@
+{
+  "formulations": [
+    {
+      "Polymer": "EO-PO copolymer (EO:PO = 84:16)",
+      "Anion": "I",
+      "Comonomer percentage": 16.0,
+      "Li:functional group": 0.0,
+      "Li:monomer": 0.0,
+      "salt wt%": null,
+      "concentration as written": null,
+      "quote": "Concentration of salt is equal to 10 mol% in respect to EO molecular unit concentration.",
+      "id": "F1"
+    },
+    {
+      "Polymer": "EO-PO copolymer (EO:PO = 84:16)",
+      "Anion": "ClO4",
+      "Comonomer percentage": 16.0,
+      "Li:functional group": 0.0,
+      "Li:monomer": 0.0,
+      "salt wt%": null,
+      "concentration as written": null,
+      "quote": "Concentration of salt is equal to 10 mol% in respect to EO molecular unit concentration.",
+      "id": "F2"
+    },
+    {
+      "Polymer": "EO-PO copolymer (EO:PO = 84:16)",
+      "Anion": "BF4",
+      "Comonomer percentage": 16.0,
+      "Li:functional group": 0.0,
+      "Li:monomer": 0.0,
+      "salt wt%": null,
+      "concentration as written": null,
+      "quote": "Concentration of salt is equal to 10 mol% in respect to EO molecular unit concentration.",
+      "id": "F3"
+    },
+    {
+      "Polymer": "SO2 copolymer with poly(allil alcohol)",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.0,
+      "Li:monomer": 0.0,
+      "salt wt%": null,
+      "concentration as written": null,
+      "quote": "Samples contain 10 mol% of LiClO4 in respect to copolymer molecular unit concentration.",
+      "id": "F4"
+    },
+    {
+      "Polymer": "SO2 copolymer with poly(vinyl acetate)",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.0,
+      "Li:monomer": 0.0,
+      "salt wt%": null,
+      "concentration as written": null,
+      "quote": "Samples contain 10 mol% of LiClO4 in respect to copolymer molecular unit concentration.",
+      "id": "F5"
+    },
+    {
+      "Polymer": "SO2 copolymer with polyacrylamide",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.0,
+      "Li:monomer": 0.0,
+      "salt wt%": null,
+      "concentration as written": null,
+      "quote": "Samples contain 10 mol% of LiClO4 in respect to copolymer molecular unit concentration.",
+      "id": "F6"
+    },
+    {
+      "Polymer": "EO-SO2 random copolymer",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.0,
+      "Li:monomer": 0.0,
+      "salt wt%": null,
+      "concentration as written": null,
+      "quote": "Polymers are doped with LiBF4 and LiClO4 (10 mol% in respect to copolymer monomeric units concentration).",
+      "id": "F7"
+    },
+    {
+      "Polymer": "EO-SO2 random copolymer",
+      "Anion": "BF4",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.0,
+      "Li:monomer": 0.0,
+      "salt wt%": null,
+      "concentration as written": null,
+      "quote": "Polymers are doped with LiBF4 and LiClO4 (10 mol% in respect to copolymer monomeric units concentration).",
+      "id": "F8"
+    }
+  ],
+  "totals": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 106.3,
+    "prompt_tokens": 11990,
+    "read_tokens": 10620,
+    "cached_tokens": 1370,
+    "output_tokens": 1124
+  },
+  "quote_check": {
+    "returned": 10,
+    "kept": 8,
+    "quote_not_found": 0,
+    "duplicates": 2
+  },
+  "errors": []
+}

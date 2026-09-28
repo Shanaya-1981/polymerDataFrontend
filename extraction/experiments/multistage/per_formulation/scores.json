@@ -1,0 +1,262 @@
+{
+  "run_dir": "experiments/multistage/per_formulation",
+  "papers": 10,
+  "papers_with_extraction": 10,
+  "formulations": {
+    "gold_rows": 127,
+    "pred_rows": 83,
+    "matched": 46,
+    "matched_direct": 32,
+    "matched_rank": 14,
+    "matched_anion_only": 0,
+    "recall": 0.3622,
+    "precision": 0.5542
+  },
+  "groups": {
+    "identity": {
+      "gold_cells_matched": 190,
+      "gold_cells_all": 558,
+      "correct": 114,
+      "near": 0,
+      "wrong": 32,
+      "missing": 44,
+      "missing_unmatched_rows": 368,
+      "extra": 0,
+      "accuracy": 0.6,
+      "accuracy_loose": 0.6,
+      "recall": 0.2043
+    },
+    "thermal": {
+      "gold_cells_matched": 49,
+      "gold_cells_all": 138,
+      "correct": 26,
+      "near": 0,
+      "wrong": 19,
+      "missing": 4,
+      "missing_unmatched_rows": 89,
+      "extra": 102,
+      "accuracy": 0.5306,
+      "accuracy_loose": 0.5306,
+      "recall": 0.1884
+    },
+    "conductivity": {
+      "gold_cells_matched": 275,
+      "gold_cells_all": 913,
+      "correct": 2,
+      "near": 15,
+      "wrong": 51,
+      "missing": 207,
+      "missing_unmatched_rows": 638,
+      "extra": 13,
+      "accuracy": 0.0073,
+      "accuracy_loose": 0.0618,
+      "recall": 0.0022
+    },
+    "transport": {
+      "gold_cells_matched": 0,
+      "gold_cells_all": 32,
+      "correct": 0,
+      "near": 0,
+      "wrong": 0,
+      "missing": 0,
+      "missing_unmatched_rows": 32,
+      "extra": 70,
+      "accuracy": null,
+      "accuracy_loose": null,
+      "recall": 0.0
+    },
+    "molecular_weight": {
+      "gold_cells_matched": 52,
+      "gold_cells_all": 194,
+      "correct": 0,
+      "near": 0,
+      "wrong": 25,
+      "missing": 27,
+      "missing_unmatched_rows": 142,
+      "extra": 34,
+      "accuracy": 0.0,
+      "accuracy_loose": 0.0,
+      "recall": 0.0
+    },
+    "mechanical": {
+      "gold_cells_matched": 0,
+      "gold_cells_all": 0,
+      "correct": 0,
+      "near": 0,
+      "wrong": 0,
+      "missing": 0,
+      "missing_unmatched_rows": 0,
+      "extra": 68,
+      "accuracy": null,
+      "accuracy_loose": null,
+      "recall": null
+    },
+    "processing": {
+      "gold_cells_matched": 142,
+      "gold_cells_all": 444,
+      "correct": 115,
+      "near": 0,
+      "wrong": 21,
+      "missing": 6,
+      "missing_unmatched_rows": 302,
+      "extra": 38,
+      "accuracy": 0.8099,
+      "accuracy_loose": 0.8099,
+      "recall": 0.259
+    },
+    "classification": {
+      "gold_cells_matched": 138,
+      "gold_cells_all": 381,
+      "correct": 96,
+      "near": 0,
+      "wrong": 23,
+      "missing": 19,
+      "missing_unmatched_rows": 243,
+      "extra": 0,
+      "accuracy": 0.6957,
+      "accuracy_loose": 0.6957,
+      "recall": 0.252
+    },
+    "fits": {
+      "gold_cells_matched": 176,
+      "gold_cells_all": 548,
+      "correct": 4,
+      "near": 0,
+      "wrong": 81,
+      "missing": 91,
+      "missing_unmatched_rows": 372,
+      "extra": 100,
+      "accuracy": 0.0227,
+      "accuracy_loose": 0.0227,
+      "recall": 0.0073
+    },
+    "curator_computed": {
+      "gold_cells_matched": 144,
+      "gold_cells_all": 408,
+      "correct": 0,
+      "near": 0,
+      "wrong": 0,
+      "missing": 144,
+      "missing_unmatched_rows": 264,
+      "extra": 0,
+      "accuracy": 0.0,
+      "accuracy_loose": 0.0,
+      "recall": 0.0
+    },
+    "HEADLINE": {
+      "gold_cells_matched": 566,
+      "gold_cells_all": 1835,
+      "correct": 142,
+      "near": 15,
+      "wrong": 127,
+      "missing": 282,
+      "missing_unmatched_rows": 1269,
+      "extra": 219,
+      "accuracy": 0.2509,
+      "accuracy_loose": 0.2774,
+      "recall": 0.0774
+    }
+  },
+  "per_paper": [
+    {
+      "paper_id": "170fead2",
+      "gold_rows": 21,
+      "pred_rows": 7,
+      "matched": 6,
+      "matched_direct": 2,
+      "matched_rank": 4,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "5feba0f9",
+      "gold_rows": 25,
+      "pred_rows": 7,
+      "matched": 3,
+      "matched_direct": 2,
+      "matched_rank": 1,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "6ca669ae",
+      "gold_rows": 13,
+      "pred_rows": 8,
+      "matched": 6,
+      "matched_direct": 0,
+      "matched_rank": 6,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "bdf71b01",
+      "gold_rows": 5,
+      "pred_rows": 2,
+      "matched": 2,
+      "matched_direct": 2,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "f3d2d4b6",
+      "gold_rows": 27,
+      "pred_rows": 20,
+      "matched": 17,
+      "matched_direct": 14,
+      "matched_rank": 3,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "0a3655ba",
+      "gold_rows": 3,
+      "pred_rows": 6,
+      "matched": 0,
+      "matched_direct": 0,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "1dba839e",
+      "gold_rows": 13,
+      "pred_rows": 12,
+      "matched": 0,
+      "matched_direct": 0,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "2c7161a7",
+      "gold_rows": 12,
+      "pred_rows": 12,
+      "matched": 12,
+      "matched_direct": 12,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "569ebb10",
+      "gold_rows": 2,
+      "pred_rows": 3,
+      "matched": 0,
+      "matched_direct": 0,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "663ed327",
+      "gold_rows": 6,
+      "pred_rows": 6,
+      "matched": 0,
+      "matched_direct": 0,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    }
+  ]
+}

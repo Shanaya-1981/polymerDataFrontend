@@ -1,0 +1,28 @@
+{
+  "paper_id": "2c7161a7",
+  "formulations": [
+    {
+      "Polymer system Notes": "PEO-LiClO4 electrolyte with [EO]/[Li] = 9",
+      "Polymer family": "ether",
+      "Polymer": "PEO",
+      "Comonomer percentage": 100.0,
+      "Average functional group per monomer": 1.0,
+      "Anion": "ClO4",
+      "Li:monomer": 0.111,
+      "Li:functional group": 0.111,
+      "Tg": -31.28,
+      "% crystallinity": 0.93,
+      "crystalline?": "no",
+      "Arrhenius Ea (eV) low T": 1.18,
+      "Arrhenius Ea (eV)": 1.18,
+      "Arrhenius notes": "The dc electrical conductivity follows the Arrhenius relation.",
+      "Solvent used": "acetonitrile",
+      "drying temp": "60 °C",
+      "drying time (h)": "36 h",
+      "drying vacuum": "high",
+      "Notes": "The amorphous phase is dominant in this composition compared to other electrolytes studied.",
+      "DOI": "10.1063/1.3428389",
+      "Reference": "Journal of Applied Physics 107, 104113 (2010)"
+    }
+  ]
+}

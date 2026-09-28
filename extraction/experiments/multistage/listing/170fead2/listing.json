@@ -1,0 +1,97 @@
+{
+  "formulations": [
+    {
+      "Polymer": "PEO",
+      "Anion": "MPSA",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "EO/K = 9/1",
+      "quote": "Table 1. Conductivity Data ( 10^4\u03c3 (S/cm)) of the PEO-KMPSA System ... EO/K 9/1",
+      "id": "F1"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "MPSA",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "EO/K = 8/1",
+      "quote": "Table 1. Conductivity Data ( 10^4\u03c3 (S/cm)) of the PEO-KMPSA System ... EO/K 8/1",
+      "id": "F2"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "MPSA",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "EO/K = 6/1",
+      "quote": "Table 1. Conductivity Data ( 10^4\u03c3 (S/cm)) of the PEO-KMPSA System ... EO/K 6/1",
+      "id": "F3"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "MPSA",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "EO/K = 4/1",
+      "quote": "Table 1. Conductivity Data ( 10^4\u03c3 (S/cm)) of the PEO-KMPSA System ... EO/K 4/1",
+      "id": "F4"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "MPSA",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "EO/K = 2/1",
+      "quote": "Table 1. Conductivity Data ( 10^4\u03c3 (S/cm)) of the PEO-KMPSA System ... EO/K 2/1",
+      "id": "F5"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "MPSA",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "EO/K = 1/1",
+      "quote": "Table 1. Conductivity Data ( 10^4\u03c3 (S/cm)) of the PEO-KMPSA System ... EO/K 1/1",
+      "id": "F6"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "EO/K = 8/1",
+      "quote": "Table 2. Conductivity Data ( 10^4\u03c3 (S/cm)) of the PEO-KTFSI System ... EO/K 8/1",
+      "id": "F7"
+    }
+  ],
+  "totals": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 317.7,
+    "prompt_tokens": 27094,
+    "read_tokens": 25724,
+    "cached_tokens": 1370,
+    "output_tokens": 3361
+  },
+  "quote_check": {
+    "returned": 38,
+    "kept": 7,
+    "quote_not_found": 31,
+    "duplicates": 0
+  },
+  "errors": []
+}

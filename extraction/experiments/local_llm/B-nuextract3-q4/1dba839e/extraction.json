@@ -1,0 +1,26 @@
+{
+  "paper_id": "1dba839e",
+  "formulations": [
+    {
+      "Polymer system Notes": "Poly(ethylene carbonate) (PEC) with a carbonate unit to total unit ratio of approximately 95%.",
+      "Polymer family": "carbonate",
+      "Polymer": "poly(ethylene carbonate)",
+      "Comonomer percentage": 95.0,
+      "Average functional group per monomer": 1.0,
+      "Anion": "TFSI",
+      "Li:monomer": 80.0,
+      "Li:functional group": 0.125,
+      "Transference number": 0.63,
+      "T for transference": 80.0,
+      "Transference notes": "The highest transference number was measured at 80 mol% salt concentration.",
+      "Polymer Mn (kDa)": 37000.0,
+      "Solvent used": "acetonitrile",
+      "drying temp": "60",
+      "drying time (h)": "24",
+      "drying vacuum": "yes",
+      "Notes": "The PEC was dissolved in acetonitrile with Li salts. The solution was cast and dried in a vacuum at 60°C for 24 hours.",
+      "DOI": "10.1149/2.0211502jes",
+      "Reference": "Journal of The Electrochemical Society, 162 (2) A3133-A3136 (2015)"
+    }
+  ]
+}

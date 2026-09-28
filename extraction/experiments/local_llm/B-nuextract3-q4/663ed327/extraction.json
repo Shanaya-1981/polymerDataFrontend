@@ -1,0 +1,24 @@
+{
+  "paper_id": "663ed327",
+  "formulations": [
+    {
+      "Polymer system Notes": "High-molecular-weight poly(trimethylene carbonate) synthesized via bulk ring-opening polymerization.",
+      "Polymer family": "polycarbonate",
+      "Polymer": "poly(trimethylene carbonate)",
+      "Average functional group per monomer": 1.0,
+      "Anion": "TFSI",
+      "Tg": -15.0,
+      "Tg polymer without salt": -15.0,
+      "crystalline?": "no",
+      "Conductivity at 25C": 1.0,
+      "Conductivity at 60C": 1.0,
+      "PDI": 1.36,
+      "Polymer Mn (kDa)": 368000.0,
+      "chain architecture": "linear",
+      "Solvent used": "acetonitrile",
+      "drying temp": "60",
+      "Notes": "The electrolytes are electrochemically stable up to 5 V vs. Li/Li+. The cycling performance of LFP half-cells using PTMC/LiTFSI polymer electrolytes is summarized in Figs. 5 and 6.",
+      "DOI": "10.1016/j.ssi.2013.08.014"
+    }
+  ]
+}

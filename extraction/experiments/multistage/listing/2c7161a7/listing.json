@@ -1,0 +1,152 @@
+{
+  "formulations": [
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 9",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F1"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 12",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F2"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 15",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F3"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "ClO4",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 18",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F4"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "I",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 9",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F5"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "I",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 12",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F6"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "I",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 15",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F7"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "I",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 18",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F8"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 9",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F9"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 12",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F10"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 15",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F11"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": null,
+      "Li:functional group": null,
+      "Li:monomer": null,
+      "salt wt%": null,
+      "concentration as written": "[EO]/[Li] = 18",
+      "quote": "Good free standing films were obtained for [EO] / [Li] = 9, 12, 15, and 18.",
+      "id": "F12"
+    }
+  ],
+  "totals": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 131.2,
+    "prompt_tokens": 17882,
+    "read_tokens": 16512,
+    "cached_tokens": 1370,
+    "output_tokens": 1003
+  },
+  "quote_check": {
+    "returned": 12,
+    "kept": 12,
+    "quote_not_found": 0,
+    "duplicates": 0
+  },
+  "errors": []
+}
