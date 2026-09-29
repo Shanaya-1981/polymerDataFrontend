@@ -1,0 +1,27 @@
+{
+  "paper_id": "1dba839e",
+  "layout": "per_formulation",
+  "ran_position": 1,
+  "n_listed": 14,
+  "status": "ok",
+  "error": null,
+  "listing": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 18.6
+  },
+  "values": {
+    "calls": 14,
+    "failed_calls": 0,
+    "wall_seconds": 227.2
+  },
+  "wall_seconds": 245.8,
+  "calls": 15,
+  "dropped_values": [],
+  "duplicate_values": 0,
+  "off_grid_points": 0,
+  "placeholders": 0,
+  "implausible_points": 0,
+  "call_errors": [],
+  "finished_at": "2026-09-29T05:47:23.815776+00:00"
+}

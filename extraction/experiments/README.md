@@ -155,6 +155,11 @@ both layouts with Round 1's single call.
 .venv/bin/python -m pipeline.experiments.run_multistage_benchmark --reassemble  # rebuild from saved raw outputs, no model
 ```
 
+These results predate a fix to the listing's quote check. It didn't strip the
+HTML tags of tables that MinerU writes as HTML, so every formulation quoted from
+such a table was dropped as invented: 31 of Qwen's 38 for `170fead2`, for
+example. `claude_code/SUMMARY.md` has the details.
+
 ---
 
 # Claude Code mock (`claude_code/`)
@@ -162,17 +167,31 @@ both layouts with Round 1's single call.
 The pinned 10 papers extracted by Claude Sonnet 5 through
 `util/claudeAPIMock.py`, which runs Claude Code's non-interactive mode
 (`claude -p`) on a Claude Code login in place of the paid API (issue #4).
-Same prompt, output schema and scorer as the local-LLM benchmark, so its
-scores sit next to `local_llm/*/`. It is run twice: text only, and with each
-paper's figure crops attached (`--figures`, as the local C arm did).
+It is scored like the local-LLM benchmark, so its scores sit next to
+`local_llm/*/`. Three settings:
+- **Text only:** the pipeline's own prompt, output schema and text-only
+  setting.
+- **With figures:** the same, plus each paper's figure crops, as the local C
+  arm did (`--figures`).
+- **Simple:** `extract_features.py`'s short prompt, with the golden CSV's
+  column names as the features and figures included (`--simple`).
+
 `claude_code/SUMMARY.md` compares them.
 
 ```bash
 # needs a working, logged-in `claude` command; counts against your Claude Code plan's usage
 .venv/bin/python experiments/claude_code/run.py              # text only -> sonnet-5/
 .venv/bin/python experiments/claude_code/run.py --figures    # with figures -> sonnet-5-figures/
+.venv/bin/python experiments/claude_code/run.py --simple     # short prompt -> sonnet-5-simple/
 .venv/bin/python experiments/claude_code/run.py --only bdf71b01 --redo
+.venv/bin/python experiments/claude_code/run.py --simple --pdf --model claude-opus-5-5   # PDF itself, no MinerU
+.venv/bin/python experiments/claude_code/run_multistage.py --model claude-opus-5-5     # multi-call method
 ```
+
+`--model` picks another Claude model, and its results go to a folder named
+after it (`opus-5-5-simple/`, ...). `run_multistage.py` runs
+`pipeline/extraction/multistage.py` with Claude through `claude_code_client.py`,
+an `LLMClient` backed by `ask_llm()`.
 
 As with the local-LLM runner, papers that already succeeded are skipped;
 `--redo` forces them. `raw_llm_response.json` has no token counts here:
@@ -183,10 +202,15 @@ claude_code/
   run.py             the runner (an experiment script, not part of pipeline/)
   run.log            console output of the text-only run
   run-figures.log    console output of the run with figures
+  run-simple.log     console output of the simple-prompt run
   SUMMARY.md         results next to the local-LLM arms
   sonnet-5/          text only
-    arm.json         model, Claude Code version, commit of claudeAPIMock.py
+    arm.json         model, prompt, Claude Code version, commit of the code that ran
     scores.json      totals; scores_papers.csv / scores_cells.csv for detail
     {paper}/         raw_llm_response.json, extraction.json, run.json
   sonnet-5-figures/  with figures, same layout
+  sonnet-5-simple/   simple prompt, same layout
+  opus-5-5*/         the same settings with Claude Opus 5.5; -simple-pdf/ sends the PDF itself
+  multistage-opus-5-5/  listing/, per_group/, per_formulation/, as in ../multistage/
+  run_multistage.py, claude_code_client.py   the multi-call runner and its Claude client
 ```

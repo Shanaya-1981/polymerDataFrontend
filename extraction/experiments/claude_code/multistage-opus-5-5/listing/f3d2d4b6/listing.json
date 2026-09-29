@@ -1,0 +1,170 @@
+{
+  "formulations": [
+    {
+      "Polymer": "C-PEO (commercial PEO, Aldrich, MW 900000)",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.01,
+      "Li:monomer": 0.01,
+      "salt wt%": 4.0,
+      "concentration as written": "O/Li = 100 (salt weight fraction ~0.04)",
+      "quote": "| ~0.04 | 100 | ~0.52 | ~0.33 | \u2014 |",
+      "id": "F1"
+    },
+    {
+      "Polymer": "HP-PEO (high purity PEO, MW ~1x10^6)",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.01,
+      "Li:monomer": 0.01,
+      "salt wt%": 4.0,
+      "concentration as written": "O/Li = 100 (salt weight fraction ~0.04)",
+      "quote": "| ~0.04 | 100 | ~0.52 | ~0.33 | \u2014 |",
+      "id": "F2"
+    },
+    {
+      "Polymer": "C-PEO (commercial PEO, Aldrich, MW 900000)",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.0278,
+      "Li:monomer": 0.0278,
+      "salt wt%": 9.0,
+      "concentration as written": "O/Li = 36 (salt weight fraction ~0.09)",
+      "quote": "| ~0.09 | 36 | ~0.73 | \u2014 | \u2014 |",
+      "id": "F3"
+    },
+    {
+      "Polymer": "HP-PEO (high purity PEO, MW ~1x10^6)",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.0278,
+      "Li:monomer": 0.0278,
+      "salt wt%": 9.0,
+      "concentration as written": "O/Li = 36 (salt weight fraction ~0.09)",
+      "quote": "| ~0.09 | 36 | ~0.73 | \u2014 | \u2014 |",
+      "id": "F4"
+    },
+    {
+      "Polymer": "C-PEO (commercial PEO, Aldrich, MW 900000)",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.05,
+      "Li:monomer": 0.05,
+      "salt wt%": 15.0,
+      "concentration as written": "O/Li = 20 (salt weight fraction ~0.15)",
+      "quote": "| ~0.15 | 20 | ~0.68 | ~0.59 | \u2014 |",
+      "id": "F5"
+    },
+    {
+      "Polymer": "HP-PEO (high purity PEO, MW ~1x10^6)",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.05,
+      "Li:monomer": 0.05,
+      "salt wt%": 15.0,
+      "concentration as written": "O/Li = 20 (salt weight fraction ~0.15)",
+      "quote": "| ~0.15 | 20 | ~0.68 | ~0.59 | \u2014 |",
+      "id": "F6"
+    },
+    {
+      "Polymer": "C-PEO (commercial PEO, Aldrich, MW 900000)",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.0833,
+      "Li:monomer": 0.0833,
+      "salt wt%": 23.0,
+      "concentration as written": "O/Li = 12 (salt weight fraction ~0.23)",
+      "quote": "| ~0.23 | 12 | ~0.72 | ~0.66 | \u2014 |",
+      "id": "F7"
+    },
+    {
+      "Polymer": "HP-PEO (high purity PEO, MW ~1x10^6)",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.0833,
+      "Li:monomer": 0.0833,
+      "salt wt%": 23.0,
+      "concentration as written": "O/Li = 12 (salt weight fraction ~0.23)",
+      "quote": "| ~0.23 | 12 | ~0.72 | ~0.66 | \u2014 |",
+      "id": "F8"
+    },
+    {
+      "Polymer": "C-PEO (commercial PEO, Aldrich, MW 900000)",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.1667,
+      "Li:monomer": 0.1667,
+      "salt wt%": 37.0,
+      "concentration as written": "O/Li = 6 (salt weight fraction ~0.37)",
+      "quote": "| ~0.37 | 6 | ~0.62 | \u2014 | ~0.60 |",
+      "id": "F9"
+    },
+    {
+      "Polymer": "HP-PEO (high purity PEO, MW ~1x10^6)",
+      "Anion": "CF3SO3",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.1667,
+      "Li:monomer": 0.1667,
+      "salt wt%": 37.0,
+      "concentration as written": "O/Li = 6 (salt weight fraction ~0.37)",
+      "quote": "| ~0.37 | 6 | ~0.62 | \u2014 | ~0.60 |",
+      "id": "F10"
+    },
+    {
+      "Polymer": "C-PEO (commercial PEO, Aldrich, MW 900000)",
+      "Anion": "ClO4",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.01,
+      "Li:monomer": 0.01,
+      "salt wt%": 2.0,
+      "concentration as written": "O/Li ~100 (salt weight fraction ~0.02)",
+      "quote": "| ~0.02 | ~0.35 | ~100 |",
+      "id": "F11"
+    },
+    {
+      "Polymer": "HP-PEO (high purity PEO, MW ~1x10^6)",
+      "Anion": "ClO4",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.01,
+      "Li:monomer": 0.01,
+      "salt wt%": 2.0,
+      "concentration as written": "O/Li ~100 (salt weight fraction ~0.02)",
+      "quote": "| ~0.02 | ~0.25 | ~100 |",
+      "id": "F12"
+    },
+    {
+      "Polymer": "C-PEO (commercial PEO, Aldrich, MW 900000)",
+      "Anion": "ClO4",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.1667,
+      "Li:monomer": 0.1667,
+      "salt wt%": 28.0,
+      "concentration as written": "salt weight fraction 0.28 (O/Li = 6)",
+      "quote": "For salt weight fractions lower than 0.28 (O/Li > 6) and temperatures higher than 65\u00b0C the PEO\u2013LiClO$_{4}$ electrolytes are amorphous single phase.",
+      "id": "F13"
+    },
+    {
+      "Polymer": "HP-PEO (high purity PEO, MW ~1x10^6)",
+      "Anion": "ClO4",
+      "Comonomer percentage": 100.0,
+      "Li:functional group": 0.1667,
+      "Li:monomer": 0.1667,
+      "salt wt%": 28.0,
+      "concentration as written": "salt weight fraction 0.28 (O/Li = 6)",
+      "quote": "For salt weight fractions lower than 0.28 (O/Li > 6) and temperatures higher than 65\u00b0C the PEO\u2013LiClO$_{4}$ electrolytes are amorphous single phase.",
+      "id": "F14"
+    }
+  ],
+  "totals": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 56.2
+  },
+  "quote_check": {
+    "returned": 30,
+    "kept": 14,
+    "quote_not_found": 16,
+    "duplicates": 0
+  },
+  "errors": []
+}
