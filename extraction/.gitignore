@@ -6,3 +6,6 @@ __pycache__/
 *.pyc
 .DS_Store
 models/
+
+# Experiment runs kept on this machine only, not in git
+experiments/claude_code/
