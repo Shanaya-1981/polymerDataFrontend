@@ -7,9 +7,10 @@ command on PATH.
 
 Swapping in a real API later -- the Claude API, OpenAI, or a local model
 server -- means rewriting the body of `ask_llm()`. All of them take the same
-inputs (a prompt, a system prompt, a model name, and optionally images and a
-JSON schema), so code that calls it doesn't change. For `images`, a local model
-has to be one that reads images.
+inputs (a prompt, a system prompt, a model name, and optionally images, PDFs
+and a JSON schema), so code that calls it doesn't change. For `images`, a local
+model has to be one that reads images; few local models read PDFs, so for
+those, turn the PDF into text and images first (MinerU does that here).
 
 Each call still carries a few lines of Claude Code's own context that a real
 API call wouldn't: today's date, your platform, and your account's email.
@@ -58,6 +59,7 @@ def ask_llm(
     model: str | None = None,
     json_schema: dict | None = None,
     images: Sequence[str | Path | tuple[str | Path, str]] = (),
+    documents: Sequence[str | Path] = (),
     timeout: float = 1800,
 ) -> str:
     """Send one prompt and return the reply as text.
@@ -74,28 +76,27 @@ def ask_llm(
         Each is a path, or a (path, label) pair whose label is text placed just
         before that image, such as its caption. PNG, JPEG, GIF or WebP; any
         other file type raises ValueError before anything is sent.
+    documents: PDF files shown to the model before the prompt. Claude reads
+        each page's text and images itself. Any other file type raises
+        ValueError before anything is sent.
     timeout: seconds to wait for the reply.
 
     Raises RuntimeError carrying Claude Code's own message when the call
     fails: `claude` missing, usage limit reached, unknown model, timeout.
     """
-    content: list[dict] = [{"type": "text", "text": prompt}]
+    content: list[dict] = []
+    for document in documents:
+        if mimetypes.guess_type(str(document))[0] != "application/pdf":
+            raise ValueError(f"{document}: documents must be PDF files")
+        content.append({"type": "document", "source": _base64_source(document, "application/pdf")})
+    content.append({"type": "text", "text": prompt})
     for image in images:
         path, label = image if isinstance(image, tuple) else (image, None)
         if label:
             content.append({"type": "text", "text": label})
-        content.append(
-            {
-                "type": "image",
-                "source": {
-                    "type": "base64",
-                    "media_type": _media_type(path),
-                    "data": base64.standard_b64encode(Path(path).read_bytes()).decode("ascii"),
-                },
-            }
-        )
+        content.append({"type": "image", "source": _base64_source(path, _media_type(path))})
     # One user message in Claude Code's stream-json format, which Anthropic's
-    # Agent SDK also uses to drive `claude`. Unlike plain text, it can carry images.
+    # Agent SDK also uses to drive `claude`. Unlike plain text, it can carry images and PDFs.
     message = {
         "type": "user",
         "session_id": "",
@@ -126,7 +127,7 @@ def ask_llm(
     env["CLAUDE_CODE_DISABLE_CLAUDE_MDS"] = "1"
     try:
         # The message goes on stdin rather than the command line: a paper's
-        # text runs past 80K characters, and its figures to megabytes.
+        # text runs past 80K characters, and its figures or PDF to megabytes.
         done = subprocess.run(
             command,
             input=json.dumps(message) + "\n",
@@ -170,6 +171,11 @@ def ask_llm(
     if "structured_output" not in result:
         raise RuntimeError("claude -p finished without a reply matching json_schema")
     return json.dumps(result["structured_output"], ensure_ascii=False)
+
+
+def _base64_source(path: str | Path, media_type: str) -> dict:
+    data = base64.standard_b64encode(Path(path).read_bytes()).decode("ascii")
+    return {"type": "base64", "media_type": media_type, "data": data}
 
 
 def _media_type(path: str | Path) -> str:
