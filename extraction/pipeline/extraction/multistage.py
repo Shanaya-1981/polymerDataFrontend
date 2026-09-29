@@ -336,12 +336,18 @@ def _call(client: LLMClient, paper_id: str, system: str, user: str, model: type[
 
 _LATEX_CMD = re.compile(r"\\[a-zA-Z]+")
 _SUB_SUPER = str.maketrans("₀₁₂₃₄₅₆₇₈₉⁰¹²³⁴⁵⁶⁷⁸⁹", "01234567890123456789")
+# An HTML tag: "<" then a letter, so "T < 60 °C" is left alone.
+_HTML_TAG = re.compile(r"</?[a-zA-Z][^<>]*>")
 
 
 def _norm(text: str) -> str:
     """Letters and digits only, so a quote matches the markdown it was copied
     from despite LaTeX (`\\mathrm{LiClO_4}`), subscript digits, MinerU's
-    letter-spaced numbers ("1 2 0") and punctuation."""
+    letter-spaced numbers ("1 2 0"), punctuation, and the tags of the tables
+    MinerU writes as HTML. Without removing those, a quoted table row
+    "LiTFSI 20 45" never matched `LiTFSI</td><td>20</td><td>45` (its tag
+    letters survived as "litfsitdtd20tdtd45") and was dropped as invented."""
+    text = _HTML_TAG.sub(" ", text)
     text = _LATEX_CMD.sub("", text.translate(_SUB_SUPER))
     return re.sub(r"[^0-9a-z]", "", text.lower())
 
@@ -349,10 +355,22 @@ def _norm(text: str) -> str:
 def quote_in_paper(quote: str | None, paper_norm: str) -> bool:
     from rapidfuzz import fuzz
 
-    q = _norm(quote or "")
-    if len(q) < 8:  # too short to be evidence of anything
-        return False
-    return q in paper_norm or fuzz.partial_ratio(q, paper_norm, score_cutoff=92) > 0
+    def found(text: str) -> bool:
+        q = _norm(text)
+        if len(q) < 8:  # too short to be evidence of anything
+            return False
+        return q in paper_norm or fuzz.partial_ratio(q, paper_norm, score_cutoff=92) > 0
+
+    quote = (quote or "").strip()
+    if found(quote):
+        return True
+    # A table whose first column spans several rows (<td rowspan="4">LiTFSI</td>)
+    # prints that label once, but a row quoted on its own carries it: "LiTFSI
+    # 40 42 1748 58 1724" for the second row. Accept it when the label and the
+    # rest of the row are both in the paper; the row's own cells still have to
+    # match, so an invented row still fails.
+    label, _, rest = quote.partition(" ")
+    return len(_norm(label)) >= 2 and _norm(label) in paper_norm and found(rest)
 
 
 def run_listing(client: LLMClient, manifest: ParseManifest, paper_dir: Path):
