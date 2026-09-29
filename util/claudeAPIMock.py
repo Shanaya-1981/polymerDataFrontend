@@ -29,6 +29,15 @@ import tempfile
 
 DEFAULT_SYSTEM = "You are a helpful assistant."
 
+# Added to every system prompt. Claude Code tells the model it is in a session
+# with a working folder, and it offers to look at files or suggests shell
+# commands; this keeps it to the material the caller sent. A real API call
+# has no such framing, so a real-API ask_llm() can drop this line.
+_DATA_ONLY = (
+    "Use only the data in the user's message as your source material. You have no "
+    "files, folders, tools or internet access, so don't look for or mention any."
+)
+
 # With either of these in the environment, `claude` bills that key instead of
 # using your Claude Code login. extraction/ loads ANTHROPIC_API_KEY from .env
 # (pipeline/config_loader.py), so it is usually set.
@@ -45,7 +54,8 @@ def ask_llm(
     """Send one prompt and return the reply as text.
 
     system: instructions for the whole reply. They replace Claude Code's own
-        coding-assistant instructions; None uses DEFAULT_SYSTEM.
+        coding-assistant instructions; None uses DEFAULT_SYSTEM. The
+        _DATA_ONLY line is always added after them.
     model: e.g. "claude-sonnet-5", or an alias like "opus". None uses your
         Claude Code default model.
     json_schema: a JSON Schema, i.e. a dict describing the shape the reply must
@@ -61,7 +71,7 @@ def ask_llm(
         "-p",
         "--output-format", "json",
         "--no-session-persistence",  # keep these calls out of your session history
-        "--system-prompt", system or DEFAULT_SYSTEM,
+        "--system-prompt", f"{system or DEFAULT_SYSTEM}\n\n{_DATA_ONLY}",
     ]
     if model:
         command += ["--model", model]
