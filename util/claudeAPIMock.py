@@ -7,13 +7,14 @@ command on PATH.
 
 Swapping in a real API later -- the Claude API, OpenAI, or a local model
 server -- means rewriting the body of `ask_llm()`. All of them take the same
-inputs (a prompt, a system prompt, a model name, optionally a JSON schema), so
-code that calls it doesn't change.
+inputs (a prompt, a system prompt, a model name, and optionally images and a
+JSON schema), so code that calls it doesn't change. For `images`, a local model
+has to be one that reads images.
 
 Each call still carries a few lines of Claude Code's own context that a real
 API call wouldn't: today's date, your platform, and your account's email.
 Your CLAUDE.md files and the folder you call it from are kept out. Even a
-one-word reply takes about 5 seconds.
+one-word reply takes 3-5 seconds.
 
 Import it with `from util.claudeAPIMock import ask_llm`. Code run from the
 repo root finds it as is; `extraction/` runs from inside `extraction/`, so
@@ -22,10 +23,14 @@ start that with `PYTHONPATH=..`.
 
 from __future__ import annotations
 
+import base64
 import json
+import mimetypes
 import os
 import subprocess
 import tempfile
+from collections.abc import Sequence
+from pathlib import Path
 
 DEFAULT_SYSTEM = "You are a helpful assistant."
 
@@ -43,12 +48,16 @@ _DATA_ONLY = (
 # (pipeline/config_loader.py), so it is usually set.
 _API_KEY_VARS = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")
 
+# The image formats Claude reads.
+_IMAGE_TYPES = ("image/png", "image/jpeg", "image/gif", "image/webp")
+
 
 def ask_llm(
     prompt: str,
     system: str | None = None,
     model: str | None = None,
     json_schema: dict | None = None,
+    images: Sequence[str | Path | tuple[str | Path, str]] = (),
     timeout: float = 1800,
 ) -> str:
     """Send one prompt and return the reply as text.
@@ -61,15 +70,45 @@ def ask_llm(
     json_schema: a JSON Schema, i.e. a dict describing the shape the reply must
         have. The reply is then JSON of that shape, returned as a string:
         json.loads() it, as you would a real API's reply.
+    images: image files shown to the model after the prompt, in this order.
+        Each is a path, or a (path, label) pair whose label is text placed just
+        before that image, such as its caption. PNG, JPEG, GIF or WebP; any
+        other file type raises ValueError before anything is sent.
     timeout: seconds to wait for the reply.
 
     Raises RuntimeError carrying Claude Code's own message when the call
     fails: `claude` missing, usage limit reached, unknown model, timeout.
     """
+    content: list[dict] = [{"type": "text", "text": prompt}]
+    for image in images:
+        path, label = image if isinstance(image, tuple) else (image, None)
+        if label:
+            content.append({"type": "text", "text": label})
+        content.append(
+            {
+                "type": "image",
+                "source": {
+                    "type": "base64",
+                    "media_type": _media_type(path),
+                    "data": base64.standard_b64encode(Path(path).read_bytes()).decode("ascii"),
+                },
+            }
+        )
+    # One user message in Claude Code's stream-json format, which Anthropic's
+    # Agent SDK also uses to drive `claude`. Unlike plain text, it can carry images.
+    message = {
+        "type": "user",
+        "session_id": "",
+        "parent_tool_use_id": None,
+        "message": {"role": "user", "content": content},
+    }
+
     command = [
         "claude",
         "-p",
-        "--output-format", "json",
+        "--input-format", "stream-json",
+        "--output-format", "stream-json",
+        "--verbose",  # claude -p refuses stream-json output without it
         "--no-session-persistence",  # keep these calls out of your session history
         "--system-prompt", f"{system or DEFAULT_SYSTEM}\n\n{_DATA_ONLY}",
     ]
@@ -86,11 +125,11 @@ def ask_llm(
     # Keep your CLAUDE.md files out of the prompt; a real API call wouldn't see them.
     env["CLAUDE_CODE_DISABLE_CLAUDE_MDS"] = "1"
     try:
-        # The prompt goes on stdin rather than the command line: a paper's
-        # text runs past 80K characters.
+        # The message goes on stdin rather than the command line: a paper's
+        # text runs past 80K characters, and its figures to megabytes.
         done = subprocess.run(
             command,
-            input=prompt,
+            input=json.dumps(message) + "\n",
             capture_output=True,
             text=True,
             env=env,
@@ -107,13 +146,21 @@ def ask_llm(
     except subprocess.TimeoutExpired:
         raise RuntimeError(f"claude -p gave no reply within {timeout:.0f} s") from None
 
-    try:
-        result = json.loads(done.stdout)
-    except json.JSONDecodeError:
+    # The output is one JSON event per line; the reply, or what went wrong, is
+    # in the "result" event at the end.
+    result = None
+    for line in done.stdout.splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(event, dict) and event.get("type") == "result":
+            result = event
+    if result is None:
         # Rejected before it started (bad flag, invalid schema): the reason is on stderr.
         raise RuntimeError(
-            f"claude -p failed (exit {done.returncode}): {(done.stderr or done.stdout).strip()}"
-        ) from None
+            f"claude -p failed (exit {done.returncode}): {(done.stderr or done.stdout).strip()[-2000:]}"
+        )
     if done.returncode != 0 or result.get("is_error"):
         reason = result.get("result") or result.get("errors") or result.get("subtype")
         raise RuntimeError(f"claude -p failed: {reason}")
@@ -123,3 +170,10 @@ def ask_llm(
     if "structured_output" not in result:
         raise RuntimeError("claude -p finished without a reply matching json_schema")
     return json.dumps(result["structured_output"], ensure_ascii=False)
+
+
+def _media_type(path: str | Path) -> str:
+    media_type = mimetypes.guess_type(str(path))[0]
+    if media_type not in _IMAGE_TYPES:
+        raise ValueError(f"{path}: Claude reads PNG, JPEG, GIF or WebP images, not {media_type or 'this file type'}")
+    return media_type
