@@ -60,8 +60,11 @@ Prior handoff: `session04.md`.
     reused. A PDF not named `<id>-<name>.pdf` gets an id from its contents.
   - **`--send-pdf`** sends the PDF itself and skips MinerU.
   - It isn't wired into `pipeline/`.
-- **`extraction/experiments/claude_code/`**, the experiment folder. All runs
-  use the pinned 10-paper sample and the pipeline's scorer. The folder holds:
+- **`extraction/experiments/claude_code/`**, the experiment folder. It is on
+  this machine only. At the user's request it was taken out of git, and
+  `extraction/.gitignore` now lists it. Its files are still in the branch's
+  history up to `4824523`. All runs use the pinned 10-paper sample and the
+  pipeline's scorer. The folder holds:
   - `run.py`: one extraction call per paper. Options: `--figures`,
     `--simple` (the `extract_features.py` prompt), `--pdf` (with
     `--simple`), `--model`, `--only`, `--redo` and `--jobs`. Each setting
@@ -72,7 +75,8 @@ Prior handoff: `session04.md`.
   - Result folders: `sonnet-5/`, `sonnet-5-figures/`, `sonnet-5-simple/`,
     `opus-5-5/`, `opus-5-5-simple/`, `opus-5-5-simple-pdf/` and
     `multistage-opus-5-5/`, plus a `run-*.log` for each.
-  - `experiments/README.md` has a section on all of it.
+- **Root `README.md`** has a "Making an LLM call" section on using
+  `ask_llm()`.
 - **One pipeline change:** `pipeline/extraction/multistage.py`'s quote check
   (see Bugs below).
 - **Commits**, oldest first: `2e00cba` (mock), `8d7ccb0` (data-only line),
@@ -217,8 +221,8 @@ counting sequences.
     fix.
   - **Effect on the earlier local run:** it dropped 31 of the 38
     formulations Qwen listed for `170fead2`, all of which pass now.
-    `experiments/multistage/SUMMARY.md` predates the fix, and the experiments
-    README says so.
+    `experiments/multistage/SUMMARY.md` predates the fix, and nothing in
+    `experiments/` says so, since that folder is left as it was on `main`.
 - **Rows under a merged first cell** (`<td rowspan="4">LiTFSI</td>`) print the
   label once, but Claude quotes each row with it. **Fix:** accept the quote if
   the label and the rest of the row are both in the paper; the row's own
