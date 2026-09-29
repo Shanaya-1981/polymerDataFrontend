@@ -154,3 +154,35 @@ both layouts with Round 1's single call.
 .venv/bin/python -m pipeline.experiments.run_multistage_benchmark            # full run (~4 h)
 .venv/bin/python -m pipeline.experiments.run_multistage_benchmark --reassemble  # rebuild from saved raw outputs, no model
 ```
+
+---
+
+# Claude Code mock (`claude_code/`)
+
+The pinned 10 papers extracted by Claude Sonnet 5 through
+`util/claudeAPIMock.py`, which runs Claude Code's non-interactive mode
+(`claude -p`) on a Claude Code login in place of the paid API (issue #4).
+Same prompt, output schema, text-only setting and scorer as the local-LLM
+benchmark, so its scores sit next to `local_llm/*/`; `claude_code/SUMMARY.md`
+compares them.
+
+```bash
+# needs a working, logged-in `claude` command; counts against your Claude Code plan's usage
+.venv/bin/python experiments/claude_code/run.py
+.venv/bin/python experiments/claude_code/run.py --only bdf71b01 --redo
+```
+
+As with the local-LLM runner, papers that already succeeded are skipped;
+`--redo` forces them. `raw_llm_response.json` has no token counts here:
+`ask_llm()` returns only the reply text.
+
+```
+claude_code/
+  run.py             the runner (an experiment script, not part of pipeline/)
+  run.log            console output of the full run
+  SUMMARY.md         results next to the local-LLM arms
+  sonnet-5/
+    arm.json         model, Claude Code version, commit of claudeAPIMock.py
+    scores.json      totals; scores_papers.csv / scores_cells.csv for detail
+    {paper}/         raw_llm_response.json, extraction.json, run.json
+```
