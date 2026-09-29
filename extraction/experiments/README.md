@@ -162,13 +162,15 @@ both layouts with Round 1's single call.
 The pinned 10 papers extracted by Claude Sonnet 5 through
 `util/claudeAPIMock.py`, which runs Claude Code's non-interactive mode
 (`claude -p`) on a Claude Code login in place of the paid API (issue #4).
-Same prompt, output schema, text-only setting and scorer as the local-LLM
-benchmark, so its scores sit next to `local_llm/*/`; `claude_code/SUMMARY.md`
-compares them.
+Same prompt, output schema and scorer as the local-LLM benchmark, so its
+scores sit next to `local_llm/*/`. It is run twice: text only, and with each
+paper's figure crops attached (`--figures`, as the local C arm did).
+`claude_code/SUMMARY.md` compares them.
 
 ```bash
 # needs a working, logged-in `claude` command; counts against your Claude Code plan's usage
-.venv/bin/python experiments/claude_code/run.py
+.venv/bin/python experiments/claude_code/run.py              # text only -> sonnet-5/
+.venv/bin/python experiments/claude_code/run.py --figures    # with figures -> sonnet-5-figures/
 .venv/bin/python experiments/claude_code/run.py --only bdf71b01 --redo
 ```
 
@@ -179,10 +181,12 @@ As with the local-LLM runner, papers that already succeeded are skipped;
 ```
 claude_code/
   run.py             the runner (an experiment script, not part of pipeline/)
-  run.log            console output of the full run
+  run.log            console output of the text-only run
+  run-figures.log    console output of the run with figures
   SUMMARY.md         results next to the local-LLM arms
-  sonnet-5/
+  sonnet-5/          text only
     arm.json         model, Claude Code version, commit of claudeAPIMock.py
     scores.json      totals; scores_papers.csv / scores_cells.csv for detail
     {paper}/         raw_llm_response.json, extraction.json, run.json
+  sonnet-5-figures/  with figures, same layout
 ```

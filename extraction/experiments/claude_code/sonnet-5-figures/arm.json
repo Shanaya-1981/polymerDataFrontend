@@ -1,0 +1,19 @@
+{
+  "model": "claude-sonnet-5",
+  "via": "util/claudeAPIMock.py ask_llm() -> claude -p, Claude Code login (no API key)",
+  "include_figures": true,
+  "claude_code": "2.1.284 (Claude Code)",
+  "claudeAPIMock_commit": "f8e17ab",
+  "papers": [
+    "bdf71b01",
+    "f3d2d4b6",
+    "6ca669ae",
+    "1dba839e",
+    "663ed327",
+    "2c7161a7",
+    "0a3655ba",
+    "5feba0f9",
+    "170fead2",
+    "569ebb10"
+  ]
+}
