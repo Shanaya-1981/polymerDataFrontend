@@ -1,6 +1,6 @@
 """Extract the features you name from one paper: a PDF and a list of feature
-names in, a table out, with one row per sample the paper reports and one
-column per feature.
+names in, a table out, with one row per data point the paper reports, a
+first column naming the sample it belongs to, and one column per feature.
 
     .venv/bin/python extract_features.py paper.pdf features.txt              # CSV to the terminal
     .venv/bin/python extract_features.py paper.pdf features.txt -o out.csv
@@ -14,8 +14,10 @@ features.txt holds one feature name per line, for example
     Conductivity at 25C (S/cm)
 
 Put a unit in a feature's name to get its numbers in that unit; without one
-they come in whatever unit the paper uses. A blank cell means the paper
-doesn't give that value for that sample.
+they come in whatever unit the paper uses. A sample has several data points
+when the paper gives a feature at several conditions (its conductivity at
+several temperatures, say), otherwise one. A blank cell means the paper
+doesn't give that value for that data point.
 
 How it works: MinerU turns the PDF into text and figure images (the
 pipeline's parse step, written to output/parsed/<paper id>/), and the model
@@ -54,9 +56,11 @@ from pipeline.parsing.parse_paper import OUTPUT_ROOT, parse_paper_auto  # noqa: 
 from util.claudeAPIMock import ask_llm  # noqa: E402
 
 _TASK = (
-    "Return one row for each sample the paper reports, with that sample's value for each feature, taken "
-    "from the text, the tables or the figures. Give numbers as plain numbers, in the unit a feature's name "
-    "gives if it gives one. Leave out a feature the paper doesn't give for that sample."
+    "Return each sample the paper reports, named as the paper names it (or by its composition if the paper "
+    "gives it no name), with its values for each feature, taken from the text, the tables or the figures. "
+    "Give a sample one data point, or several if the paper gives a feature at several conditions (for "
+    "example at several temperatures). Give numbers as plain numbers, in the unit a feature's name gives if "
+    "it gives one. Leave out a feature the paper doesn't give."
 )
 # For MinerU's text and figure crops.
 SYSTEM = (
@@ -87,25 +91,28 @@ def build_prompt(paper_dir: Path, features: list[str]) -> tuple[str, list[tuple[
 
 def extract_features(
     paper: Path, features: list[str], model: str | None = None, send_pdf: bool = False
-) -> list[dict]:
-    """One dict per sample, keyed by feature name; features the paper doesn't give are left out.
+) -> dict[str, list[dict]]:
+    """Each sample's name mapped to its data points, each a dict of every feature, in the order given;
+    None where the paper doesn't give it. Samples the model gives the same name are merged.
 
     send_pdf=True sends the PDF itself instead of MinerU's text and figures.
     """
     value = {"type": ["string", "number", "null"]}
+    point = {"type": "object", "properties": {feature: value for feature in features}, "additionalProperties": False}
     schema = {
         "type": "object",
         "properties": {
-            "rows": {
+            "samples": {
                 "type": "array",
                 "items": {
                     "type": "object",
-                    "properties": {feature: value for feature in features},
+                    "properties": {"sample": {"type": "string"}, "points": {"type": "array", "items": point}},
+                    "required": ["sample", "points"],
                     "additionalProperties": False,
                 },
             }
         },
-        "required": ["rows"],
+        "required": ["samples"],
         "additionalProperties": False,
     }
     if send_pdf:
@@ -115,7 +122,11 @@ def extract_features(
     else:
         text, images = build_prompt(paper if paper.is_dir() else parse(paper), features)
         reply = ask_llm(text, system=SYSTEM, model=model, json_schema=schema, images=images)
-    return json.loads(reply)["rows"]
+    samples: dict[str, list[dict]] = {}
+    for reported in json.loads(reply)["samples"]:
+        points = samples.setdefault(reported["sample"], [])
+        points += ({feature: p.get(feature) for feature in features} for p in reported["points"])
+    return samples
 
 
 def parse(pdf: Path) -> Path:
@@ -140,10 +151,10 @@ def parse(pdf: Path) -> Path:
     return paper_dir
 
 
-def write_csv(rows: list[dict], features: list[str], out: TextIO) -> None:
-    writer = csv.DictWriter(out, fieldnames=features, extrasaction="ignore")
+def write_csv(samples: dict[str, list[dict]], features: list[str], out: TextIO) -> None:
+    writer = csv.DictWriter(out, fieldnames=["sample", *features])
     writer.writeheader()
-    writer.writerows(rows)
+    writer.writerows({"sample": name, **point} for name, points in samples.items() for point in points)
 
 
 def main() -> None:
@@ -159,13 +170,14 @@ def main() -> None:
     lines = args.features.read_text(encoding="utf-8").splitlines()
     features = [line.strip() for line in lines if line.strip()]
     os.chdir(HERE)  # the parse step's paths (settings.yaml, output/parsed/) are relative to extraction/
-    rows = extract_features(paper, features, model=args.model, send_pdf=args.send_pdf)
+    samples = extract_features(paper, features, model=args.model, send_pdf=args.send_pdf)
     if output is None:
-        write_csv(rows, features, sys.stdout)
+        write_csv(samples, features, sys.stdout)
         return
     with open(output, "w", newline="", encoding="utf-8") as f:
-        write_csv(rows, features, f)
-    print(f"{len(rows)} rows -> {output}", file=sys.stderr)
+        write_csv(samples, features, f)
+    rows = sum(len(points) for points in samples.values())
+    print(f"{rows} rows from {len(samples)} samples -> {output}", file=sys.stderr)
 
 
 if __name__ == "__main__":

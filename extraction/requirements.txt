@@ -10,3 +10,6 @@ pyyaml
 python-dotenv
 rdkit
 rapidfuzz
+fastapi
+uvicorn
+python-multipart
