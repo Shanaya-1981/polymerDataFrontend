@@ -77,6 +77,9 @@ server) means rewriting the body of `ask_llm()`. Code that calls it doesn't
 change.
 
 `extraction/extract_features.py` is built on it. Give it a paper's PDF and a
-text file with one feature name per line, and it writes a table of those
-features: run `python extract_features.py paper.pdf features.txt -o out.csv`
+text file with one feature name per line, and it writes a table with one row
+per data point. The first column names the sample (one material the paper
+tests) and the other columns hold the features. A sample gets several rows when
+the paper gives a feature at several conditions, such as its conductivity at
+several temperatures. Run `python extract_features.py paper.pdf features.txt -o out.csv`
 from `extraction/`.
