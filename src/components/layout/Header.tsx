@@ -18,11 +18,15 @@ export function Header() {
           to="/"
           className="shrink-0 rounded-md text-base font-semibold tracking-tight text-primary"
         >
-          <span className="hidden md:inline">Polymer Electrolyte Data Mining</span>
-          <span className="md:hidden">PE Data Mining</span>
+          <span className="hidden xl:inline">Polymer Electrolyte Data Mining</span>
+          <span className="xl:hidden">PE Data Mining</span>
         </Link>
 
-        <Nav orientation="horizontal" className="ml-4 hidden md:block" />
+        {/* Eight tabs need about 1,060px beside the full title, so the bar
+            waits for lg and keeps the short title until xl; below lg the
+            drawer takes over. Measured, not guessed — re-check the widths
+            if a tab is added. */}
+        <Nav orientation="horizontal" className="ml-4 hidden lg:block" />
 
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
@@ -34,7 +38,7 @@ export function Header() {
             aria-haspopup="dialog"
             aria-expanded={drawerOpen}
             aria-controls="mobile-nav-drawer"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-secondary hover:bg-muted hover:text-primary md:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-secondary hover:bg-muted hover:text-primary lg:hidden"
           >
             <MenuIcon className="h-5 w-5" aria-hidden="true" />
           </button>

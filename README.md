@@ -22,14 +22,15 @@ We aren't affiliated with them and they haven't endorsed this. The data is uncha
 
 ## What you can do
 
-| Page             | What it's for                                                                              |
-| ---------------- | ------------------------------------------------------------------------------------------ |
-| **Explore**      | Any of 41 properties against any other, coloured by a third. Linear or log on either axis. |
-| **Temperature**  | σ(T) per sample, under Arrhenius, VFT, T, or T/T<sub>g</sub> scaling.                      |
-| **Correlations** | The 36-feature Pearson matrix, or a ranked list of what correlates with conductivity.      |
-| **Data**         | Every sample as a row. Search, sort, choose columns, export to CSV.                        |
-| **Features**     | What each of the 36 features means, including the MORDRED descriptors.                     |
-| **About**        | Contributors, funding, contact.                                                            |
+| Page             | What it's for                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------- |
+| **Explore**      | Any of 41 properties against any other, coloured by a third. Linear or log on either axis.  |
+| **Temperature**  | σ(T) per sample, under Arrhenius, VFT, T, or T/T<sub>g</sub> scaling.                       |
+| **Correlations** | The 36-feature Pearson matrix, or a ranked list of what correlates with conductivity.       |
+| **Data**         | Every sample as a row. Search, sort, choose columns, export to CSV.                         |
+| **Extract**      | Upload a paper's PDF, name the features you want, and get its data back, grouped by sample. |
+| **Features**     | What each of the 36 features means, including the MORDRED descriptors.                      |
+| **About**        | Contributors, funding, contact.                                                             |
 
 Click a point on any plot and it tells you the polymer and links the DOI.
 
@@ -105,6 +106,12 @@ directory:
 npm install
 npm run dev     # then open the URL it prints, usually http://localhost:5173
 ```
+
+The **Extract** page also needs the extraction server running: `python api.py` from `extraction/`
+in the polymerData monorepo. The page expects it at `http://127.0.0.1:8000`. To use
+another address, copy [`.env.example`](.env.example) to `.env.local`, set `VITE_EXTRACT_API_URL`,
+and restart `npm run dev`. The server only answers pages opened from a `localhost` or `127.0.0.1`
+address, which the dev server is.
 
 ---
 
@@ -194,6 +201,7 @@ scripts/
 | `/temperature`  | `src/pages/Temperature.tsx`  | Temperature  |
 | `/correlations` | `src/pages/Correlations.tsx` | Correlations |
 | `/data`         | `src/pages/DataTable.tsx`    | Data         |
+| `/extract`      | `src/pages/Extract.tsx`      | Extract      |
 | `/features`     | `src/pages/Features.tsx`     | Features     |
 | `/about`        | `src/pages/About.tsx`        | About        |
 | `*`             | `src/pages/NotFound.tsx`     | — (404)      |
