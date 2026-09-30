@@ -11,6 +11,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { path: "/temperature", label: "Temperature" },
   { path: "/correlations", label: "Correlations" },
   { path: "/data", label: "Data" },
+  { path: "/extract", label: "Extract" },
   { path: "/features", label: "Features" },
   { path: "/about", label: "About" },
 ];
