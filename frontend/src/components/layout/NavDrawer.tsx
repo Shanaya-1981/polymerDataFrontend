@@ -73,7 +73,7 @@ export function NavDrawer({ open, onClose, triggerRef }: NavDrawerProps) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 md:hidden">
+    <div className="fixed inset-0 z-50 lg:hidden">
       <div className="fixed inset-0 bg-black/40" aria-hidden="true" onClick={onClose} />
       <div
         ref={panelRef}

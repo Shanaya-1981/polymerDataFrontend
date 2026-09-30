@@ -20,7 +20,16 @@ import { chromium } from "playwright";
 const urlArg = process.argv.indexOf("--url");
 const BASE = urlArg !== -1 ? process.argv[urlArg + 1] : "http://localhost:5173";
 
-const ROUTES = ["/", "/explore", "/temperature", "/correlations", "/data", "/features", "/about"];
+const ROUTES = [
+  "/",
+  "/explore",
+  "/temperature",
+  "/correlations",
+  "/data",
+  "/extract",
+  "/features",
+  "/about",
+];
 
 /** Routes that must end up rendering a Plotly figure. */
 const CHART_ROUTES = new Set(["/explore", "/temperature", "/correlations"]);
