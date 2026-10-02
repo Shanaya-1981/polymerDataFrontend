@@ -209,6 +209,11 @@ job, then keeps asking whether it has finished.
    - `{"status": "failed", "error": "..."}`, with the reason.
    - `{"status": "done", "samples": {...}}`, with the data.
 
+   Each answer also has `file`, the PDF's file name as uploaded; `features`,
+   the feature names as the server split them; and `started`, when the job
+   started, in seconds since 1970 (Unix time). A page opened later at a job's
+   address learns them from here, since it no longer has the PDF.
+
 From the frontend:
 
 ```js
@@ -238,6 +243,9 @@ That paper's answer, shortened (it gave 6 samples with 7 temperatures each):
 ```json
 {
   "status": "done",
+  "file": "bdf71b01-linden1988.pdf",
+  "features": ["Temperature (°C)", "Conductivity (S/cm)"],
+  "started": 1790000000.0,
   "samples": {
     "Amorphous PEO (undoped)": [
       {"Temperature (°C)": 20, "Conductivity (S/cm)": 1e-07},
@@ -265,8 +273,12 @@ That paper's answer, shortened (it gave 6 samples with 7 temperatures each):
 - **Jobs run one at a time, in the order they came in.** `running` also covers
   waiting for earlier jobs, so a job can stay `running` longer than the times
   above.
-- **The server keeps jobs in memory only.** After a restart, old job ids get
-  `404`.
+- **Every finished job is saved** to `extraction/output/extractions/<job id>.json`,
+  holding the same answer `GET /extract/<job id>` gives, so its id keeps
+  working after a restart. Failed jobs are saved too, with their reason. The
+  files stay on the computer running the server: `output/` isn't in git.
+- **A job still running when the server stops is lost.** Its id answers `404`
+  after the restart, and so does an id the server never made.
 - **Commas separate the feature names,** so a name can't contain a comma.
   Spaces around each name are dropped.
 - **The server answers `400`,** with the reason in `detail`, when the file isn't
