@@ -11,7 +11,103 @@ pipelines, and the frontend explorer.
 - [`util/`](util/) — helpers shared across the project. `claudeAPIMock.py` is how
   project code makes an LLM call; see below.
 
-Each subdirectory keeps its own README with setup and usage instructions.
+How to run the frontend and the extraction server on your computer is below.
+[`frontend/README.md`](frontend/README.md) has more about the app itself.
+
+## Running it locally
+
+The frontend and the extraction server both run on your own computer, each in
+its own terminal. Every page of the frontend except **Extract** works without
+the server. Extract sends a paper's PDF to the extraction server
+(`extraction/api.py`) and shows the data it sends back.
+
+Run each command block below from the repo root, the folder this README is in.
+
+### Once: install what they need
+
+1. **Node.js**, the LTS (long-term support) version, from https://nodejs.org.
+   The frontend and Claude Code both need it.
+2. **Claude Code, logged in.** The extraction server uses it to have Claude read
+   the paper. Run `npm install -g @anthropic-ai/claude-code`, then run `claude`
+   once and log in. [Making an LLM call](#making-an-llm-call-utilclaudeapimockpy)
+   explains why it goes through Claude Code instead of an API key.
+3. **MinerU**, the tool that turns a PDF into text and figure images before
+   Claude reads it. It runs on your computer and needs about 2 GB of model
+   files. Install it with [uv](https://docs.astral.sh/uv/), a tool that
+   installs Python programs, each with its own packages:
+
+   ```sh
+   uv tool install --python 3.10 "mineru>=4.0,<5"
+   uv tool update-shell     # lets terminals find the mineru command
+   ```
+
+   **Then open a new terminal,** and run the rest there. uv puts `mineru` in
+   `~/.local/bin`, and a terminal only learns that folder's commands when it
+   opens. A terminal opened earlier can't find `mineru`, and neither can an
+   extraction server started from it. Activating the extraction server's
+   virtual environment (step 4) doesn't help, because `mineru` isn't in it. That server works on papers it parsed
+   before, but on a new one the page says "The extraction failed" with the
+   reason `[Errno 2] No such file or directory: 'mineru'`.
+
+   ```sh
+   mineru-kit models download --tier standard           # the model files, about 2 GB
+   mineru config set parse_server.local.mode managed    # parse on this computer, not on MinerU's online service
+   mineru server restart
+   mineru server status --json
+   ```
+
+   MinerU is ready when the last command's `supported_tiers`, under
+   `parse_server` → `local`, lists `"advanced"`. That's the parsing quality
+   the extraction uses. Right after the restart the list can still be empty
+   while MinerU loads its models, so run the command again a little later.
+4. **The extraction server's Python packages,** in a virtual environment: a
+   folder, `extraction/.venv/`, that holds this project's own copy of each
+   package.
+
+   ```sh
+   cd extraction
+   python3 -m venv .venv
+   .venv/bin/pip install -r requirements.txt
+   ```
+5. **The frontend's packages:**
+
+   ```sh
+   cd frontend
+   npm install
+   ```
+
+### Each time: start both
+
+In one terminal, start the extraction server:
+
+```sh
+cd extraction
+.venv/bin/python api.py      # listens on http://127.0.0.1:8000
+```
+
+In a second terminal, start the frontend:
+
+```sh
+cd frontend
+npm run dev                  # prints http://localhost:5173
+```
+
+Then open http://localhost:5173 and choose **Extract** in the menu. Ctrl+C in a
+terminal stops what's running there.
+
+**What you'll notice:**
+- **Open `http://localhost:5173`, not `http://127.0.0.1:5173`.** Nothing
+  answers at the second address, because the frontend's development server
+  only listens on `localhost`.
+- **If the extraction server isn't running,** Extract says "Couldn't reach the
+  extraction server". The other pages don't notice.
+- **Stopping the extraction server loses any extraction in progress.** When it
+  starts again, the page says "The server lost this extraction", and **Try
+  again** starts that extraction over.
+- **MinerU's own server keeps running in the background** after you close both
+  terminals. `mineru server stop` stops it.
+- **How long an extraction takes,** and what the server's answers look like, is
+  under [Extraction API](#extraction-api-extractionapipy) below.
 
 ## Making an LLM call (`util/claudeAPIMock.py`)
 
@@ -89,18 +185,12 @@ from `extraction/`.
 A small web server that lets the frontend use `extract_features.py`. The page
 sends a PDF and the feature names, and gets the data back grouped by sample.
 
-**Start it** from `extraction/`, after `pip install -r requirements.txt`:
-
-```sh
-python api.py
-```
+**Start it** with `.venv/bin/python api.py` from `extraction/`, after the
+one-time setup in [Running it locally](#running-it-locally).
 
 - It listens on http://127.0.0.1:8000, which only this computer can reach. To
   let other computers on the network reach it, run
-  `uvicorn api:app --host 0.0.0.0 --port 8000` instead.
-- It needs what `extract_features.py` needs: Claude Code logged in (see above),
-  and the `mineru` command. MinerU is the tool that turns a PDF into text and
-  figure images.
+  `.venv/bin/uvicorn api:app --host 0.0.0.0 --port 8000` instead.
 - http://127.0.0.1:8000/docs lists the endpoints and has a form for trying each
   one.
 
