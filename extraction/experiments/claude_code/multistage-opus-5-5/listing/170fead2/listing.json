@@ -1,0 +1,104 @@
+{
+  "formulations": [
+    {
+      "Polymer": "PEO",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.002,
+      "Li:monomer": 0.002,
+      "salt wt%": null,
+      "concentration as written": "EO/Li = 500/1 (0.045 mol/kg)",
+      "quote": "which was investigated over the range from 0.045 mol/kg (EO/Li = 500) to 2.7 mol/kg (EO/Li = 2)",
+      "id": "F1"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.0078125,
+      "Li:monomer": 0.0078125,
+      "salt wt%": null,
+      "concentration as written": "EO/Li = 128/1 (0.169 mol/kg)",
+      "quote": "containing LiTFSI in molar ratios EO/Li = 8 and 128",
+      "id": "F2"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.0909091,
+      "Li:monomer": 0.0909091,
+      "salt wt%": null,
+      "concentration as written": "EO/Li = 11/1 (1.296 mol/kg)",
+      "quote": "for the same composition (EO/Li = 11) the difference in \u03c3R between LiTFSI and LiMPSA (a factor of 10)",
+      "id": "F3"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.125,
+      "Li:monomer": 0.125,
+      "salt wt%": null,
+      "concentration as written": "EO/Li = 8/1 (1.550 mol/kg)",
+      "quote": "containing LiTFSI in molar ratios EO/Li = 8 and 128",
+      "id": "F4"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "TFSI",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.5,
+      "Li:monomer": 0.5,
+      "salt wt%": null,
+      "concentration as written": "EO/Li = 2/1 (2.67 mol/kg)",
+      "quote": "which was investigated over the range from 0.045 mol/kg (EO/Li = 500) to 2.7 mol/kg (EO/Li = 2)",
+      "id": "F5"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "MPSA (CF3SO2N(CH2)3OCH3)",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.1,
+      "Li:monomer": 0.1,
+      "salt wt%": null,
+      "concentration as written": "EO/Li = 10/1 (1.498 mol/kg)",
+      "quote": "The former salt could be investigated up to 1.5 mol/kg (EO/Li = 10).",
+      "id": "F6"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "MPSA (potassium salt, KMPSA)",
+      "Comonomer percentage": null,
+      "Li:functional group": 1.0,
+      "Li:monomer": 1.0,
+      "salt wt%": null,
+      "concentration as written": "EO/K = 1/1 (3.30 mol/kg)",
+      "quote": "while that for the EO/K = 1 electrolyte of this salt led to $T_0 = (T_g - 44)^\\circ \\mathrm{C}$",
+      "id": "F7"
+    },
+    {
+      "Polymer": "PEO",
+      "Anion": "TFSI (potassium salt, KTFSI)",
+      "Comonomer percentage": null,
+      "Li:functional group": 0.125,
+      "Li:monomer": 0.125,
+      "salt wt%": null,
+      "concentration as written": "EO/K = 8/1 (1.489 mol/kg)",
+      "quote": "in the case of the EO/K = 8 electrolyte depicted in Figure 8 ($T_g = -36^\\circ \\mathrm{C}$)",
+      "id": "F8"
+    }
+  ],
+  "totals": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 51.7
+  },
+  "quote_check": {
+    "returned": 38,
+    "kept": 8,
+    "quote_not_found": 30,
+    "duplicates": 0
+  },
+  "errors": []
+}

@@ -1,3 +1,4 @@
+import { toCsv } from "@/lib/csv-export";
 import type { ExtractedValue, Samples } from "./api";
 
 /**
@@ -44,6 +45,25 @@ export function tableColumns(samples: Samples): string[] {
     for (const point of points) for (const feature of Object.keys(point)) columns.add(feature);
   }
   return [...columns];
+}
+
+/**
+ * The results as a CSV file: one row per data point, the sample's name in a
+ * first column called `sample`, then one column per feature — the layout
+ * `extract_features.py` writes from the command line. A value the paper
+ * doesn't give is an empty cell, and numbers keep every digit the server sent.
+ */
+export function extractionCsv(samples: Samples): string {
+  const columns = tableColumns(samples);
+  const rows = Object.entries(samples).flatMap(([name, points]) =>
+    points.map((point) => [name, ...columns.map((column) => point[column] ?? null)]),
+  );
+  return toCsv(["sample", ...columns], rows);
+}
+
+/** `"linden1988.pdf"` → `"linden1988-extracted.csv"`. */
+export function extractionCsvName(pdfName: string): string {
+  return `${pdfName.replace(/\.pdf$/i, "") || "paper"}-extracted.csv`;
 }
 
 /** Whether a column holds only numbers (and gaps), so it can align right. */

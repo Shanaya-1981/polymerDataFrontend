@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ExtractApiError, fetchJobStatus, isAbortError, startExtraction } from "./api";
+import {
+  ExtractApiError,
+  fetchJobStatus,
+  isAbortError,
+  parseJobStatus,
+  startExtraction,
+} from "./api";
 
 const API = "http://api.test";
 const pdf = new File(["%PDF-1.4"], "paper.pdf", { type: "application/pdf" });
@@ -185,5 +191,22 @@ describe("fetchJobStatus", () => {
 
     stubFetch(() => Promise.reject(new TypeError("Load failed")));
     expect((await rejection(fetchJobStatus(API, "j"))).kind).toBe("network");
+  });
+});
+
+describe("parseJobStatus — the job's own details", () => {
+  it("reads the file name, features and start time from any status", () => {
+    expect(
+      parseJobStatus({ status: "running", file: "a.pdf", features: ["Tg"], started: 1.5 }),
+    ).toEqual({ status: "running", fileName: "a.pdf", features: ["Tg"], startedAt: 1500 });
+    expect(
+      parseJobStatus({ status: "failed", error: "x", file: "a.pdf", features: [], started: 2 }),
+    ).toEqual({ status: "failed", error: "x", fileName: "a.pdf", features: [], startedAt: 2000 });
+  });
+
+  it("leaves out a detail of the wrong type rather than refusing the answer", () => {
+    expect(
+      parseJobStatus({ status: "done", samples: {}, file: 3, features: ["Tg", 2], started: "now" }),
+    ).toEqual({ status: "done", samples: {} });
   });
 });

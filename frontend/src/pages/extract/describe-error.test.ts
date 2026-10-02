@@ -48,10 +48,11 @@ describe("describeExtractError", () => {
     expect(message).toBe("Give at least one feature name.");
   });
 
-  it("explains a lost job as a restart", () => {
+  it("explains a lost job as one the server doesn't have, or was running when it stopped", () => {
     const { title, message } = describeExtractError(error("job-lost"), "poll", API);
     expect(title).toBe("The server lost this extraction");
-    expect(message).toContain("restarts");
+    expect(message).toContain("no extraction with this id");
+    expect(message).toContain("still running when the server stopped");
   });
 
   it("passes a failed job's reason through as detail", () => {

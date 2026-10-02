@@ -5,8 +5,9 @@
  * quote inside it is doubled. Rows are joined with CRLF, the conventional
  * CSV line ending (and what Excel expects).
  *
- * This module only builds the CSV string — triggering a browser download is
- * a UI concern left to the component that calls it.
+ * `toCsv` builds the CSV string; `downloadCsv` hands one to the browser as
+ * a file. Both are shared by the `/data` and `/extract` pages, which is why
+ * they live here rather than with either page.
  */
 export type CsvCell = string | number | null | undefined;
 
@@ -26,4 +27,21 @@ export function toCsv(headers: readonly string[], rows: ReadonlyArray<readonly C
     lines.push(row.map(escapeCell).join(","));
   }
   return lines.join("\r\n");
+}
+
+/**
+ * Trigger a client-side download of a CSV string. All side effect and not
+ * meaningfully unit-testable, so it's kept to this one small function with
+ * no corresponding test.
+ */
+export function downloadCsv(filename: string, content: string): void {
+  const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }

@@ -11,9 +11,12 @@ import {
   TableRow,
   cn,
 } from "@/components/ui";
+import { downloadCsv } from "@/lib/csv-export";
 import type { Samples } from "./api";
 import {
   countPoints,
+  extractionCsv,
+  extractionCsvName,
   formatExtractedValue,
   isNumericColumn,
   MISSING_VALUE_TEXT,
@@ -48,9 +51,17 @@ export function ExtractResults({ samples, fileName, onNewExtraction }: ExtractRe
           {pointCount === 1 ? "data point" : "data points"} from{" "}
           <span className="break-all font-medium text-primary">{fileName}</span>
         </p>
-        <Button onClick={onNewExtraction} className="self-start sm:self-auto">
-          New extraction
-        </Button>
+        <div className="flex flex-wrap gap-2 self-start sm:self-auto">
+          {pointCount > 0 ? (
+            <Button
+              variant="outline"
+              onClick={() => downloadCsv(extractionCsvName(fileName), extractionCsv(samples))}
+            >
+              Download CSV
+            </Button>
+          ) : null}
+          <Button onClick={onNewExtraction}>New extraction</Button>
+        </div>
       </div>
 
       {entries.length === 0 ? (

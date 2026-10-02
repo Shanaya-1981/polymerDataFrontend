@@ -1,21 +1,38 @@
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EXTRACT_API_URL } from "./extract/config";
-import { describeExtractError, retryActionFor } from "./extract/describe-error";
+import { describeExtractError } from "./extract/describe-error";
 import { ExtractError } from "./extract/ExtractError";
 import { ExtractForm } from "./extract/ExtractForm";
 import { ExtractProgress } from "./extract/ExtractProgress";
 import { ExtractResults } from "./extract/ExtractResults";
 import { parseFeatureNames } from "./extract/format";
-import { useExtraction } from "./extract/useExtraction";
+import { jobOf, retryActionOf, useExtraction } from "./extract/useExtraction";
 
 /**
  * Upload a paper, name features, get the data back from the extraction API
  * (`extraction/api.py`), grouped by sample. Standalone: nothing here touches
- * the dataset or the CSV import, and nothing outlives the page.
+ * the dataset or the CSV import.
+ *
+ * Once a job starts, its id goes in the address (`/extract?job=<id>`), so a
+ * refresh, a bookmark, or the menu's link back here (which remembers the
+ * address) shows that job again. The server keeps finished jobs on disk, so
+ * the address keeps working after it restarts.
  */
 export default function Extract() {
-  const { state, start, retry, reset } = useExtraction(EXTRACT_API_URL);
+  const [searchParams, setSearchParams] = useSearchParams();
+  // Read once: after that the address follows the page, never the reverse.
+  const [openedJob] = useState(() => searchParams.get("job"));
+  const { state, start, retry, reset } = useExtraction(EXTRACT_API_URL, openedJob);
+
+  const job = jobOf(state);
+  const addressJob = searchParams.get("job");
+  useEffect(() => {
+    if (job === addressJob) return;
+    // `replace`, so starting a job doesn't add a step for the back button.
+    setSearchParams(job ? { job } : {}, { replace: true });
+  }, [job, addressJob, setSearchParams]);
 
   // Held here rather than in the form, which unmounts while a job runs, so
   // "Change file or features" after an error brings both back.
@@ -35,6 +52,15 @@ export default function Extract() {
   function handleSubmit() {
     const features = parseFeatureNames(featuresText);
     if (file && features.length > 0) start({ file, features });
+  }
+
+  /** Back to the form after an error. A job reopened from the address brings
+   *  its features from the server; its file the browser can't give back. */
+  function handleEditInputs() {
+    if (state.phase === "failed" && featuresText.trim() === "") {
+      setFeaturesText(state.request.features.join(", "));
+    }
+    reset();
   }
 
   /** Back to the form for the next paper, which usually wants the same
@@ -65,7 +91,7 @@ export default function Extract() {
 
         {state.phase === "submitting" || state.phase === "running" ? (
           <ExtractProgress
-            fileName={state.request.file.name}
+            fileName={state.request.fileName}
             features={state.request.features}
             startedAt={state.startedAt}
             onNewExtraction={handleNewExtraction}
@@ -75,7 +101,7 @@ export default function Extract() {
         {state.phase === "done" ? (
           <ExtractResults
             samples={state.samples}
-            fileName={state.request.file.name}
+            fileName={state.request.fileName}
             onNewExtraction={handleNewExtraction}
           />
         ) : null}
@@ -83,9 +109,9 @@ export default function Extract() {
         {state.phase === "failed" ? (
           <ExtractError
             description={describeExtractError(state.error, state.stage, EXTRACT_API_URL)}
-            canRetry={retryActionFor(state.error, state.stage) !== null}
+            canRetry={retryActionOf(state) !== null}
             onRetry={retry}
-            onEditInputs={reset}
+            onEditInputs={handleEditInputs}
           />
         ) : null}
       </div>

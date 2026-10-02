@@ -19,10 +19,23 @@ export type DataPoint = Readonly<Record<string, ExtractedValue>>;
 /** Each sample's name — as the paper gives it — mapped to its data points. */
 export type Samples = Readonly<Record<string, readonly DataPoint[]>>;
 
-export type JobStatus =
+/** What the server says about the job itself, in every status answer. A
+ *  page opened at a job's address has no other way to know them. */
+export interface JobInfo {
+  /** The PDF's file name, as uploaded. */
+  readonly fileName?: string;
+  /** The feature names, as the server split them. */
+  readonly features?: readonly string[];
+  /** When the job started, in milliseconds like `Date.now()`. */
+  readonly startedAt?: number;
+}
+
+export type JobStatus = (
   | { readonly status: "running" }
   | { readonly status: "failed"; readonly error: string }
-  | { readonly status: "done"; readonly samples: Samples };
+  | { readonly status: "done"; readonly samples: Samples }
+) &
+  JobInfo;
 
 export type ExtractApiErrorKind =
   /** No answer at all: the server is down, the URL is wrong, or the browser
@@ -32,7 +45,8 @@ export type ExtractApiErrorKind =
   | "bad-response"
   /** 400: the server refused the input (not a PDF, or no feature names). */
   | "rejected"
-  /** 404 for a job: the server restarted, which clears its jobs. */
+  /** 404 for a job: it was still running when the server stopped, or the
+   *  page's address names a job the server never had. */
   | "job-lost"
   /** Any other status that isn't a success. */
   | "http"
@@ -177,21 +191,37 @@ function parseSamples(value: unknown): Samples | null {
   return samples;
 }
 
+/** The job's own details from a status answer: each is left out when the
+ *  server didn't send it, or sent something other than the documented type. */
+function parseJobInfo(body: Record<string, unknown>): JobInfo {
+  const info: { fileName?: string; features?: string[]; startedAt?: number } = {};
+  if (typeof body.file === "string" && body.file !== "") info.fileName = body.file;
+  if (Array.isArray(body.features) && body.features.every((name) => typeof name === "string")) {
+    info.features = body.features;
+  }
+  if (typeof body.started === "number" && Number.isFinite(body.started)) {
+    info.startedAt = body.started * 1000; // the server sends Unix seconds
+  }
+  return info;
+}
+
 /** A job-status answer, or `null` if it isn't one. */
 export function parseJobStatus(body: unknown): JobStatus | null {
   if (!isRecord(body)) return null;
+  const info = parseJobInfo(body);
   switch (body.status) {
     case "running":
-      return { status: "running" };
+      return { status: "running", ...info };
     case "failed":
       return {
         status: "failed",
         error:
           typeof body.error === "string" && body.error !== "" ? body.error : "No reason given.",
+        ...info,
       };
     case "done": {
       const samples = parseSamples(body.samples);
-      return samples ? { status: "done", samples } : null;
+      return samples ? { status: "done", samples, ...info } : null;
     }
     default:
       return null;

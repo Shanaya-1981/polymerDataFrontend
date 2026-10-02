@@ -28,7 +28,7 @@ We aren't affiliated with them and they haven't endorsed this. The data is uncha
 | **Temperature**  | σ(T) per sample, under Arrhenius, VFT, T, or T/T<sub>g</sub> scaling.                       |
 | **Correlations** | The 36-feature Pearson matrix, or a ranked list of what correlates with conductivity.       |
 | **Data**         | Every sample as a row. Search, sort, choose columns, export to CSV.                         |
-| **Extract**      | Upload a paper's PDF, name the features you want, and get its data back, grouped by sample. |
+| **Extract**      | Upload a paper's PDF, name the features you want, and get its data per sample, or as a CSV. |
 | **Features**     | What each of the 36 features means, including the MORDRED descriptors.                      |
 | **About**        | Contributors, funding, contact.                                                             |
 
@@ -112,6 +112,11 @@ in the polymerData monorepo. The page expects it at `http://127.0.0.1:8000`. To 
 another address, copy [`.env.example`](.env.example) to `.env.local`, set `VITE_EXTRACT_API_URL`,
 and restart `npm run dev`. The server only answers pages opened from a `localhost` or `127.0.0.1`
 address, which the dev server is.
+
+Once an extraction starts, the Extract page's address becomes `/extract?job=<id>`, and the server
+saves the results when it finishes. So a refresh, or coming back through the menu, shows that
+extraction again, even after the server restarts. The root README's "Running it locally" has the
+details.
 
 ---
 

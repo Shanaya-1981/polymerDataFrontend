@@ -5,7 +5,8 @@ import { formatElapsed } from "./format";
 export interface ExtractProgressProps {
   fileName: string;
   features: readonly string[];
-  /** When the extraction was started, for the elapsed-time readout. */
+  /** When the extraction was started, for the elapsed-time readout. For a
+   *  job reopened from the address, the server's record of when it started. */
   startedAt: number;
   onNewExtraction: () => void;
 }
@@ -42,9 +43,13 @@ export function ExtractProgress({
             <p role="status" className="font-medium text-primary">
               Extracting data… this may take a few minutes
             </p>
-            <p className="break-words text-sm text-secondary">
-              <span className="break-all text-primary">{fileName}</span> · {features.join(", ")}
-            </p>
+            {/* Empty for a job reopened from the address until the server's
+                first answer names it, a moment later. */}
+            {fileName ? (
+              <p className="break-words text-sm text-secondary">
+                <span className="break-all text-primary">{fileName}</span> · {features.join(", ")}
+              </p>
+            ) : null}
             <p className="tabular text-sm text-muted">{formatElapsed(now - startedAt)} elapsed</p>
           </div>
         </div>

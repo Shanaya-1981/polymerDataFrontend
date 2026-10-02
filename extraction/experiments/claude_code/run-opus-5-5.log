@@ -1,0 +1,34 @@
+experiments/claude_code/opus-5-5: 10 to run (bdf71b01, f3d2d4b6, 6ca669ae, 1dba839e, 663ed327, 2c7161a7, 0a3655ba, 5feba0f9, 170fead2, 569ebb10), 3 at a time
+bdf71b01: started (21,250 chars of prompt, 0 images)
+f3d2d4b6: started (32,219 chars of prompt, 0 images)
+6ca669ae: started (33,768 chars of prompt, 0 images)
+bdf71b01: 7 formulations (44 s)
+1dba839e: started (37,303 chars of prompt, 0 images)
+f3d2d4b6: 6 formulations (51 s)
+663ed327: started (38,918 chars of prompt, 0 images)
+6ca669ae: 15 formulations (79 s)
+2c7161a7: started (49,684 chars of prompt, 0 images)
+663ed327: 6 formulations (42 s)
+0a3655ba: started (63,622 chars of prompt, 0 images)
+1dba839e: 14 formulations (60 s)
+5feba0f9: started (76,879 chars of prompt, 0 images)
+2c7161a7: 12 formulations (55 s)
+170fead2: started (77,326 chars of prompt, 0 images)
+5feba0f9: 30 formulations (128 s)
+569ebb10: started (89,154 chars of prompt, 0 images)
+170fead2: 21 formulations (115 s)
+0a3655ba: 18 formulations (175 s)
+569ebb10: 12 formulations (76 s)
+experiments/claude_code/opus-5-5: 10/10 papers extracted
+  formulations: matched 101/127 golden (recall 0.7953), 141 predicted (precision 0.7163); direct 85, rank 16, anion-only 0
+  group               accuracy   loose  recall   cells(matched/all)  extra
+  identity                0.82    0.82    0.66     450/558           91
+  thermal                 0.60    0.60    0.58     134/138           25
+  conductivity            0.27    0.27    0.25     848/913            0
+  transport               0.79    0.79    0.69      28/32             2
+  molecular_weight        0.40    0.40    0.34     164/194            0
+  processing              0.68    0.68    0.59     386/444            8
+  classification          0.86    0.86    0.69     303/381            0
+  fits                    0.02    0.02    0.02     519/548           10
+  curator_computed        0.42    0.42    0.34     330/408           17
+  HEADLINE                0.47    0.47    0.42    1624/1835         118

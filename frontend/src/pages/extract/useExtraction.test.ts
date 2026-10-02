@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { MAX_FAILED_POLLS, POLL_INTERVAL_MS, useExtraction } from "./useExtraction";
+import { MAX_FAILED_POLLS, POLL_INTERVAL_MS, retryActionOf, useExtraction } from "./useExtraction";
 
 const API = "http://api.test";
 const pdf = new File(["%PDF-1.4"], "paper.pdf", { type: "application/pdf" });
@@ -75,7 +75,12 @@ describe("useExtraction", () => {
     await wait(POLL_INTERVAL_MS);
     expect(server.calls()).toHaveLength(3);
     await wait(POLL_INTERVAL_MS);
-    expect(result.current.state).toEqual({ phase: "done", request, samples: SAMPLES });
+    expect(result.current.state).toEqual({
+      phase: "done",
+      request: { ...request, fileName: "paper.pdf" },
+      job: "abc",
+      samples: SAMPLES,
+    });
 
     await wait(POLL_INTERVAL_MS * 5);
     expect(server.calls()).toHaveLength(4);
@@ -277,5 +282,63 @@ describe("useExtraction", () => {
     await wait(0);
     expect(result.current.state).toMatchObject({ phase: "running", job: "abc" });
     expect(server.calls()).toEqual([`POST ${API}/extract`, `POST ${API}/extract`]);
+  });
+});
+
+describe("useExtraction — a job reopened from the page's address", () => {
+  const details = { file: "paper.pdf", features: ["Tg"], started: 1000 };
+
+  it("checks at once, and takes the file name, features and start time from the server", async () => {
+    const server = fakeServer(
+      [],
+      [
+        json({ status: "running", ...details }),
+        json({ status: "done", samples: SAMPLES, ...details }),
+      ],
+    );
+    const { result } = renderHook(() => useExtraction(API, "abc"));
+    expect(result.current.state).toMatchObject({ phase: "running", job: "abc" });
+
+    await wait(0);
+    expect(server.calls()).toEqual([`GET ${API}/extract/abc`]);
+    expect(result.current.state).toMatchObject({
+      phase: "running",
+      request: { fileName: "paper.pdf", features: ["Tg"] },
+      startedAt: 1_000_000,
+    });
+
+    await wait(POLL_INTERVAL_MS);
+    expect(result.current.state).toEqual({
+      phase: "done",
+      request: { fileName: "paper.pdf", features: ["Tg"] },
+      job: "abc",
+      samples: SAMPLES,
+    });
+  });
+
+  it("can't be started over, because the page doesn't have its PDF", async () => {
+    const server = fakeServer([], [json({ detail: "No such job." }, 404)]);
+    const { result } = renderHook(() => useExtraction(API, "gone"));
+    await wait(0);
+    expect(result.current.state).toMatchObject({ phase: "failed", job: "gone" });
+    expect(retryActionOf(result.current.state)).toBeNull();
+
+    act(() => result.current.retry());
+    await wait(POLL_INTERVAL_MS);
+    expect(result.current.state.phase).toBe("failed");
+    expect(server.calls()).toHaveLength(1);
+  });
+
+  it("can still be checked on again after losing contact", async () => {
+    fakeServer([], [offline(), offline(), offline(), json({ status: "done", samples: SAMPLES })]);
+    const { result } = renderHook(() => useExtraction(API, "abc"));
+    await wait(0); // the first check, at once
+    for (let check = 1; check < MAX_FAILED_POLLS; check++) await wait(POLL_INTERVAL_MS);
+    expect(result.current.state).toMatchObject({ phase: "failed", stage: "poll" });
+    expect(retryActionOf(result.current.state)).toBe("resume");
+
+    act(() => result.current.retry());
+    await wait(0);
+    expect(result.current.state).toMatchObject({ phase: "done", job: "abc" });
   });
 });
