@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { DEFAULT_EXTRACT_API_URL, resolveExtractApiUrl } from "./config";
 import {
   countPoints,
+  extractionCsv,
+  extractionCsvName,
   formatElapsed,
   formatExtractedValue,
   formatFileSize,
@@ -105,5 +107,35 @@ describe("resolveExtractApiUrl", () => {
 
   it("uses VITE_EXTRACT_API_URL, minus any trailing slash", () => {
     expect(resolveExtractApiUrl(" http://lab-box:9000/ ")).toBe("http://lab-box:9000");
+  });
+});
+
+describe("extractionCsv", () => {
+  it("writes one row per data point, the sample first, a blank where the paper gives nothing", () => {
+    const csv = extractionCsv({
+      PEO: [
+        { "Temperature (°C)": 20, "Conductivity (S/cm)": 2.82e-7 },
+        { "Temperature (°C)": 25, "Conductivity (S/cm)": null },
+      ],
+      'PEO:LiClO4, "dry"': [{ "Temperature (°C)": 20, "Conductivity (S/cm)": "~1e-5" }],
+    });
+    expect(csv.split("\r\n")).toEqual([
+      "sample,Temperature (°C),Conductivity (S/cm)",
+      "PEO,20,2.82e-7",
+      "PEO,25,",
+      '"PEO:LiClO4, ""dry""",20,~1e-5',
+    ]);
+  });
+
+  it("is just the header when there are no samples", () => {
+    expect(extractionCsv({})).toBe("sample");
+  });
+});
+
+describe("extractionCsvName", () => {
+  it("names the file after the PDF", () => {
+    expect(extractionCsvName("bdf71b01-linden1988.pdf")).toBe("bdf71b01-linden1988-extracted.csv");
+    expect(extractionCsvName("Paper.PDF")).toBe("Paper-extracted.csv");
+    expect(extractionCsvName(".pdf")).toBe("paper-extracted.csv");
   });
 });

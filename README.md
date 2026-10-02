@@ -101,9 +101,21 @@ terminal stops what's running there.
   only listens on `localhost`.
 - **If the extraction server isn't running,** Extract says "Couldn't reach the
   extraction server". The other pages don't notice.
-- **Stopping the extraction server loses any extraction in progress.** When it
-  starts again, the page says "The server lost this extraction", and **Try
-  again** starts that extraction over.
+- **Results stay after a refresh.** Once an extraction starts, the page's
+  address becomes `/extract?job=<id>`. Refreshing it, opening it again later,
+  or coming back through the menu shows that extraction, running or finished.
+  **New extraction** takes the address back to plain `/extract`. The address
+  only works on a computer that can reach the same extraction server.
+- **Download CSV** on the results saves them as `<PDF name>-extracted.csv`: a
+  `sample` column, then one column per feature, one row per data point, and an
+  empty cell where the paper doesn't give a value.
+- **Stopping the extraction server loses any extraction still running;**
+  finished ones are saved. When it starts again, the page says "The server
+  lost this extraction". **Try again** starts it over, unless the page was
+  reloaded since you chose the PDF. A reloaded page no longer has the file, so
+  wherever starting over is the fix (this, or an extraction that failed),
+  **Try again** isn't offered: choose the PDF again under **Change file or
+  features**.
 - **MinerU's own server keeps running in the background** after you close both
   terminals. `mineru server stop` stops it.
 - **How long an extraction takes,** and what the server's answers look like, is

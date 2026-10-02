@@ -2,9 +2,9 @@
  * CSV export for the `/data` page's "current view" download — the filtered
  * (and searched) rows, restricted to the currently visible columns, in the
  * current sort order. Serialization itself is `@/lib/csv-export`'s `toCsv`;
- * this module only decides *which* headers/cells go in, plus the one
- * DOM-touching step (triggering the browser download) that module's own
- * doc comment leaves to its caller.
+ * this module only decides *which* headers/cells go in. Triggering the
+ * browser download is that module's `downloadCsv`, re-exported below; it
+ * lives there so the Extract page can use it without loading the dataset.
  *
  * The complete 305-column dataset is a separate, deliberately unrelated
  * path: it's the static asset at `public/data/polymer-electrolyte-dataset.
@@ -30,20 +30,4 @@ export function buildFilteredCsv(
   return toCsv(headers, cells);
 }
 
-/**
- * Trigger a client-side download of a CSV string. All side effect and not
- * meaningfully unit-testable (see `@/lib/csv-export`'s own doc comment on
- * this exact split), so it's kept to this one small function with no
- * corresponding test in `csv.test.ts`.
- */
-export function downloadCsv(filename: string, content: string): void {
-  const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
+export { downloadCsv } from "@/lib/csv-export";

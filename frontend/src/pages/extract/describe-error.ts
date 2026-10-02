@@ -61,7 +61,7 @@ export function describeExtractError(
       return {
         title: "The server lost this extraction",
         message:
-          "It forgets its jobs when it restarts, so this one has to start again from the beginning.",
+          "It has no extraction with this id. One still running when the server stopped is lost, and has to start again from the beginning.",
       };
     case "http":
       return {
