@@ -1,0 +1,67 @@
+experiments/claude_code/multistage-opus-5-5: 10 papers (bdf71b01, f3d2d4b6, 6ca669ae, 1dba839e, 663ed327, 2c7161a7, 0a3655ba, 5feba0f9, 170fead2, 569ebb10), 3 at a time
+6ca669ae: listing call started
+f3d2d4b6: listing call started
+bdf71b01: listing call started
+bdf71b01: listing gave 6 formulations (16.2 s)
+6ca669ae: listing gave 15 formulations (29.6 s)
+f3d2d4b6: listing gave 14 formulations (56.2 s)
+bdf71b01: per_group ok, 6 calls, 96.4 s
+6ca669ae: per_group ok, 6 calls, 134.3 s
+bdf71b01: per_formulation ok, 7 calls, 133.4 s
+1dba839e: listing call started
+1dba839e: listing gave 14 formulations (18.6 s)
+f3d2d4b6: per_formulation ok, 15 calls, 317.4 s
+6ca669ae: per_formulation ok, 16 calls, 285.3 s
+663ed327: listing call started
+f3d2d4b6: per_group ok, 6 calls, 135.4 s
+2c7161a7: listing call started
+663ed327: listing gave 6 formulations (15.7 s)
+2c7161a7: listing gave 12 formulations (15.2 s)
+663ed327: per_group ok, 6 calls, 68.5 s
+1dba839e: per_formulation ok, 15 calls, 245.8 s
+1dba839e: per_group ok, 6 calls, 92.4 s
+0a3655ba: listing call started
+663ed327: per_formulation ok, 7 calls, 123.1 s
+5feba0f9: listing call started
+0a3655ba: listing gave 20 formulations (48.4 s)
+2c7161a7: per_formulation ok, 13 calls, 191.9 s
+5feba0f9: listing gave 20 formulations (41.9 s)
+2c7161a7: per_group ok, 6 calls, 72.4 s
+170fead2: listing call started
+170fead2: listing gave 8 formulations (51.7 s)
+0a3655ba: per_group ok, 6 calls, 225.1 s
+170fead2: per_group ok, 6 calls, 157.7 s
+170fead2: per_formulation ok, 9 calls, 226.3 s
+569ebb10: listing call started
+569ebb10: listing gave 18 formulations (43.2 s)
+5feba0f9: per_formulation ok, 21 calls, 480.4 s
+5feba0f9: per_group ok, 6 calls, 150.4 s
+0a3655ba: per_formulation ok, 21 calls, 518.5 s
+569ebb10: per_formulation ok, 19 calls, 361.8 s
+569ebb10: per_group ok, 6 calls, 167.0 s
+experiments/claude_code/multistage-opus-5-5/per_group: 10/10 papers extracted
+  formulations: matched 90/127 golden (recall 0.7087), 133 predicted (precision 0.6767); direct 75, rank 15, anion-only 0
+  group               accuracy   loose  recall   cells(matched/all)  extra
+  identity                0.73    0.73    0.53     406/558           66
+  thermal                 0.51    0.51    0.45     121/138           16
+  conductivity            0.22    0.25    0.15     625/913            9
+  transport               0.68    0.68    0.59      28/32             2
+  molecular_weight        0.57    0.57    0.38     127/194            0
+  processing              0.78    0.78    0.57     324/444           26
+  classification          0.79    0.79    0.56     270/381            0
+  fits                    0.04    0.04    0.03     382/548           15
+  curator_computed        0.00    0.00    0.00     283/408            0
+  HEADLINE                0.45    0.47    0.32    1307/1835          93
+experiments/claude_code/multistage-opus-5-5/per_formulation: 10/10 papers extracted
+  formulations: matched 90/127 golden (recall 0.7087), 133 predicted (precision 0.6767); direct 75, rank 15, anion-only 0
+  group               accuracy   loose  recall   cells(matched/all)  extra
+  identity                0.73    0.73    0.53     406/558           66
+  thermal                 0.53    0.53    0.46     121/138           22
+  conductivity            0.21    0.23    0.14     625/913           10
+  transport               0.68    0.68    0.59      28/32             2
+  molecular_weight        0.54    0.54    0.36     127/194            0
+  processing              0.75    0.75    0.55     324/444           22
+  classification          0.81    0.81    0.57     270/381            0
+  fits                    0.04    0.04    0.03     382/548           16
+  curator_computed        0.00    0.00    0.00     283/408            0
+  HEADLINE                0.45    0.46    0.32    1307/1835         100
