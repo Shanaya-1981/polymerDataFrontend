@@ -22,11 +22,12 @@ export function Header() {
           <span className="xl:hidden">PE Data Mining</span>
         </Link>
 
-        {/* Eight tabs need about 1,060px beside the full title, so the bar
+        {/* Nine tabs need about 1,150px beside the full title, so the bar
             waits for lg and keeps the short title until xl; below lg the
-            drawer takes over. Measured, not guessed — re-check the widths
-            if a tab is added. */}
-        <Nav orientation="horizontal" className="ml-4 hidden lg:block" />
+            drawer takes over. At lg (1,024px) they fit only with the
+            narrower gap before them. Measured, not guessed — re-check the
+            widths if a tab is added. */}
+        <Nav orientation="horizontal" className="ml-1 hidden lg:block xl:ml-4" />
 
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
