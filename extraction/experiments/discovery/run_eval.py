@@ -58,6 +58,7 @@ def score(found: list[dict], wanted: set[str]) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--budget", type=float, default=300)
+    ap.add_argument("--only", choices=["keywords", "seeds"], help="run one scenario")
     args = ap.parse_args()
 
     key = answer_key()
@@ -66,6 +67,8 @@ def main() -> None:
     (HERE / "runs").mkdir(exist_ok=True)
     results = {"keywords": KEYWORDS, "features": FEATURES, "budget": args.budget, "seed_dois": [key[s] for s in seeds]}
     for name, given in scenarios.items():
+        if args.only and name != args.only:
+            continue
         start = time.monotonic()
         found = discover(KEYWORDS, given, FEATURES, args.budget)
         seconds = round(time.monotonic() - start)
@@ -73,7 +76,8 @@ def main() -> None:
         wanted = set(key) - (set(seeds) if given else set())
         results[name] = score(found, wanted) | {"seconds": seconds}
         print(name, results[name], flush=True)
-    (HERE / "results.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
+    out = HERE / ("results.json" if not args.only else f"results-{args.only}.json")
+    out.write_text(json.dumps(results, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

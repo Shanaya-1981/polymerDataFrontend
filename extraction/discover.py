@@ -27,7 +27,10 @@ title alone and get no description. Semantic Scholar and Crossref were tried
 as other sources of abstracts and had none OpenAlex lacked.
 
 The model is reached through util/claudeAPIMock.py's ask_llm(), so a search
-counts against your Claude Code plan: about one call per 80 candidates.
+counts against your Claude Code plan: one call per 80 candidates judged,
+about 70 in 5 minutes, and a few more for the queries and descriptions. A
+cap of 40 judging calls was tried: the same top 100, but 57% of the golden
+papers listed instead of 75%, so there is none.
 """
 
 from __future__ import annotations
@@ -68,6 +71,7 @@ TYPES = {"article", "letter", "preprint", "review", "book-chapter"}
 MODEL = "sonnet"  # haiku took longer per call here and judged nearly every title likely
 JUDGE_BATCH = 80  # candidates per judging call, about 20 s each
 JUDGE_WORKERS = 8  # calls at once; 8 took no longer than 1
+DESCRIBED = 100  # papers at the top of the list that get a description, if they have an abstract
 LIKELY = 2  # lowest score (0-3) counted as likely: followed, and returned
 SEARCH_RESULTS = 200  # per query
 CITING_LIMIT = 400  # papers citing one likely paper that are fetched; reviews have thousands
@@ -358,8 +362,8 @@ class Search:
                 p.score = None
 
     def describe(self, found: list[Paper], llm: ThreadPoolExecutor) -> None:
-        """A sentence for each paper with an abstract, as many as the time left allows."""
-        todo = [p for p in found if p.abstract]
+        """A sentence for each of the top DESCRIBED papers with an abstract, as the time left allows."""
+        todo = [p for p in found[:DESCRIBED] if p.abstract]
         schema = {
             "type": "object",
             "properties": {
