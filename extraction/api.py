@@ -104,6 +104,7 @@ def status(job: str) -> dict:
 
 searches: dict[str, dict] = {}
 searcher = ThreadPoolExecutor(max_workers=1)
+MAX_SEEDS = 20  # each title costs an OpenAlex search (10 credits) of the search's 1,000
 
 
 class DiscoverRequest(BaseModel):
@@ -131,6 +132,8 @@ def start_search(request: DiscoverRequest) -> dict:
     request.features = [f.strip() for f in request.features if f.strip()]
     if not request.keywords:
         raise HTTPException(400, "Give some keywords.")
+    if len(request.seeds) > MAX_SEEDS:
+        raise HTTPException(400, f"Give at most {MAX_SEEDS} papers you already have.")
     job = uuid.uuid4().hex
     searches[job] = {"status": "running", "progress": None}
     searcher.submit(run_search, job, request)

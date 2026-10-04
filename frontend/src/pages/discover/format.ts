@@ -16,19 +16,30 @@ export function formatAuthors(authors: readonly string[]): string {
   return `${authors.slice(0, 3).join(", ")} et al.`;
 }
 
+/**
+ * Text from OpenAlex or the model, made safe to open in a spreadsheet: a
+ * cell starting with `=`, `+`, `-`, `@`, a tab or a carriage return would
+ * run as a formula in Excel or Calc (CSV injection), so it gets a leading
+ * `'`. Kept here rather than in `toCsv`, which also writes extracted values,
+ * where a leading `-` is a negative number.
+ */
+export function spreadsheetSafe(text: string | null): string | null {
+  return text !== null && /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
+}
+
 export function papersCsv(papers: readonly DiscoveredPaper[]): string {
   return toCsv(
     ["title", "authors", "year", "journal", "doi", "pdf", "score", "reason", "description"],
     papers.map((p) => [
-      p.title,
-      p.authors.join("; "),
+      spreadsheetSafe(p.title),
+      spreadsheetSafe(p.authors.join("; ")),
       p.year,
-      p.journal,
-      p.doi,
-      p.pdf,
+      spreadsheetSafe(p.journal),
+      spreadsheetSafe(p.doi),
+      spreadsheetSafe(p.pdf),
       p.score,
-      p.reason,
-      p.description,
+      spreadsheetSafe(p.reason),
+      spreadsheetSafe(p.description),
     ]),
   );
 }

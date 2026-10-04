@@ -156,6 +156,10 @@ class OpenAlexBudgetError(RuntimeError):
     """OpenAlex's daily budget for this key, or for this IP address without one, is used up."""
 
 
+class CreditLimitReached(Exception):
+    """This request would take the search past CREDIT_LIMIT, so it isn't sent."""
+
+
 class SearchStopped(Exception):
     """The search is over; a request still running when it ended gives up instead of going on."""
 
@@ -214,6 +218,9 @@ class Search:
                         value = future.result()
                     except OpenAlexBudgetError as e:
                         self.out_of_credits = str(e)
+                        continue
+                    except CreditLimitReached:
+                        print(f"discover: {kind} skipped: the search's {CREDIT_LIMIT} credits are spent", file=sys.stderr)
                         continue
                     except Exception as e:  # one failed call or page costs its candidates, not the search
                         print(f"discover: {kind} failed: {e}", file=sys.stderr)
@@ -407,8 +414,11 @@ class Search:
         return max(self.deadline - time.monotonic(), 5)
 
     def get(self, path: str, charge: int = 0, **params) -> dict:
-        """GET from OpenAlex. charge: credits to count now; neighbours() pays in advance instead."""
+        """GET from OpenAlex. charge: credits this request costs, reserved first and refused past
+        CREDIT_LIMIT; neighbours() reserves its pages in follow_next() instead."""
         with self.credit_lock:
+            if self.credits + charge > CREDIT_LIMIT:
+                raise CreditLimitReached
             self.credits += charge
         for attempt in range(4):
             if self.stopped.is_set():

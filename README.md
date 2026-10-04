@@ -324,7 +324,7 @@ The extraction API serves it too, for the Discover page:
 
 1. `POST /discover` with JSON `{"keywords": "...", "seeds": ["10.1021/...", "a title"], "features": ["Tg"]}`.
    `seeds` and `features` may be left out. It answers `202` and `{"job": "..."}`,
-   or `400` when the keywords are blank.
+   or `400` when the keywords are blank or there are more than 20 seeds.
 2. `GET /discover/<job id>` answers `{"status": "running", "progress": {"candidates", "judged", "likely", "seconds", "credits"}}`
    (`progress` is `null` at first), then `{"status": "done", "papers": [...]}` or
    `{"status": "failed", "error": "..."}`. Each paper has `title`, `authors`,

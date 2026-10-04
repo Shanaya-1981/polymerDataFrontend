@@ -72,8 +72,8 @@ export function DiscoverForm({
             className={`py-2 ${INPUT_CLASS}`}
           />
           <p id={seedsHelpId} className="text-xs text-muted">
-            One per line, as a DOI or a title. The search follows what they cite and what cites
-            them; they aren&apos;t listed in the results.
+            One per line, as a DOI or a title, up to 20. The search follows what they cite and what
+            cites them; they aren&apos;t listed in the results.
           </p>
         </div>
 

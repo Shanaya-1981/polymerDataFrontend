@@ -1,7 +1,7 @@
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { Badge, Button, Notice } from "@/components/ui";
-import { downloadCsv } from "../data/csv";
+import { downloadCsv } from "@/lib/csv-export";
 import type { DiscoveredPaper } from "./api";
 import { formatAuthors, papersCsv } from "./format";
 

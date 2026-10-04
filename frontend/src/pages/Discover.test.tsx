@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Discover from "./Discover";
 import Extract from "./Extract";
 import { parseDiscoverStatus } from "./discover/api";
-import { formatAuthors, papersCsv, parseSeeds } from "./discover/format";
+import { formatAuthors, papersCsv, parseSeeds, spreadsheetSafe } from "./discover/format";
 import { PAGE_SIZE } from "./discover/DiscoverResults";
 import { POLL_INTERVAL_MS } from "./discover/useDiscovery";
 import { DEFAULT_EXTRACT_API_URL } from "./extract/config";
@@ -190,6 +190,20 @@ describe("discover helpers", () => {
       "title,authors,year,journal,doi,pdf,score,reason,description",
     );
     expect(csv).toContain("Paper 1,A. Author; B. Author,2001");
+  });
+
+  it("keeps text from running as a spreadsheet formula", () => {
+    expect(spreadsheetSafe("=HYPERLINK(1)")).toBe("'=HYPERLINK(1)");
+    expect(spreadsheetSafe("-1 + 1")).toBe("'-1 + 1");
+    expect(spreadsheetSafe("@SUM(A1)")).toBe("'@SUM(A1)");
+    expect(spreadsheetSafe("Ionic conductivity of PEO")).toBe("Ionic conductivity of PEO");
+    expect(spreadsheetSafe(null)).toBeNull();
+    const csv = papersCsv(
+      [parseDiscoverStatus({ status: "done", papers: [paper(1, { title: "=cmd()" })] })!].flatMap(
+        (s) => (s.status === "done" ? s.papers : []),
+      ),
+    );
+    expect(csv.split("\r\n")[1]).toMatch(/^'=cmd\(\),/);
   });
 
   it("refuses answers that aren't a search status", () => {
