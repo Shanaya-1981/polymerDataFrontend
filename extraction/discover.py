@@ -156,6 +156,10 @@ class OpenAlexBudgetError(RuntimeError):
     """OpenAlex's daily budget for this key, or for this IP address without one, is used up."""
 
 
+class SearchStopped(Exception):
+    """The search is over; a request still running when it ended gives up instead of going on."""
+
+
 class Search:
     def __init__(self, keywords, seeds, features, budget, progress):
         self.keywords, self.seeds, self.features = keywords, seeds, features
@@ -169,6 +173,7 @@ class Search:
         self.credit_lock = threading.Lock()
         self.out_of_credits: str | None = None  # why OpenAlex stopped answering, once it has
         self.to_follow: list[tuple] = []  # (priority, tiebreak, id) of likely papers not followed yet
+        self.stopped = threading.Event()
         self.papers: dict[str, Paper] = {}
         self.queue: list[tuple] = []  # (priority, tiebreak, id) of candidates not judged yet
         self.order = itertools.count()
@@ -232,7 +237,8 @@ class Search:
                             self.add(paper, link=True)
                 self.report()
 
-            if self.out_of_credits and not self.papers:
+            if self.out_of_credits and not any(pid not in self.seed_ids for pid in self.papers):
+                # Only your papers came back (they aren't results): say why, not "nothing found".
                 raise OpenAlexBudgetError(self.out_of_credits)
             if self.out_of_credits:
                 print(f"discover: stopped following papers early: {self.out_of_credits}", file=sys.stderr)
@@ -243,8 +249,11 @@ class Search:
             self.describe(found, llm)
             return [p.result() for p in found]
         finally:
-            llm.shutdown(wait=False, cancel_futures=True)
-            web.shutdown(wait=False, cancel_futures=True)
+            # Wait for calls still running, so the next search never overlaps this one: model calls
+            # time out at the deadline, and OpenAlex requests give up at their next page.
+            self.stopped.set()
+            llm.shutdown(wait=True, cancel_futures=True)
+            web.shutdown(wait=True, cancel_futures=True)
 
     def follow(self, paper: Paper) -> None:
         """Queue a likely paper to have its references and citing papers fetched."""
@@ -317,7 +326,7 @@ class Search:
             "required": ["queries"],
             "additionalProperties": False,
         }
-        reply = ask_llm(self.wanted(), system=QUERY_SYSTEM, model=MODEL, json_schema=schema)
+        reply = ask_llm(self.wanted(), system=QUERY_SYSTEM, model=MODEL, json_schema=schema, timeout=self.time_left())
         return json.loads(reply)["queries"][:4]
 
     def judge(self, batch: list[Paper]) -> None:
@@ -349,7 +358,7 @@ class Search:
         }
         try:
             reply = ask_llm(f"{self.wanted()}\n\nPapers:\n" + "\n".join(lines), system=JUDGE_SYSTEM,
-                            model=MODEL, json_schema=schema)
+                            model=MODEL, json_schema=schema, timeout=self.time_left())
         except Exception:
             for p in batch:
                 p.score = None  # not judged after all
@@ -383,7 +392,8 @@ class Search:
 
         def one(batch: list[Paper]) -> None:
             text = "\n\n".join(f"{i}. {p.abstract[:1500]}" for i, p in enumerate(batch))
-            for item in json.loads(ask_llm(text, system=DESCRIBE_SYSTEM, model=MODEL, json_schema=schema))["papers"]:
+            reply = ask_llm(text, system=DESCRIBE_SYSTEM, model=MODEL, json_schema=schema, timeout=self.time_left())
+            for item in json.loads(reply)["papers"]:
                 if 0 <= item["n"] < len(batch):
                     batch[item["n"]].description = item["description"]
 
@@ -392,11 +402,17 @@ class Search:
 
     # ---- OpenAlex ---------------------------------------------------------------
 
+    def time_left(self) -> float:
+        """Seconds until the deadline, as a model call's timeout (a few at least, so it can start)."""
+        return max(self.deadline - time.monotonic(), 5)
+
     def get(self, path: str, charge: int = 0, **params) -> dict:
         """GET from OpenAlex. charge: credits to count now; neighbours() pays in advance instead."""
         with self.credit_lock:
             self.credits += charge
         for attempt in range(4):
+            if self.stopped.is_set():
+                raise SearchStopped
             r = self.http.get(f"{OPENALEX}{path}", params=params, timeout=30)
             if r.status_code == 429 and float(r.headers.get("Retry-After", 0)) > 60:
                 # Not a burst of requests to wait out: the day's budget is gone until midnight UTC.
@@ -436,13 +452,16 @@ class Search:
         for i in range(0, len(refs), 100):
             ids = "|".join(refs[i : i + 100])
             found += map(to_paper, self.get("/works", filter=f"openalex:{ids}", select=FIELDS, **{"per-page": 100})["results"])
-        cursor, citing = "*", 0
-        while cursor and citing < CITING_LIMIT:
+        # Exactly the pages neighbour_cost() paid for: none for an uncited paper, and no more when
+        # OpenAlex's count was low.
+        cursor = "*"
+        for _ in range(citing_pages(paper)):
             data = self.get("/works", filter=f"cites:{paper.id.rsplit('/', 1)[-1]}", select=FIELDS,
                             cursor=cursor, **{"per-page": 200})
             found += map(to_paper, data["results"])
-            citing += len(data["results"])
-            cursor = data["meta"].get("next_cursor") if data["results"] else None
+            cursor = data["meta"].get("next_cursor")
+            if not data["results"] or not cursor:
+                break
         return found
 
 
@@ -464,9 +483,14 @@ def to_paper(w: dict) -> Paper:
     )
 
 
+def citing_pages(paper: Paper) -> int:
+    """Pages of 200 citing papers neighbours() fetches, up to CITING_LIMIT papers."""
+    return math.ceil(min(paper.cited_by, CITING_LIMIT) / 200)
+
+
 def neighbour_cost(paper: Paper) -> int:
     """OpenAlex credits neighbours() spends on a paper: a page per 100 references, per 200 citing papers."""
-    return math.ceil(len(paper.references) / 100) + math.ceil(min(paper.cited_by, CITING_LIMIT) / 200)
+    return math.ceil(len(paper.references) / 100) + citing_pages(paper)
 
 
 def abstract(index: dict | None) -> str | None:
