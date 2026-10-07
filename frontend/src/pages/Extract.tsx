@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EXTRACT_API_URL } from "./extract/config";
 import { describeExtractError } from "./extract/describe-error";
@@ -37,7 +37,12 @@ export default function Extract() {
   // Held here rather than in the form, which unmounts while a job runs, so
   // "Change file or features" after an error brings both back.
   const [file, setFile] = useState<File | null>(null);
-  const [featuresText, setFeaturesText] = useState("");
+  // Discover links here with the features it searched for already filled in.
+  const location = useLocation();
+  const [featuresText, setFeaturesText] = useState(() => {
+    const handed = (location.state as { features?: unknown } | null)?.features;
+    return typeof handed === "string" ? handed : "";
+  });
 
   // When the phase changes, the button that caused it is usually gone, so
   // move focus to the new content instead of dropping it on the body.

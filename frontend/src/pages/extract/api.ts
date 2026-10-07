@@ -7,7 +7,9 @@
  * words for the page.
  *
  * The server's answers are checked rather than trusted: this is the one
- * place data enters the app from outside the build.
+ * place data enters the app from outside the build. The Discover page talks
+ * to the same server, so its client (`discover/api.ts`) reuses the request
+ * and error handling here.
  */
 
 /** One value of one feature; `null` where the paper doesn't give it. */
@@ -90,19 +92,19 @@ export function isAbortError(error: unknown): boolean {
   );
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 const NOT_JSON = Symbol("not JSON");
 
-interface ApiResponse {
+export interface ApiResponse {
   readonly status: number;
   readonly ok: boolean;
   readonly body: unknown;
 }
 
-async function request(url: string, init: RequestInit): Promise<ApiResponse> {
+export async function request(url: string, init: RequestInit): Promise<ApiResponse> {
   let response: Response;
   let text: string;
   try {
@@ -122,11 +124,11 @@ async function request(url: string, init: RequestInit): Promise<ApiResponse> {
 }
 
 /** FastAPI puts the reason for an error in `detail`. */
-function detailOf(body: unknown): string | undefined {
+export function detailOf(body: unknown): string | undefined {
   return isRecord(body) && typeof body.detail === "string" ? body.detail : undefined;
 }
 
-function unreadable(response: ApiResponse, expected: string): ExtractApiError {
+export function unreadable(response: ApiResponse, expected: string): ExtractApiError {
   const what = response.body === NOT_JSON ? "an answer that isn't JSON" : "an unexpected answer";
   return new ExtractApiError(
     "bad-response",
@@ -135,7 +137,7 @@ function unreadable(response: ApiResponse, expected: string): ExtractApiError {
   );
 }
 
-function failedStatus(response: ApiResponse): ExtractApiError {
+export function failedStatus(response: ApiResponse): ExtractApiError {
   const detail = detailOf(response.body);
   if (response.status === 400) {
     return new ExtractApiError("rejected", detail ?? "The server refused the request.", 400);

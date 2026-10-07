@@ -132,6 +132,7 @@ function ProgressBar({ progress }: { progress?: JobProgress }) {
 }
 
 function Spinner({ className, ...props }: SVGProps<SVGSVGElement>) {
+export function Spinner({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"
