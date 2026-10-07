@@ -1,0 +1,2 @@
+# What benchmarks/benchmark.py needs on top of ../requirements.txt
+matplotlib
