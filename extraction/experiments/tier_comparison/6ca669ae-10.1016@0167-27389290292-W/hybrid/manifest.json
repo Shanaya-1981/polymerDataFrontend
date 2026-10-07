@@ -1,0 +1,80 @@
+{
+  "paper_id": "6ca669ae",
+  "source_pdf": "experiments/tier_comparison/6ca669ae-10.1016@0167-27389290292-W/6ca669ae-10.1016@0167-27389290292-W.pdf",
+  "mineru_doc_id": "7fe66fa",
+  "tier": "hybrid",
+  "text_tier": "advanced",
+  "figure_tier": "standard",
+  "page_range": "1-6",
+  "figures": [
+    {
+      "locator": "doc:7fe66fa/tier:standard/page:1/block:2",
+      "page": 1,
+      "block": 2,
+      "image_path": "figures/standard/page1-block2.png",
+      "caption": "Fig. 1. Changes of ionic conductivity versus reciprocal temperature for EO–PO copolymer electrolytes (EO:PO=84:16 molar ratio) doped with various alkali metal salts: (○)-NaI, (△)-LiI, (□)-LiClO₄, (x)-LiBF₄. Concentration of salt is equal to 10 mol% in respect to EO molecular unit concentration.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:7fe66fa/tier:standard/page:2/block:5",
+      "page": 2,
+      "block": 5,
+      "image_path": "figures/standard/page2-block5.png",
+      "caption": "Fig. 1. Changes of ionic conductivity versus reciprocal temperature for EO–PO copolymer electrolytes (EO:PO=84:16 molar ratio) doped with various alkali metal salts: (○)-NaI, (△)-LiI, (□)-LiClO₄, (x)-LiBF₄. Concentration of salt is equal to 10 mol% in respect to EO molecular unit concentration.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:7fe66fa/tier:standard/page:2/block:9",
+      "page": 2,
+      "block": 9,
+      "image_path": "figures/standard/page2-block9.png",
+      "caption": "Fig. 2. DSC curves for EO\\~PO copolymer electrolytes (EO:PO=84:16 molar ratio) doped with various alkali metal salts.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:7fe66fa/tier:standard/page:3/block:3",
+      "page": 3,
+      "block": 3,
+      "image_path": "figures/standard/page3-block3.png",
+      "caption": "Fig. 3. Changes of ionic conductivity versus $\\mathrm{LiBF_4}$ concentration for EO-PO-$\\mathrm{LiBF_4}$ electrolyte (EO:PO=84:16 molar ratio).",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:7fe66fa/tier:standard/page:4/block:3",
+      "page": 4,
+      "block": 3,
+      "image_path": "figures/standard/page4-block3.png",
+      "caption": "Fig. 4. Changes of conductivity versus reciprocal temperature for $\\mathrm{SO}_2$ copolymers with various organic co-monomers doped with $\\mathrm{LiClO_4}$ (10 mol% in respect to copolymer molecular unit concentration): (+)-AA-$\\mathrm{SO}_2$ copolymer; (X)-VA-$\\mathrm{SO}_2$ copolymer, (O)-AAM-$\\mathrm{SO}_2$ copolymer.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:7fe66fa/tier:standard/page:4/block:5",
+      "page": 4,
+      "block": 5,
+      "image_path": "figures/standard/page4-block5.png",
+      "caption": "Fig. 5. Changes of ionic conductivity versus reciprocal temperature for $\\mathrm{EO - SO_2}$ copolymer based electrolytes doped with $\\mathrm{LiClO_4(x)}$ or $\\mathrm{LiBF_4(+)}$ (salt concentration is equal to $10\\mathrm{mol}\\%$ in respect to copolymer monomeric units).",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:7fe66fa/tier:standard/page:5/block:3",
+      "page": 5,
+      "block": 3,
+      "image_path": "figures/standard/page5-block3.png",
+      "caption": "Fig. 6. DSC curve measured for EO- $SO_{2}$ -LiClO $_{4}$ copolymer electrolyte.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:7fe66fa/tier:standard/page:5/block:5",
+      "page": 5,
+      "block": 5,
+      "image_path": "figures/standard/page5-block5.png",
+      "caption": "Fig. 7. Impedance spectra measured at 293 K for EO-PO-LiClO₄ (10 mol% of the added salt) electrolyte (EO:PO=84:16 molar ratio). Impedance experiments performed for a cell with lithium electrodes.",
+      "source_tier": "standard"
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:26:37.889467Z",
+  "duration_seconds": 1.2678541250061244,
+  "wait_retries": 0,
+  "num_tables": 8
+}

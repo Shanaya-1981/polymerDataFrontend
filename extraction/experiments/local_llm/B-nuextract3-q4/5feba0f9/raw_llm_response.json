@@ -1,0 +1,33 @@
+{
+  "model_name": "models/nuextract3/NuExtract3-Q4_K_M.gguf",
+  "stop_reason": "stop",
+  "include_figures": false,
+  "images_attached": 0,
+  "usage": {
+    "completion_tokens": 953,
+    "prompt_tokens": 25708,
+    "total_tokens": 26661,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": {
+      "audio_tokens": null,
+      "cache_write_tokens": null,
+      "cached_tokens": 0,
+      "image_tokens": null,
+      "text_tokens": null
+    },
+    "wall_seconds": 229.81,
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 25708,
+      "prompt_ms": 169392.844,
+      "prompt_per_token_ms": 6.589110160261398,
+      "prompt_per_second": 151.7655610056349,
+      "predicted_n": 953,
+      "predicted_ms": 59976.548,
+      "predicted_per_token_ms": 63.0005756302521,
+      "predicted_per_second": 15.872870842783415
+    }
+  },
+  "validation_errors": [],
+  "raw_text": "{\"formulations\": [{\"Polymer system Notes\": \"PEO-LiX (X = CF3SO3-, ClO4-, and AsF6-) systems have been characterized by x-ray diffraction and optical microscopy, and the resulting phase diagrams are taken into account for the interpretation of ac impedance measurements.\", \"Polymer family\": \"ether\", \"Polymer\": \"PEO\", \"SMILES descriptor 1\": null, \"SMILES descriptor 2\": null, \"Comonomer percentage\": null, \"Average functional group per monomer\": null, \"Anion\": \"CF3SO3\", \"Li:monomer\": null, \"Li:functional group\": null, \"salt wt%\": null, \"Tg\": null, \"Tg polymer without salt\": null, \"Tm\": null, \"Tm start\": null, \"Tm end\": null, \"% crystallinity\": null, \"crystalline?\": null, \"Conductivity at 0C\": null, \"Conductivity at 15C\": null, \"Conductivity at 20C\": null, \"Conductivity at 21C\": null, \"Conductivity at 25C\": null, \"Conductivity at 27C\": null, \"Conductivity at 30C\": null, \"Conductivity at 35C\": null, \"Conductivity at 40C\": null, \"Conductivity at 45C\": null, \"Conductivity at 50C\": null, \"Conductivity at 55C\": null, \"Conductivity at 60C\": null, \"Conductivity at 65C\": null, \"Conductivity at 70C\": null, \"Conductivity at 75C\": null, \"Conductivity at 80C\": null, \"Conductivity at 85C\": null, \"Conductivity at 90C\": null, \"Conductivity at 100C\": null, \"Conductivity at 110C\": null, \"Conductivity at 125C\": null, \"Transference number\": null, \"T for transference\": null, \"Transference notes\": null, \"storage modulus\": null, \"T for storage mod\": null, \"youngs modulus (Mpa)\": null, \"viscosity (mPa s)\": null, \"VFT prefactor (S/cm*T^(1/2))\": null, \"VFT activation energy (K)\": null, \"VFT T0 (degC)\": null, \"VFT Notes (above temp)\": null, \"VFT prefactor with set T0\": null, \"VFT activation energy with fixed T0 (K)\": null, \"Fixed T0 (degC)\": null, \"Arrhenius Ea (eV) low T\": null, \"Arrhenius Ea (eV) high T\": null, \"Arrhenius Ea (eV) low T me\": null, \"Arrhenius prefactor low T me (S/cm)\": null, \"Arrhenius Ea (eV)\": null, \"Arrhenius prefactor (S/cm)\": null, \"Arrhenius notes\": null, \"Li diffusion coefficient cm^2/s\": null, \"temperature for D_Li\": null, \"X-ray structural data (aggregate? Distance?)\": null, \"PDI\": null, \"Polymer Mn (kDa)\": null, \"Polymer Mw (kDa)\": null, \"chain architecture\": null, \"Solvent used\": \"acetonitrile\", \"drying temp\": \"95-100\", \"drying time (h)\": \"48\", \"drying vacuum\": \"partial\", \"Notes\": \"The high molecular weight (900 K) PEO was supplied by Aldrich. It was dried under partial vacuum, < 5 mm/Hg argon at 45\u00b0-50\u00b0C for \u2248 48h. The following lithium salts were recrystallized in acetonitrile then dried under partial vacuum for \u2248 48h at the temperatures specified: LiCF3SO3 (Pennwalt), 100\u00b0-110\u00b0C, LiAsF6 (USS), 140\u00b0-150\u00b0C, LiClO4 (Alfa), 100\u00b0-110\u00b0C.\", \"DOI\": null, \"Reference\": null}]}"
+}

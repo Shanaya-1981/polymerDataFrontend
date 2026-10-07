@@ -1,9 +1,7 @@
-node_modules
-dist
-dist-ssr
-coverage
+# MinerU parse cache, written to the working directory when the pipeline is run from the repo root
+blobs/
+
+__pycache__/
+*.pyc
+*.tsbuildinfo
 .DS_Store
-*.local
-*.log
-.vscode/*
-!.vscode/extensions.json

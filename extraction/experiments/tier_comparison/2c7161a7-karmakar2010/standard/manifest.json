@@ -1,0 +1,128 @@
+{
+  "paper_id": "2c7161a7",
+  "source_pdf": "experiments/tier_comparison/2c7161a7-karmakar2010/2c7161a7-karmakar2010.pdf",
+  "mineru_doc_id": "26054a3",
+  "tier": "standard",
+  "text_tier": null,
+  "figure_tier": null,
+  "page_range": "1-7",
+  "figures": [
+    {
+      "locator": "doc:26054a3/tier:standard/page:1/block:23",
+      "page": 1,
+      "block": 23,
+      "image_path": "figures/page1-block23.png",
+      "caption": "FIG. 1. \u0001a- XRD patterns for $\\mathrm{PEO{-}LiClO_{4}}$ , PEO–LiI, and PEO–LiCF<sub>3</sub>SO<sub>3</sub> electrolytes for \u0003EO\u0004 / \u0003Li\u0004 = 12. \u0001b- XRD patterns for PEO–LiI electrolyte for different \u0003EO\u0004/\u0003Li\u0004 ratio.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:1/block:25",
+      "page": 1,
+      "block": 25,
+      "image_path": "figures/page1-block25.png",
+      "caption": "FIG. 1. \u0001a- XRD patterns for $\\mathrm{PEO{-}LiClO_{4}}$ , PEO–LiI, and PEO–LiCF<sub>3</sub>SO<sub>3</sub> electrolytes for \u0003EO\u0004 / \u0003Li\u0004 = 12. \u0001b- XRD patterns for PEO–LiI electrolyte for different \u0003EO\u0004/\u0003Li\u0004 ratio.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:1/block:27",
+      "page": 1,
+      "block": 27,
+      "image_path": "figures/page1-block27.png",
+      "caption": "FIG. 1. \u0001a- XRD patterns for $\\mathrm{PEO{-}LiClO_{4}}$ , PEO–LiI, and PEO–LiCF<sub>3</sub>SO<sub>3</sub> electrolytes for \u0003EO\u0004 / \u0003Li\u0004 = 12. \u0001b- XRD patterns for PEO–LiI electrolyte for different \u0003EO\u0004/\u0003Li\u0004 ratio.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:3/block:4",
+      "page": 3,
+      "block": 4,
+      "image_path": "figures/page3-block4.png",
+      "caption": "FIG. 1. \u0001a- XRD patterns for $\\mathrm{PEO{-}LiClO_{4}}$ , PEO–LiI, and PEO–LiCF<sub>3</sub>SO<sub>3</sub> electrolytes for \u0003EO\u0004 / \u0003Li\u0004 = 12. \u0001b- XRD patterns for PEO–LiI electrolyte for different \u0003EO\u0004/\u0003Li\u0004 ratio.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:3/block:10",
+      "page": 3,
+      "block": 10,
+      "image_path": "figures/page3-block10.png",
+      "caption": "FIG. 2. Field emission scanning electron micrographs for $(a)  $\\mathrm{PEO{-}LiClO_{4}}$$ \u0001b- PEO–LiI and \u0001c- $\\mathrm{PEO}-\\mathrm{LiCF}_{3}\\mathrm{SO}_{3}$ electrolytes for $\\left[  EO  \\right] / \\left[  Li  \\right] {=} 12.$",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:3/block:14",
+      "page": 3,
+      "block": 14,
+      "image_path": "figures/page3-block14.png",
+      "caption": "FIG. 3. Field emission scanning electron micrographs for $\\mathrm{PEO--LiClO_{4}}$ electrolytes for \u0001a- \u0003EO\u0004 / \u0003Li\u0004 = 9, \u0001b- \u0003EO\u0004 / \u0003Li\u0004 = 12, \u0001c- $\\left[  EO  \\right] / \\left[  Li  \\right] {=} 15,$ and \u0001d- $\\left[  EO  \\right] / \\left[  Li  \\right] {=} 18.$",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:3/block:15",
+      "page": 3,
+      "block": 15,
+      "image_path": "figures/page3-block15.png",
+      "caption": "FIG. 3. Field emission scanning electron micrographs for $\\mathrm{PEO--LiClO_{4}}$ electrolytes for \u0001a- \u0003EO\u0004 / \u0003Li\u0004 = 9, \u0001b- \u0003EO\u0004 / \u0003Li\u0004 = 12, \u0001c- $\\left[  EO  \\right] / \\left[  Li  \\right] {=} 15,$ and \u0001d- $\\left[  EO  \\right] / \\left[  Li  \\right] {=} 18.$",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:3/block:16",
+      "page": 3,
+      "block": 16,
+      "image_path": "figures/page3-block16.png",
+      "caption": "FIG. 3. Field emission scanning electron micrographs for $\\mathrm{PEO--LiClO_{4}}$ electrolytes for \u0001a- \u0003EO\u0004 / \u0003Li\u0004 = 9, \u0001b- \u0003EO\u0004 / \u0003Li\u0004 = 12, \u0001c- $\\left[  EO  \\right] / \\left[  Li  \\right] {=} 15,$ and \u0001d- $\\left[  EO  \\right] / \\left[  Li  \\right] {=} 18.$",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:3/block:17",
+      "page": 3,
+      "block": 17,
+      "image_path": "figures/page3-block17.png",
+      "caption": "FIG. 3. Field emission scanning electron micrographs for $\\mathrm{PEO--LiClO_{4}}$ electrolytes for \u0001a- \u0003EO\u0004 / \u0003Li\u0004 = 9, \u0001b- \u0003EO\u0004 / \u0003Li\u0004 = 12, \u0001c- $\\left[  EO  \\right] / \\left[  Li  \\right] {=} 15,$ and \u0001d- $\\left[  EO  \\right] / \\left[  Li  \\right] {=} 18.$",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:4/block:4",
+      "page": 4,
+      "block": 4,
+      "image_path": "figures/page4-block4.png",
+      "caption": "FIG. 4. DSC curves of \u0001a- $\\mathrm{PEO-LiClO_{4}}$ \u0001b- PEO–LiI and \u0001c-PEO– $-LiCF _3 SO _3$ electrolytes shown for different \u0003EO\u0004/\u0003Li\u0004 ratio.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:4/block:10",
+      "page": 4,
+      "block": 10,
+      "image_path": "figures/page4-block10.png",
+      "caption": "FIG. 5. \u0001a- dc conductivity plotted as a function of inverse temperature for PEO–LiClO4, PEO–LiI, and $\\mathrm{PEO}-\\mathrm{LiCF}_{3}\\mathrm{SO}_{3}$ for $\\mathrm{[EO]}/\\mathrm{[Li]}\\dot{=}12$ . \u0001b- dc conductivity with reciprocal temperature for $\\mathrm{PEO-LiClO_{4}}$ for different values of the \u0003EO\u0004/\u0003Li\u0004 ratio. The solid lines are the least square straight-line fits to the experimental data.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:5/block:9",
+      "page": 5,
+      "block": 9,
+      "image_path": "figures/page5-block9.png",
+      "caption": "FIG. 6. \u0001a- ac conductivity at different temperatures shown as a function of frequency for $\\mathrm{PEO-LiClO_{4}}$ electrolyte with \u0003EO\u0004 / \u0003Li\u0004 = 12. \u0001b- The ac conductivity at T= 303 K shown as a function of frequency for the different electrolytes with same \u0003EO\u0004 / \u0003Li\u0004 = 12.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:5/block:14",
+      "page": 5,
+      "block": 14,
+      "image_path": "figures/page5-block14.png",
+      "caption": "FIG. 7. Dependence of crossover frequency on reciprocal temperature for $\\mathrm{PEO-LiClO_{4}}$ PEO–LiI, and $\\stackrel{\\circ}{\\mathrm{PEO}-\\mathrm{LiCF}_{3}\\mathrm{SO}_{3}}$ electrolytes having $\\left[  EO  \\right] / \\left[  Li  \\right] {=} 12.$ The solid lines are the least square straight-line fits to the experimental data.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:26054a3/tier:standard/page:6/block:4",
+      "page": 6,
+      "block": 4,
+      "image_path": "figures/page6-block4.png",
+      "caption": "FIG. 8. \u0001a- Scaling of the conductivity spectra with temperature for $\\mathrm{PEO--LiClO_{4}}$ electrolytes with \u0003EO\u0004 / \u0003Li\u0004 = 18 shown in the inset. \u0001b- Scaling of the conductivity spectra at T= 293 K for PEO–LiI electrolyte with different \u0003EO\u0004/\u0003Li\u0004 ratio shown in the inset.",
+      "source_tier": null
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:40:30.877150Z",
+  "duration_seconds": 25.329967583995312,
+  "wait_retries": 0,
+  "num_tables": 1
+}

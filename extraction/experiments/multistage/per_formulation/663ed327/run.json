@@ -1,0 +1,37 @@
+{
+  "paper_id": "663ed327",
+  "layout": "per_formulation",
+  "ran_position": 2,
+  "n_listed": 6,
+  "status": "ok",
+  "error": null,
+  "listing": {
+    "calls": 1,
+    "failed_calls": 0,
+    "wall_seconds": 82.3,
+    "prompt_tokens": 12215,
+    "read_tokens": 10845,
+    "cached_tokens": 1370,
+    "output_tokens": 634
+  },
+  "values": {
+    "calls": 6,
+    "failed_calls": 0,
+    "wall_seconds": 354.7,
+    "prompt_tokens": 77676,
+    "read_tokens": 5502,
+    "cached_tokens": 72174,
+    "output_tokens": 6441
+  },
+  "wall_seconds": 437.0,
+  "calls": 7,
+  "read_tokens": 16347,
+  "prompt_tokens": 89891,
+  "output_tokens": 7075,
+  "dropped_values": [],
+  "duplicate_values": 0,
+  "off_grid_points": 0,
+  "placeholders": 15,
+  "implausible_points": 0,
+  "call_errors": []
+}

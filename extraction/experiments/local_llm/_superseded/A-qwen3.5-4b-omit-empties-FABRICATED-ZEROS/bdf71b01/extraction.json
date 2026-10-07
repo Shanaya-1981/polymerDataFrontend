@@ -1,0 +1,50 @@
+{
+  "paper_id": "bdf71b01",
+  "formulations": [
+    {
+      "Polymer system Notes": "Amorphous oxyethylene-oxymethylene copolymer with randomly-spaced oxy-methylene units inserted into linear PEO chain (n~9, m~600)",
+      "Polymer family": "ether, carbonate",
+      "Polymer": "Amorphous PEO copolymer",
+      "SMILES descriptor 1": "COC",
+      "SMILES descriptor 2": "COC",
+      "Average functional group per monomer": 1.0,
+      "Anion": "ClO4",
+      "Li:monomer": 0.0417,
+      "Li:functional group": 0.0417,
+      "salt wt%": 3.0,
+      "Tg": 25.0,
+      "Tg polymer without salt": 25.0,
+      "Tm": "none",
+      "crystalline?": "no",
+      "Conductivity at 20C": -7.0,
+      "Conductivity at 25C": -6.5,
+      "Conductivity at 30C": -6.3,
+      "Conductivity at 35C": -6.1,
+      "Conductivity at 40C": -6.0,
+      "Conductivity at 45C": -5.9,
+      "Conductivity at 50C": -5.8,
+      "chain architecture": "linear",
+      "Solvent used": "acetonitrile",
+      "drying temp": "80",
+      "drying time (h)": "24",
+      "drying vacuum": "yes",
+      "Notes": "Data in Fig. 5 are log10(σ) values. Conductivity at 20°C is -7.0 log10(S/cm) = 1.0e-7 S/cm. Conductivity at 50°C is -5.8 log10(S/cm) = 1.58e-6 S/cm. Salt concentration varies from Li:O=1:64 to 1:24 in Fig. 4 table.",
+      "Reference": "E. Linden and J.R. Owen, Solid State Ionics 28-30 (1988) 994-1000"
+    },
+    {
+      "Polymer system Notes": "Crystalline PEO",
+      "Polymer family": "ether",
+      "Polymer": "PEO",
+      "SMILES descriptor 1": "COC",
+      "SMILES descriptor 2": "COC",
+      "Average functional group per monomer": 1.0,
+      "Anion": "ClO4",
+      "Li:monomer": 0.125,
+      "Li:functional group": 0.125,
+      "crystalline?": "yes",
+      "chain architecture": "linear",
+      "Notes": "Fig. 1c caption mentions Crystalline PEO: LiClO4 - 8:1. No conductivity data provided for this formulation in the text.",
+      "Reference": "E. Linden and J.R. Owen, Solid State Ionics 28-30 (1988) 994-1000"
+    }
+  ]
+}

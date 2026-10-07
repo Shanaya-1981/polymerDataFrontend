@@ -1,0 +1,10 @@
+conv run 1: 202 points in 8 samples, 62 s
+mw run 1: 105 points in 7 samples, 101 s
+conv run 2: 202 points in 8 samples, 60 s
+conv run 3: 202 points in 8 samples, 64 s
+mw run 2: 105 points in 7 samples, 102 s
+conv run 4: 202 points in 8 samples, 65 s
+mw run 3: 105 points in 7 samples, 98 s
+conv run 5: 202 points in 8 samples, 64 s
+mw run 4: 105 points in 7 samples, 89 s
+mw run 5: 105 points in 7 samples, 107 s

@@ -1,0 +1,262 @@
+{
+  "run_dir": "experiments/claude_code/sonnet-5",
+  "papers": 10,
+  "papers_with_extraction": 10,
+  "formulations": {
+    "gold_rows": 127,
+    "pred_rows": 169,
+    "matched": 95,
+    "matched_direct": 83,
+    "matched_rank": 12,
+    "matched_anion_only": 0,
+    "recall": 0.748,
+    "precision": 0.5621
+  },
+  "groups": {
+    "identity": {
+      "gold_cells_matched": 426,
+      "gold_cells_all": 558,
+      "correct": 351,
+      "near": 0,
+      "wrong": 57,
+      "missing": 18,
+      "missing_unmatched_rows": 132,
+      "extra": 85,
+      "accuracy": 0.8239,
+      "accuracy_loose": 0.8239,
+      "recall": 0.629
+    },
+    "thermal": {
+      "gold_cells_matched": 134,
+      "gold_cells_all": 138,
+      "correct": 69,
+      "near": 0,
+      "wrong": 10,
+      "missing": 55,
+      "missing_unmatched_rows": 4,
+      "extra": 61,
+      "accuracy": 0.5149,
+      "accuracy_loose": 0.5149,
+      "recall": 0.5
+    },
+    "conductivity": {
+      "gold_cells_matched": 806,
+      "gold_cells_all": 913,
+      "correct": 293,
+      "near": 8,
+      "wrong": 7,
+      "missing": 498,
+      "missing_unmatched_rows": 107,
+      "extra": 3,
+      "accuracy": 0.3635,
+      "accuracy_loose": 0.3734,
+      "recall": 0.3209
+    },
+    "transport": {
+      "gold_cells_matched": 28,
+      "gold_cells_all": 32,
+      "correct": 23,
+      "near": 0,
+      "wrong": 1,
+      "missing": 4,
+      "missing_unmatched_rows": 4,
+      "extra": 2,
+      "accuracy": 0.8214,
+      "accuracy_loose": 0.8214,
+      "recall": 0.7188
+    },
+    "molecular_weight": {
+      "gold_cells_matched": 158,
+      "gold_cells_all": 194,
+      "correct": 54,
+      "near": 0,
+      "wrong": 43,
+      "missing": 61,
+      "missing_unmatched_rows": 36,
+      "extra": 1,
+      "accuracy": 0.3418,
+      "accuracy_loose": 0.3418,
+      "recall": 0.2784
+    },
+    "mechanical": {
+      "gold_cells_matched": 0,
+      "gold_cells_all": 0,
+      "correct": 0,
+      "near": 0,
+      "wrong": 0,
+      "missing": 0,
+      "missing_unmatched_rows": 0,
+      "extra": 0,
+      "accuracy": null,
+      "accuracy_loose": null,
+      "recall": null
+    },
+    "processing": {
+      "gold_cells_matched": 370,
+      "gold_cells_all": 444,
+      "correct": 278,
+      "near": 0,
+      "wrong": 76,
+      "missing": 16,
+      "missing_unmatched_rows": 74,
+      "extra": 0,
+      "accuracy": 0.7514,
+      "accuracy_loose": 0.7514,
+      "recall": 0.6261
+    },
+    "classification": {
+      "gold_cells_matched": 285,
+      "gold_cells_all": 381,
+      "correct": 233,
+      "near": 0,
+      "wrong": 36,
+      "missing": 16,
+      "missing_unmatched_rows": 96,
+      "extra": 0,
+      "accuracy": 0.8175,
+      "accuracy_loose": 0.8175,
+      "recall": 0.6115
+    },
+    "fits": {
+      "gold_cells_matched": 503,
+      "gold_cells_all": 548,
+      "correct": 18,
+      "near": 0,
+      "wrong": 6,
+      "missing": 479,
+      "missing_unmatched_rows": 45,
+      "extra": 6,
+      "accuracy": 0.0358,
+      "accuracy_loose": 0.0358,
+      "recall": 0.0328
+    },
+    "curator_computed": {
+      "gold_cells_matched": 308,
+      "gold_cells_all": 408,
+      "correct": 109,
+      "near": 0,
+      "wrong": 86,
+      "missing": 113,
+      "missing_unmatched_rows": 100,
+      "extra": 17,
+      "accuracy": 0.3539,
+      "accuracy_loose": 0.3539,
+      "recall": 0.2672
+    },
+    "HEADLINE": {
+      "gold_cells_matched": 1552,
+      "gold_cells_all": 1835,
+      "correct": 790,
+      "near": 8,
+      "wrong": 118,
+      "missing": 636,
+      "missing_unmatched_rows": 283,
+      "extra": 152,
+      "accuracy": 0.509,
+      "accuracy_loose": 0.5142,
+      "recall": 0.4305
+    }
+  },
+  "per_paper": [
+    {
+      "paper_id": "bdf71b01",
+      "gold_rows": 5,
+      "pred_rows": 7,
+      "matched": 5,
+      "matched_direct": 5,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "f3d2d4b6",
+      "gold_rows": 27,
+      "pred_rows": 5,
+      "matched": 0,
+      "matched_direct": 0,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "6ca669ae",
+      "gold_rows": 13,
+      "pred_rows": 18,
+      "matched": 13,
+      "matched_direct": 7,
+      "matched_rank": 6,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "1dba839e",
+      "gold_rows": 13,
+      "pred_rows": 14,
+      "matched": 11,
+      "matched_direct": 7,
+      "matched_rank": 4,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "663ed327",
+      "gold_rows": 6,
+      "pred_rows": 6,
+      "matched": 6,
+      "matched_direct": 6,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "2c7161a7",
+      "gold_rows": 12,
+      "pred_rows": 12,
+      "matched": 12,
+      "matched_direct": 12,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "0a3655ba",
+      "gold_rows": 3,
+      "pred_rows": 27,
+      "matched": 3,
+      "matched_direct": 3,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "5feba0f9",
+      "gold_rows": 25,
+      "pred_rows": 29,
+      "matched": 22,
+      "matched_direct": 21,
+      "matched_rank": 1,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "170fead2",
+      "gold_rows": 21,
+      "pred_rows": 39,
+      "matched": 21,
+      "matched_direct": 21,
+      "matched_rank": 0,
+      "matched_anion_only": 0,
+      "status": "ok"
+    },
+    {
+      "paper_id": "569ebb10",
+      "gold_rows": 2,
+      "pred_rows": 12,
+      "matched": 2,
+      "matched_direct": 1,
+      "matched_rank": 1,
+      "matched_anion_only": 0,
+      "status": "ok"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+pandas
+numpy
+requests
+beautifulsoup4
+unpywall
+anthropic
+openai
+pydantic>=2
+pyyaml
+python-dotenv
+rdkit
+rapidfuzz
+fastapi
+uvicorn
+python-multipart

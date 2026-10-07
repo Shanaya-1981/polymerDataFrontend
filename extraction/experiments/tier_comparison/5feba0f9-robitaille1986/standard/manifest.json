@@ -1,0 +1,216 @@
+{
+  "paper_id": "5feba0f9",
+  "source_pdf": "experiments/tier_comparison/5feba0f9-robitaille1986/5feba0f9-robitaille1986.pdf",
+  "mineru_doc_id": "2d880af",
+  "tier": "standard",
+  "text_tier": null,
+  "figure_tier": null,
+  "page_range": "1-11",
+  "figures": [
+    {
+      "locator": "doc:2d880af/tier:standard/page:3/block:6",
+      "page": 3,
+      "block": 6,
+      "image_path": "figures/page3-block6.png",
+      "caption": "Fig. 1. Phase diagram of the PEO-LiCF$_3$SO$_3$ system. The transition temperatures were obtained using various experimental techniques: NMR (12), DTA or DSC (12), $\\triangle$ (18), $\\otimes$ (20), conductivity (12), $\\triangle$ (18), optical microscopy (21), and modeling (15). This study: optical microscopy +; conductivity $\\times$.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:3/block:12",
+      "page": 3,
+      "block": 12,
+      "image_path": "figures/page3-block12.png",
+      "caption": "Fig. 3. X-ray diffraction patterns at $T = 25^{\\circ}\\mathrm{C}$: (a) PEO, (b) $\\mathrm{PEO}_4\\mathrm{LiCF}_3\\mathrm{SO}_3$ mixture, and (c) $\\mathrm{LiCF}_3\\mathrm{SO}_3$.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:3/block:13",
+      "page": 3,
+      "block": 13,
+      "image_path": "figures/page3-block13.png",
+      "caption": "Fig. 3. X-ray diffraction patterns at $T = 25^{\\circ}\\mathrm{C}$: (a) PEO, (b) $\\mathrm{PEO}_4\\mathrm{LiCF}_3\\mathrm{SO}_3$ mixture, and (c) $\\mathrm{LiCF}_3\\mathrm{SO}_3$.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:3/block:14",
+      "page": 3,
+      "block": 14,
+      "image_path": "figures/page3-block14.png",
+      "caption": "Fig. 3. X-ray diffraction patterns at $T = 25^{\\circ}\\mathrm{C}$: (a) PEO, (b) $\\mathrm{PEO}_4\\mathrm{LiCF}_3\\mathrm{SO}_3$ mixture, and (c) $\\mathrm{LiCF}_3\\mathrm{SO}_3$.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:4/block:4",
+      "page": 4,
+      "block": 4,
+      "image_path": "figures/page4-block4.png",
+      "caption": "Fig. 3. X-ray diffraction patterns at $T = 25^{\\circ}\\mathrm{C}$: (a) PEO, (b) $\\mathrm{PEO}_4\\mathrm{LiCF}_3\\mathrm{SO}_3$ mixture, and (c) $\\mathrm{LiCF}_3\\mathrm{SO}_3$.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:4/block:5",
+      "page": 4,
+      "block": 5,
+      "image_path": "figures/page4-block5.png",
+      "caption": "Fig. 3. X-ray diffraction patterns at $T = 25^{\\circ}\\mathrm{C}$: (a) PEO, (b) $\\mathrm{PEO}_4\\mathrm{LiCF}_3\\mathrm{SO}_3$ mixture, and (c) $\\mathrm{LiCF}_3\\mathrm{SO}_3$.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:4/block:10",
+      "page": 4,
+      "block": 10,
+      "image_path": "figures/page4-block10.png",
+      "caption": "Fig. 4. Histograms of x-ray diffraction patterns for the PEO-LiCF$_3$SO$_3$ system.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:4/block:12",
+      "page": 4,
+      "block": 12,
+      "image_path": "figures/page4-block12.png",
+      "caption": "Fig. 5. Variation in total ion conductivity vs. inverse temperature for PEO-LiCF$_3$SO$_3$ based electrolytes with variable mole ratios O/Li(y).",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:4/block:13",
+      "page": 4,
+      "block": 13,
+      "image_path": "figures/page4-block13.png",
+      "caption": "Fig. 5. Variation in total ion conductivity vs. inverse temperature for PEO-LiCF$_3$SO$_3$ based electrolytes with variable mole ratios O/Li(y).",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:5/block:4",
+      "page": 5,
+      "block": 4,
+      "image_path": "figures/page5-block4.png",
+      "caption": "Fig. 6. Variation in activation energy of ion conduction mechanism vs. mass fraction of $\\mathrm{LiCF_3SO_3}$ in the electrolyte, for $60 < T < 130^{\\circ}\\mathrm{C}$.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:5/block:10",
+      "page": 5,
+      "block": 10,
+      "image_path": "figures/page5-block10.png",
+      "caption": "Fig. 7. Isotherms of ion conductivity vs. mass fraction of $\\mathrm{LiCF_3SO_3}$ in the electrolyte.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:5/block:13",
+      "page": 5,
+      "block": 13,
+      "image_path": "figures/page5-block13.png",
+      "caption": "Fig. 8. Histograms of x-ray diffraction patterns for the PEO-LiClO₄",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:6/block:4",
+      "page": 6,
+      "block": 4,
+      "image_path": "figures/page6-block4.png",
+      "caption": "Fig. 9. Phase diagram of the PEO-LiClO$_{4}$ system: (●) transitions observed by microscopy, (+) transitions observed by conductivity measurements.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:6/block:9",
+      "page": 6,
+      "block": 9,
+      "image_path": "figures/page6-block9.png",
+      "caption": "Fig. 10. Variations in total ion conductivity vs. inverse temperature for PEO-LiClO$_4$ based electrolytes with variable mole ratios O/Li(y).",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:7/block:4",
+      "page": 7,
+      "block": 4,
+      "image_path": "figures/page7-block4.png",
+      "caption": "Fig. 11. Variations in activation energy of the ion conduction mechanism vs. mass fraction of $\\mathrm{LiClO_4}$ in the electrolyte, for $60 < T < 120^{\\circ}\\mathrm{C}$. For $X < 0.18$, the values were obtained by VTF curve linearization.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:7/block:11",
+      "page": 7,
+      "block": 11,
+      "image_path": "figures/page7-block11.png",
+      "caption": "Fig. 13. Histograms of the x-ray diffraction patterns for the PEO-LiAsF$_6$ system.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:7/block:12",
+      "page": 7,
+      "block": 12,
+      "image_path": "figures/page7-block12.png",
+      "caption": "Fig. 13. Histograms of the x-ray diffraction patterns for the PEO-LiAsF$_6$ system.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:8/block:8",
+      "page": 8,
+      "block": 8,
+      "image_path": "figures/page8-block8.png",
+      "caption": "Fig. 14. X-ray diffraction patterns (a) and histogram (b) of the two isomorphous intermediate definite compounds, P(EO₆LiAsF₆) and P(EO₆LiClO₄).",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:8/block:10",
+      "page": 8,
+      "block": 10,
+      "image_path": "figures/page8-block10.png",
+      "caption": "Fig. 14. X-ray diffraction patterns (a) and histogram (b) of the two isomorphous intermediate definite compounds, P(EO₆LiAsF₆) and P(EO₆LiClO₄).",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:8/block:12",
+      "page": 8,
+      "block": 12,
+      "image_path": "figures/page8-block12.png",
+      "caption": "Fig. 15. Phase diagram of the PEO-LiAsF$_6$ system.: (●) transitions observed by microscopy, (+) transitions observed by conductivity measurements.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:8/block:16",
+      "page": 8,
+      "block": 16,
+      "image_path": "figures/page8-block16.png",
+      "caption": "Fig. 16. Variations in total ion conductivity vs. inverse temperature for PEO-LiAsF$_{6}$ based electrolytes with variable mole ratios O/Li(y).",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:8/block:17",
+      "page": 8,
+      "block": 17,
+      "image_path": "figures/page8-block17.png",
+      "caption": "Fig. 16. Variations in total ion conductivity vs. inverse temperature for PEO-LiAsF$_{6}$ based electrolytes with variable mole ratios O/Li(y).",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:9/block:4",
+      "page": 9,
+      "block": 4,
+      "image_path": "figures/page9-block4.png",
+      "caption": "Fig. 17. Variations in the activation energy of the ion conduction mechanism vs. mass fraction of $\\mathrm{LiAsF_6}$ in the electrolyte, for $60 < T < 120^{\\circ}\\mathrm{C}$. For $X > 0.35$, the electrolytes are thermally unstable.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:9/block:10",
+      "page": 9,
+      "block": 10,
+      "image_path": "figures/page9-block10.png",
+      "caption": "Fig. 18. Isotherms of the ion conductivity vs. mass fraction of $\\mathrm{LiAsF_6}$ in the electrolyte.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:2d880af/tier:standard/page:10/block:8",
+      "page": 10,
+      "block": 8,
+      "image_path": "figures/page10-block8.png",
+      "caption": "Fig. 19. Equivalent conductance vs. salt concentration in the electrolyte for the PEO-LiCF$_{3}$SO$_{3}$, PEO-LiClO$_{4}$, and PEO-LiAsF$_{6}$ systems at $T = 105^{\\circ}\\mathrm{C}$.",
+      "source_tier": null
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:19:52.203603Z",
+  "duration_seconds": 182.89114820805844,
+  "wait_retries": 1,
+  "num_tables": 0
+}

@@ -1,0 +1,16 @@
+{
+  "paper_id": "5feba0f9",
+  "formulations": [
+    {
+      "Polymer system Notes": "PEO-LiX (X = CF3SO3-, ClO4-, and AsF6-) systems have been characterized by x-ray diffraction and optical microscopy, and the resulting phase diagrams are taken into account for the interpretation of ac impedance measurements.",
+      "Polymer family": "ether",
+      "Polymer": "PEO",
+      "Anion": "CF3SO3",
+      "Solvent used": "acetonitrile",
+      "drying temp": "95-100",
+      "drying time (h)": "48",
+      "drying vacuum": "partial",
+      "Notes": "The high molecular weight (900 K) PEO was supplied by Aldrich. It was dried under partial vacuum, < 5 mm/Hg argon at 45°-50°C for ≈ 48h. The following lithium salts were recrystallized in acetonitrile then dried under partial vacuum for ≈ 48h at the temperatures specified: LiCF3SO3 (Pennwalt), 100°-110°C, LiAsF6 (USS), 140°-150°C, LiClO4 (Alfa), 100°-110°C."
+    }
+  ]
+}

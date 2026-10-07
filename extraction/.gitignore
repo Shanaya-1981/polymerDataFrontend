@@ -1,0 +1,17 @@
+.venv/
+output/
+blobs/
+.env
+__pycache__/
+*.pyc
+.DS_Store
+models/
+
+# The researcher's own figure for Balke & Hamielec, and every image drawn on it, stay on this
+# machine: the figure may hold unpublished work, and this repo is public.
+experiments/claude_code/pmma_xp/reference.png
+experiments/claude_code/pmma_xp/xp_comparison*.png
+experiments/claude_code/pmma_xp/mw_comparison*.png
+experiments/claude_code/pmma_xp/slide_overlays.png
+experiments/claude_code/pmma_xp/misses.png
+experiments/claude_code/pmma_xp/unexplained.png

@@ -1,0 +1,160 @@
+{
+  "paper_id": "569ebb10",
+  "source_pdf": "experiments/tier_comparison/569ebb10-schauser2018/569ebb10-schauser2018.pdf",
+  "mineru_doc_id": "ee365e7",
+  "tier": "hybrid",
+  "text_tier": "advanced",
+  "figure_tier": "standard",
+  "page_range": "1-11",
+  "figures": [
+    {
+      "locator": "doc:ee365e7/tier:advanced/page:1/block:15",
+      "page": 1,
+      "block": 15,
+      "image_path": "figures/advanced/page1-block15.png",
+      "caption": "Scheme 1. Synthesis of Imidazole-Functionalized PIGE Copolymer and Subsequent Addition of Metal Salts Allows for Unique Control of Bulk Properties<sup>a</sup>",
+      "source_tier": "advanced"
+    },
+    {
+      "locator": "doc:ee365e7/tier:advanced/page:2/block:4",
+      "page": 2,
+      "block": 4,
+      "image_path": "figures/advanced/page2-block4.png",
+      "caption": null,
+      "source_tier": "advanced"
+    },
+    {
+      "locator": "doc:ee365e7/tier:advanced/page:4/block:3",
+      "page": 4,
+      "block": 3,
+      "image_path": "figures/advanced/page4-block3.png",
+      "caption": "Figure 1. (a) Addition of metal salt to a polymer with tethered ligands results in an equilibrium between M−L coordination and salt dissociation. The application of an electric field allows for both ions to move, although the motion of coordinated cations is related to the time scale of metal− ligand coordination. (b) Addition of equal cation:ligand molar ratios (r) results in varying amounts of anions. In all figures, a 4-fold coordination geometry is used for illustrative purposes.",
+      "source_tier": "advanced"
+    },
+    {
+      "locator": "doc:ee365e7/tier:advanced/page:4/block:12",
+      "page": 4,
+      "block": 12,
+      "image_path": "figures/advanced/page4-block12.png",
+      "caption": "Figure 2. Solid-state NMR spectra demonstrate that cations interact preferentially with imidazole ligands. (a) 2D HETCOR $^ { 1 } \\mathrm { H } \\mathrm { - } ^ { 7 } \\mathrm { L i }$ spectrum. (b) Comparison of 1D 1<sub>H</sub> spectrum (red) with the projections of 1<sub>H</sub> dimension (blue) from the 2D spectrum. This highlights the relative intensity changes of the 1<sub>H</sub> peaks.",
+      "source_tier": "advanced"
+    },
+    {
+      "locator": "doc:ee365e7/tier:advanced/page:5/block:9",
+      "page": 5,
+      "block": 9,
+      "image_path": "figures/advanced/page5-block9.png",
+      "caption": "Figure 3. Mechanical properties of the polymer change drastically upon the addition of various metal salts. For the PIGE polymer containing covalently tethered ligands, $\\mathrm { { N i } ^ { 2 + } }$ and $\\mathbf { F } \\mathbf { e } ^ { 3 + }$ cations act as transient cross-linkers, resulting in the appearance of a plateau in the storage modulus (a) and peak in the loss modulus (b) within the accessible frequency−temperature range. (c) A clearer effect of metal cross-linking can be seen from the complex viscosity, which increases dramatically with the addition of metal salts except for LiTFSI. Time−temperature superposition was successfully performed on all samples.",
+      "source_tier": "advanced"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:1/block:12",
+      "page": 1,
+      "block": 12,
+      "image_path": "figures/standard/page1-block12.png",
+      "caption": "Scheme 1. Synthesis of Imidazole-Functionalized PIGE Copolymer and Subsequent Addition of Metal Salts Allows for Unique Control of Bulk Properties<sup>a</sup>",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:1/block:13",
+      "page": 1,
+      "block": 13,
+      "image_path": "figures/standard/page1-block13.png",
+      "caption": "Scheme 1. Synthesis of Imidazole-Functionalized PIGE Copolymer and Subsequent Addition of Metal Salts Allows for Unique Control of Bulk Properties<sup>a</sup>",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:2/block:4",
+      "page": 2,
+      "block": 4,
+      "image_path": "figures/standard/page2-block4.png",
+      "caption": null,
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:4/block:3",
+      "page": 4,
+      "block": 3,
+      "image_path": "figures/standard/page4-block3.png",
+      "caption": "Figure 1. (a) Addition of metal salt to a polymer with tethered ligands results in an equilibrium between M−L coordination and salt dissociation. The application of an electric field allows for both ions to move, although the motion of coordinated cations is related to the time scale of metal− ligand coordination. (b) Addition of equal cation:ligand molar ratios (r) results in varying amounts of anions. In all figures, a 4-fold coordination geometry is used for illustrative purposes.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:4/block:13",
+      "page": 4,
+      "block": 13,
+      "image_path": "figures/standard/page4-block13.png",
+      "caption": "Figure 2. Solid-state NMR spectra demonstrate that cations interact preferentially with imidazole ligands. (a) 2D HETCOR $^ { 1 } \\mathrm { H } \\mathrm { - } ^ { 7 } \\mathrm { L i }$ spectrum. (b) Comparison of 1D 1<sub>H</sub> spectrum (red) with the projections of 1<sub>H</sub> dimension (blue) from the 2D spectrum. This highlights the relative intensity changes of the 1<sub>H</sub> peaks.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:4/block:15",
+      "page": 4,
+      "block": 15,
+      "image_path": "figures/standard/page4-block15.png",
+      "caption": "Figure 2. Solid-state NMR spectra demonstrate that cations interact preferentially with imidazole ligands. (a) 2D HETCOR $^ { 1 } \\mathrm { H } \\mathrm { - } ^ { 7 } \\mathrm { L i }$ spectrum. (b) Comparison of 1D 1<sub>H</sub> spectrum (red) with the projections of 1<sub>H</sub> dimension (blue) from the 2D spectrum. This highlights the relative intensity changes of the 1<sub>H</sub> peaks.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:5/block:9",
+      "page": 5,
+      "block": 9,
+      "image_path": "figures/standard/page5-block9.png",
+      "caption": "Figure 3. Mechanical properties of the polymer change drastically upon the addition of various metal salts. For the PIGE polymer containing covalently tethered ligands, $\\mathrm { { N i } ^ { 2 + } }$ and $\\mathbf { F } \\mathbf { e } ^ { 3 + }$ cations act as transient cross-linkers, resulting in the appearance of a plateau in the storage modulus (a) and peak in the loss modulus (b) within the accessible frequency−temperature range. (c) A clearer effect of metal cross-linking can be seen from the complex viscosity, which increases dramatically with the addition of metal salts except for LiTFSI. Time−temperature superposition was successfully performed on all samples.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:5/block:10",
+      "page": 5,
+      "block": 10,
+      "image_path": "figures/standard/page5-block10.png",
+      "caption": "Figure 3. Mechanical properties of the polymer change drastically upon the addition of various metal salts. For the PIGE polymer containing covalently tethered ligands, $\\mathrm { { N i } ^ { 2 + } }$ and $\\mathbf { F } \\mathbf { e } ^ { 3 + }$ cations act as transient cross-linkers, resulting in the appearance of a plateau in the storage modulus (a) and peak in the loss modulus (b) within the accessible frequency−temperature range. (c) A clearer effect of metal cross-linking can be seen from the complex viscosity, which increases dramatically with the addition of metal salts except for LiTFSI. Time−temperature superposition was successfully performed on all samples.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:5/block:11",
+      "page": 5,
+      "block": 11,
+      "image_path": "figures/standard/page5-block11.png",
+      "caption": "Figure 3. Mechanical properties of the polymer change drastically upon the addition of various metal salts. For the PIGE polymer containing covalently tethered ligands, $\\mathrm { { N i } ^ { 2 + } }$ and $\\mathbf { F } \\mathbf { e } ^ { 3 + }$ cations act as transient cross-linkers, resulting in the appearance of a plateau in the storage modulus (a) and peak in the loss modulus (b) within the accessible frequency−temperature range. (c) A clearer effect of metal cross-linking can be seen from the complex viscosity, which increases dramatically with the addition of metal salts except for LiTFSI. Time−temperature superposition was successfully performed on all samples.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:6/block:7",
+      "page": 6,
+      "block": 7,
+      "image_path": "figures/standard/page6-block7.png",
+      "caption": "Figure 4. Ionic conductivity can be approximately normalized by the ratio of the concentration of metal to imidazole (r), regardless of ion valency or identity. Each data point results from an average of at least two different samples; error bars represent 68% confidence intervals.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:7/block:3",
+      "page": 7,
+      "block": 3,
+      "image_path": "figures/standard/page7-block3.png",
+      "caption": "Figure 5. Polymers based on M−L coordination enable independent control over the mechanical and ion conducting properties. The zerofrequency viscosity of the material can be tuned over almost 3 orders of magnitude with minimal changes in the ionic conductivity. Error bars represent 68% confidence intervals.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:7/block:8",
+      "page": 7,
+      "block": 8,
+      "image_path": "figures/standard/page7-block8.png",
+      "caption": "Figure 7. Comparison of measured conductivity values with calculated conductivity suggest incomplete salt dissociation for the PEO-stat-PAGE and cation contribution to the conductivity for the PIGE. Conductivity is calculated using diffusion coefficients measured from pulsed-field-gradient NMR using the Nernst−Einstein equation assuming full salt dissociation. First only anion (TFSI−) participation in ion conductivity is accounted for, and then for the lithiumcontaining polymers full participation from both Li+ and TFSI− is assumed. In the PEO-stat-PAGE samples $( \\mathsf { a } , \\mathsf { c } ) ,$ , an overestimation of conductivity compared to the measured conductivity indicates incomplete salt dissociation, while in the PIGE samples (b, d) $\\mathrm { T F S I } ^ { - 1 }$ diffusion underestimates the observed conductivity. Lithium diffusion adequately accounts for the remaining difference in LiTFSI PIGE (b), suggesting the possibility that zinc might account for the remaining difference in the Zn(TFSI)2 PIGE (d). Zn(TFSI)2 from Alfa Aesar was used for the PEO-stat-PAGE measurement, while the Solvionic salt was used for the PIGE measurement.",
+      "source_tier": "standard"
+    },
+    {
+      "locator": "doc:ee365e7/tier:standard/page:8/block:6",
+      "page": 8,
+      "block": 6,
+      "image_path": "figures/standard/page8-block6.png",
+      "caption": "Figure 7. Comparison of measured conductivity values with calculated conductivity suggest incomplete salt dissociation for the PEO-stat-PAGE and cation contribution to the conductivity for the PIGE. Conductivity is calculated using diffusion coefficients measured from pulsed-field-gradient NMR using the Nernst−Einstein equation assuming full salt dissociation. First only anion (TFSI−) participation in ion conductivity is accounted for, and then for the lithiumcontaining polymers full participation from both Li+ and TFSI− is assumed. In the PEO-stat-PAGE samples $( \\mathsf { a } , \\mathsf { c } ) ,$ , an overestimation of conductivity compared to the measured conductivity indicates incomplete salt dissociation, while in the PIGE samples (b, d) $\\mathrm { T F S I } ^ { - 1 }$ diffusion underestimates the observed conductivity. Lithium diffusion adequately accounts for the remaining difference in LiTFSI PIGE (b), suggesting the possibility that zinc might account for the remaining difference in the Zn(TFSI)2 PIGE (d). Zn(TFSI)2 from Alfa Aesar was used for the PEO-stat-PAGE measurement, while the Solvionic salt was used for the PIGE measurement.",
+      "source_tier": "standard"
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:44:26.194216Z",
+  "duration_seconds": 2.122938209096901,
+  "wait_retries": 0,
+  "num_tables": 6
+}

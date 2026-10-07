@@ -1,0 +1,25 @@
+{
+  "paper_id": "0a3655ba",
+  "formulations": [
+    {
+      "Polymer system Notes": "Poly(AN-co-BuA) with 67 mol% AN monomeric units",
+      "Polymer family": "acrylonitrile, ester",
+      "Polymer": "poly(AN-co-BuA)",
+      "Comonomer percentage": 67.0,
+      "Average functional group per monomer": 1.0,
+      "Anion": "I",
+      "Li:monomer": 1.2,
+      "Li:functional group": 1.2,
+      "salt wt%": 57.9,
+      "Tg": 10.0,
+      "Tg polymer without salt": 42.0,
+      "Tm": "69",
+      "Tm start": 69.0,
+      "crystalline?": "yes",
+      "Transference number": 0.54,
+      "T for transference": 70.0,
+      "Transference notes": "Measured at 70 °C.",
+      "Solvent used": "acetonitrile"
+    }
+  ]
+}

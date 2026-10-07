@@ -1,0 +1,33 @@
+{
+  "paper_id": "bdf71b01",
+  "formulations": [
+    {
+      "Polymer system Notes": "Amorphous oxyethylene-oxymethylene copolymer with randomly-spaced oxy-methylene units inserted into linear PEO chain. Formula: -[(CH2-CH2-O)n-CH2-O]-m, where n varies randomly around 9 and m is about 600.",
+      "Polymer family": "ether",
+      "Polymer": "Amorphous PEO copolymer",
+      "SMILES descriptor 1": "COC",
+      "SMILES descriptor 2": "COC",
+      "Anion": "ClO4",
+      "Li:monomer": 0.0417,
+      "Li:functional group": 0.0417,
+      "salt wt%": 3.0,
+      "Tm": "none",
+      "crystalline?": "no",
+      "Conductivity at 20C": 1.0,
+      "Conductivity at 25C": 1.0,
+      "Conductivity at 30C": 1.0,
+      "Conductivity at 35C": 1.0,
+      "Conductivity at 40C": 1.0,
+      "Conductivity at 45C": 1.0,
+      "Conductivity at 50C": 1.0,
+      "Arrhenius notes": "Arrhenius plots given in Fig. 4 for various concentrations (Li:O ratios from 64:1 to 1:1).",
+      "chain architecture": "linear",
+      "Solvent used": "acetonitrile",
+      "drying temp": "80",
+      "drying time (h)": "24",
+      "drying vacuum": "yes",
+      "Notes": "Conductivity values read from Fig. 5 (Log10 conductivity vs dopant level). Values are approximate from plot reading. Salt concentration given as Li:O ratio of 24:1 corresponds to ~3 wt% LiClO4. Polymer structure described in Introduction: -[(CH2-CH2-O)n-CH2-O]-m with n~9, m~600.",
+      "Reference": "E. Linden and J.R. Owen, Solid State Ionics 28-30 (1988) 994-1000"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "paper_id": "569ebb10",
+  "source_pdf": "experiments/tier_comparison/569ebb10-schauser2018/569ebb10-schauser2018.pdf",
+  "mineru_doc_id": "ee365e7",
+  "tier": "advanced",
+  "text_tier": null,
+  "figure_tier": null,
+  "page_range": "1-11",
+  "figures": [
+    {
+      "locator": "doc:ee365e7/tier:advanced/page:1/block:15",
+      "page": 1,
+      "block": 15,
+      "image_path": "figures/page1-block15.png",
+      "caption": "Scheme 1. Synthesis of Imidazole-Functionalized PIGE Copolymer and Subsequent Addition of Metal Salts Allows for Unique Control of Bulk Properties<sup>a</sup>",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:ee365e7/tier:advanced/page:2/block:4",
+      "page": 2,
+      "block": 4,
+      "image_path": "figures/page2-block4.png",
+      "caption": null,
+      "source_tier": null
+    },
+    {
+      "locator": "doc:ee365e7/tier:advanced/page:4/block:3",
+      "page": 4,
+      "block": 3,
+      "image_path": "figures/page4-block3.png",
+      "caption": "Figure 1. (a) Addition of metal salt to a polymer with tethered ligands results in an equilibrium between M−L coordination and salt dissociation. The application of an electric field allows for both ions to move, although the motion of coordinated cations is related to the time scale of metal− ligand coordination. (b) Addition of equal cation:ligand molar ratios (r) results in varying amounts of anions. In all figures, a 4-fold coordination geometry is used for illustrative purposes.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:ee365e7/tier:advanced/page:4/block:12",
+      "page": 4,
+      "block": 12,
+      "image_path": "figures/page4-block12.png",
+      "caption": "Figure 2. Solid-state NMR spectra demonstrate that cations interact preferentially with imidazole ligands. (a) 2D HETCOR $^ { 1 } \\mathrm { H } \\mathrm { - } ^ { 7 } \\mathrm { L i }$ spectrum. (b) Comparison of 1D 1<sub>H</sub> spectrum (red) with the projections of 1<sub>H</sub> dimension (blue) from the 2D spectrum. This highlights the relative intensity changes of the 1<sub>H</sub> peaks.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:ee365e7/tier:advanced/page:5/block:9",
+      "page": 5,
+      "block": 9,
+      "image_path": "figures/page5-block9.png",
+      "caption": "Figure 3. Mechanical properties of the polymer change drastically upon the addition of various metal salts. For the PIGE polymer containing covalently tethered ligands, $\\mathrm { { N i } ^ { 2 + } }$ and $\\mathbf { F } \\mathbf { e } ^ { 3 + }$ cations act as transient cross-linkers, resulting in the appearance of a plateau in the storage modulus (a) and peak in the loss modulus (b) within the accessible frequency−temperature range. (c) A clearer effect of metal cross-linking can be seen from the complex viscosity, which increases dramatically with the addition of metal salts except for LiTFSI. Time−temperature superposition was successfully performed on all samples.",
+      "source_tier": null
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:44:17.599388Z",
+  "duration_seconds": 175.65072245895863,
+  "wait_retries": 0,
+  "num_tables": 6
+}

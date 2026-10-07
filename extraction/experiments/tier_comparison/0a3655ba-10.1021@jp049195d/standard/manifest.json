@@ -1,0 +1,88 @@
+{
+  "paper_id": "0a3655ba",
+  "source_pdf": "experiments/tier_comparison/0a3655ba-10.1021@jp049195d/0a3655ba-10.1021@jp049195d.pdf",
+  "mineru_doc_id": "9c87b64",
+  "tier": "standard",
+  "text_tier": null,
+  "figure_tier": null,
+  "page_range": "1-8",
+  "figures": [
+    {
+      "locator": "doc:9c87b64/tier:standard/page:4/block:3",
+      "page": 4,
+      "block": 3,
+      "image_path": "figures/page4-block3.png",
+      "caption": "Figure 1. Glass transition temperature, $T _ { \\mathrm { g } _ { 2 } }$ of electrolytes comprising poly(AN-co-BuA 2:1) and LiI depending on the salt concentration.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:9c87b64/tier:standard/page:5/block:4",
+      "page": 5,
+      "block": 4,
+      "image_path": "figures/page5-block4.png",
+      "caption": "Figure 2. Ionic conductivity of electrolytes based on poly(AN-co-BuA 2:1) with different lithium salts (molar ratio of salt to AN m.u. in the copolymer ) 1.2).",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:9c87b64/tier:standard/page:5/block:12",
+      "page": 5,
+      "block": 12,
+      "image_path": "figures/page5-block12.png",
+      "caption": "Figure 3. Ionic conductivity of electrolytes based on poly(AN-co-BuA 2:1) and mixtures of lithium salts with $\\mathrm{LiN(CF_3SO_2)_2}$ (molar ratio of salt to AN m.u. in the copolymer ) 1.2).",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:9c87b64/tier:standard/page:6/block:3",
+      "page": 6,
+      "block": 3,
+      "image_path": "figures/page6-block3.png",
+      "caption": "Figure 4. Conductivity isotherms determined at (b) 30 and (O) $7 0 ^ { \\circ } \\mathrm { { } ^ { \\circ } C }$ for electrolytes comprising poly(AN-co-BuA 2:1) and LiI depending on the salt concentration.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:9c87b64/tier:standard/page:6/block:5",
+      "page": 6,
+      "block": 5,
+      "image_path": "figures/page6-block5.png",
+      "caption": "Figure 5. Conductivity isotherms determined at (b) 30 and (O) $\\widetilde { 7 0   ^ { \\circ } \\mathrm { C } }$ for electrolytes comprising poly(AN-co-BuA 2:1) and LiN(CF<sub>3</sub>- $\\mathrm { S O } _ { 2 } ) _ { 2 }$ depending on the salt concentration.",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:9c87b64/tier:standard/page:6/block:9",
+      "page": 6,
+      "block": 9,
+      "image_path": "figures/page6-block9.png",
+      "caption": "Figure 6. SEM images of the polymer electrolyte based on poly(AN-co-BuA 2:1) and 74.6 wt % of $\\mathrm{LiN(CF_3SO_2)_2}$",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:9c87b64/tier:standard/page:6/block:12",
+      "page": 6,
+      "block": 12,
+      "image_path": "figures/page6-block12.png",
+      "caption": "Figure 6. SEM images of the polymer electrolyte based on poly(AN-co-BuA 2:1) and 74.6 wt % of $\\mathrm{LiN(CF_3SO_2)_2}$",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:9c87b64/tier:standard/page:6/block:13",
+      "page": 6,
+      "block": 13,
+      "image_path": "figures/page6-block13.png",
+      "caption": "Figure 6. SEM images of the polymer electrolyte based on poly(AN-co-BuA 2:1) and 74.6 wt % of $\\mathrm{LiN(CF_3SO_2)_2}$",
+      "source_tier": null
+    },
+    {
+      "locator": "doc:9c87b64/tier:standard/page:7/block:4",
+      "page": 7,
+      "block": 4,
+      "image_path": "figures/page7-block4.png",
+      "caption": "Figure 7. Conductivities of electrolytes comprising 58 wt % of LiI, 75 wt % of $\\mathrm{LiN(CF_3SO_2)_2}$ and various polymeric matrixes.",
+      "source_tier": null
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:37:54.700384Z",
+  "duration_seconds": 38.027350042015314,
+  "wait_retries": 0,
+  "num_tables": 5
+}

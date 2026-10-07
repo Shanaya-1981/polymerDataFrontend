@@ -1,319 +1,302 @@
-# Polymer Electrolyte Data Mining
+# polymerData
 
-A rebuilt front end for [pedatamine.org](https://pedatamine.org), the polymer electrolyte
-database from Schauser et al. 655 samples pulled from 65 papers, conductivity at 22 temperatures
-between 0 and 125 °C, and MORDRED descriptors for the comonomers and the anion.
+Monorepo for the polymer electrolyte data project: paper extraction, data
+pipelines, and the frontend explorer.
 
-## Credits
+- [`extraction/`](extraction/) — parses uploaded papers (text, tables, figures) with MinerU,
+  sends the parsed content to an LLM to extract structured data, and scores
+  results against the golden dataset (`extraction/data/_Cleaned_Final_Data_6_2_2020.csv`).
+- [`frontend/`](frontend/) — the client-side app that visualizes the polymer-electrolyte
+  conductivity dataset (a rebuild of pedatamine.org).
+- [`util/`](util/) — helpers shared across the project. `claudeAPIMock.py` is how
+  project code makes an LLM call; see below.
 
-The database is the real work here and it isn't ours. Nicole Schauser, Gabrielle Kliegle, Piper
-Cooke, Rachel Segalman and Ram Seshadri did the literature curation, computed the descriptors,
-and put all of it online under MIT along with a Plotly Dash app to explore it. We only rebuilt
-the interface.
-
-Their data and original app:
-[github.com/nschauser/PolymerElectrolyte](https://github.com/nschauser/PolymerElectrolyte).
-UC Santa Barbara / NSF MRSEC DMR 1720256.
-
-We aren't affiliated with them and they haven't endorsed this. The data is unchanged. It's their
-`6_2_2020` snapshot and we haven't added anything to it.
-
----
-
-## What you can do
-
-| Page             | What it's for                                                                               |
-| ---------------- | ------------------------------------------------------------------------------------------- |
-| **Explore**      | Any of 41 properties against any other, coloured by a third. Linear or log on either axis.  |
-| **Temperature**  | σ(T) per sample, under Arrhenius, VFT, T, or T/T<sub>g</sub> scaling.                       |
-| **Correlations** | The 36-feature Pearson matrix, or a ranked list of what correlates with conductivity.       |
-| **Data**         | Every sample as a row. Search, sort, choose columns, export to CSV.                         |
-| **Extract**      | Upload a paper's PDF, name the features you want, and get its data back, grouped by sample. |
-| **Features**     | What each of the 36 features means, including the MORDRED descriptors.                      |
-| **About**        | Contributors, funding, contact.                                                             |
-
-Click a point on any plot and it tells you the polymer and links the DOI.
-
-## How complete the data is
-
-Some properties are only recorded for a handful of samples. If a sample doesn't have a value for
-what you're plotting, it just won't show up, so it's worth checking this before you go looking
-for a trend and find almost nothing there.
-
-| Property                | Samples with a value |
-| ----------------------- | -------------------- |
-| Li:functional group     | 655 / 655            |
-| M<sub>w</sub>           | 528 / 655            |
-| VFT E<sub>a</sub>       | 426 / 655            |
-| Arrhenius E<sub>a</sub> | 424 / 655            |
-| T<sub>g</sub>           | 368 / 655            |
-| M<sub>n</sub>           | 325 / 655            |
-| PDI                     | 265 / 655            |
-| % crystallinity         | 137 / 655            |
-| T<sub>m</sub>           | 82 / 655             |
-| Transference number     | 80 / 655             |
-| D<sub>Li</sub>          | 29 / 655             |
-| Storage modulus         | 4 / 655              |
-
-Conductivity is 5225 measurements in total, but they aren't spread evenly. Most of them sit
-between 30 and 90 °C. There are 78 polymers across 24 families, 12 anions and 14 casting
-solvents.
-
-## What's new compared to the old site
-
-- **Nothing waits on a server.** Changing an axis or a filter updates the plot right away.
-- **It works on a phone or a tablet.** The old one was desktop-only.
-- **Filters stack.** You can ask for PEO-family samples with TFSI or ClO₄, cast from
-  acetonitrile, all at once. The old site let you filter on one property at a time, with one
-  value.
-- **Any view is a link.** Whatever you change on the page goes into the URL, so you can copy it
-  and it reopens exactly the same for whoever you send it to. Handy for an SI figure or a referee
-  response. Only the things you've actually changed get added, so if the URL still looks plain it
-  means everything is sitting at its default. This works when you run it locally too, you'll just
-  see it on a `localhost` address.
-- **You can see the measurements themselves.** The Data page lists every sample as a row, so you
-  can search, sort and download them. The old site only ever gave you plots.
-- **You can ask what correlates with conductivity.** The old correlation matrix only compared the
-  36 features against each other — conductivity wasn't in it at all, so the question most people
-  arrive with had no answer. You can now rank every feature against conductivity at any of the 22
-  measured temperatures. At 60 °C the strongest are lower T<sub>g</sub> (r = −0.39) and lower
-  molecular weight (−0.32), then more charge-delocalised anions — higher electronegativity index,
-  more oxygens, more hydrogen-bond acceptors. Each row shows its own `n`, because coverage varies
-  a lot between properties.
-- **Your view survives switching pages.** Set up a plot, go and look at something else, come back
-  and it's still how you left it. There's a "Reset to defaults" button for when you want a clean
-  slate.
-- **It tells you when points are left out.** A log axis can't show zero or negative values, so
-  instead of quietly dropping them it says how many it dropped. T<sub>g</sub> in °C is where
-  you'll notice this most. Same idea on the VFT and T/T<sub>g</sub> views, which can only use the
-  351 samples that have both a T<sub>g</sub> and conductivity data.
-- **The colours work for colour-blind readers**, and every series gets its own marker shape too,
-  so the plots survive greyscale printing. If a property has more categories than we have safe
-  colours for, the rarest ones go into a single grey "Other" instead of getting colours you can't
-  tell apart.
-- **Light and dark mode.**
-- **The correlation matrix is recomputed.** The old one was multiplied by 271/270 throughout,
-  which is a population-vs-sample standard deviation mix-up, so its diagonal came out at 1.0037.
-  The factor was the same for every cell, so nothing about the relative structure changed and
-  anything you concluded from the old plot still stands. This version just reports r directly.
+How to run the frontend and the extraction server on your computer is below.
+[`frontend/README.md`](frontend/README.md) has more about the app itself.
 
 ## Running it locally
 
-It isn't hosted anywhere yet. Install [Node.js](https://nodejs.org) (LTS is fine), then from this
-directory:
+The frontend and the extraction server both run on your own computer, each in
+its own terminal. Every page of the frontend except **Extract** works without
+the server. Extract sends a paper's PDF to the extraction server
+(`extraction/api.py`) and shows the data it sends back.
 
-```bash
-npm install
-npm run dev     # then open the URL it prints, usually http://localhost:5173
+Run each command block below from the repo root, the folder this README is in.
+
+### Once: install what they need
+
+1. **Node.js**, the LTS (long-term support) version, from https://nodejs.org.
+   The frontend and Claude Code both need it.
+2. **Claude Code, logged in.** The extraction server uses it to have Claude read
+   the paper. Run `npm install -g @anthropic-ai/claude-code`, then run `claude`
+   once and log in. [Making an LLM call](#making-an-llm-call-utilclaudeapimockpy)
+   explains why it goes through Claude Code instead of an API key.
+3. **MinerU**, the tool that turns a PDF into text and figure images before
+   Claude reads it. It runs on your computer and needs about 2 GB of model
+   files. Install it with [uv](https://docs.astral.sh/uv/), a tool that
+   installs Python programs, each with its own packages:
+
+   ```sh
+   uv tool install --python 3.10 "mineru>=4.0,<5"
+   uv tool update-shell     # lets terminals find the mineru command
+   ```
+
+   **Then open a new terminal,** and run the rest there. uv puts `mineru` in
+   `~/.local/bin`, and a terminal only learns that folder's commands when it
+   opens. A terminal opened earlier can't find `mineru`, and neither can an
+   extraction server started from it. Activating the extraction server's
+   virtual environment (step 4) doesn't help, because `mineru` isn't in it. That server works on papers it parsed
+   before, but on a new one the page says "The extraction failed" with the
+   reason `[Errno 2] No such file or directory: 'mineru'`.
+
+   ```sh
+   mineru-kit models download --tier standard           # the model files, about 2 GB
+   mineru config set parse_server.local.mode managed    # parse on this computer, not on MinerU's online service
+   mineru server restart
+   mineru server status --json
+   ```
+
+   MinerU is ready when the last command's `supported_tiers`, under
+   `parse_server` → `local`, lists `"advanced"`. That's the parsing quality
+   the extraction uses. Right after the restart the list can still be empty
+   while MinerU loads its models, so run the command again a little later.
+4. **The extraction server's Python packages,** in a virtual environment: a
+   folder, `extraction/.venv/`, that holds this project's own copy of each
+   package.
+
+   ```sh
+   cd extraction
+   python3 -m venv .venv
+   .venv/bin/pip install -r requirements.txt
+   ```
+5. **The frontend's packages:**
+
+   ```sh
+   cd frontend
+   npm install
+   ```
+
+### Each time: start both
+
+In one terminal, start the extraction server:
+
+```sh
+cd extraction
+.venv/bin/python api.py      # listens on http://127.0.0.1:8000
 ```
 
-The **Extract** page also needs the extraction server running: `python api.py` from `extraction/`
-in the polymerData monorepo. The page expects it at `http://127.0.0.1:8000`. To use
-another address, copy [`.env.example`](.env.example) to `.env.local`, set `VITE_EXTRACT_API_URL`,
-and restart `npm run dev`. The server only answers pages opened from a `localhost` or `127.0.0.1`
-address, which the dev server is.
+In a second terminal, start the frontend:
 
----
-
-# For developers
-
-Everything below is implementation detail.
-
-📖 **[Architecture wiki](https://deepwiki.com/merlinymy/polymerDataFrontend/2-data-layer)** — a
-generated walkthrough of the codebase, starting at the data layer.
-
-Status, known gotchas and possible next steps are in **[`HANDOFF.md`](HANDOFF.md)**.
-
-## Stack
-
-- [Vite](https://vite.dev) + [React 19](https://react.dev) + TypeScript (strict)
-- [Tailwind CSS v4](https://tailwindcss.com), CSS-first config (`@theme` in
-  `src/styles/theme.css`, no `tailwind.config.js`)
-- [react-router-dom v7](https://reactrouter.com) (`BrowserRouter`)
-- [Plotly.js](https://plotly.com/javascript/) as a slim custom bundle (`scatter` + `heatmap` only)
-- [Radix UI](https://www.radix-ui.com) primitives + [cmdk](https://cmdk.paco.me) for the
-  searchable selects
-- [Vitest](https://vitest.dev) + Testing Library (jsdom), [Playwright](https://playwright.dev) for
-  the browser smoke test
-- ESLint (flat config) + Prettier
-- npm. Standalone Node scripts run with [`tsx`](https://github.com/privatenumber/tsx)
-
-There's no backend. 655 rows is small enough to ship as a static file (76 kB gzipped), so all the
-filtering, sorting and plotting happens in the browser and the whole thing can be hosted as
-static files.
-
-## Commands
-
-```bash
-npm install
-npm run dev        # start the dev server
-npm run build      # typecheck + production build to dist/
-npm run preview    # preview the production build locally
-npm run typecheck  # tsc --noEmit
-npm run lint       # eslint .
-npm run format     # prettier --write .
-npm test           # vitest run (unit tests, jsdom)
-npm run smoke      # load every route in real Chrome; fails on blank pages or console errors
-npm run build:data # regenerate src/data/generated/ from data/raw/, asserting every invariant
+```sh
+cd frontend
+npm run dev                  # prints http://localhost:5173
 ```
 
-### A green test suite doesn't mean the app renders
+Then open http://localhost:5173 and choose **Extract** in the menu. Ctrl+C in a
+terminal stops what's running there.
 
-jsdom has no canvas, so no unit test ever mounts a real chart. Three of the six pages once came
-up blank white while typecheck, lint and 236 tests were all passing. That particular bug couldn't
-have been caught by a unit test either, because it was a missing Node-only global that exists
-under Vitest but not in a browser. Run `npm run smoke` against a running dev server before you
-trust the suite on anything chart-related.
+**What you'll notice:**
+- **Open `http://localhost:5173`, not `http://127.0.0.1:5173`.** Nothing
+  answers at the second address, because the frontend's development server
+  only listens on `localhost`.
+- **If the extraction server isn't running,** Extract says "Couldn't reach the
+  extraction server". The other pages don't notice.
+- **Results stay after a refresh.** Once an extraction starts, the page's
+  address becomes `/extract?job=<id>`. Refreshing it, opening it again later,
+  or coming back through the menu shows that extraction, running or finished.
+  **New extraction** takes the address back to plain `/extract`. The address
+  only works on a computer that can reach the same extraction server.
+- **Download CSV** on the results saves them as `<PDF name>-extracted.csv`: a
+  `sample` column, then one column per feature, one row per data point, and an
+  empty cell where the paper doesn't give a value.
+- **Stopping the extraction server loses any extraction still running;**
+  finished ones are saved. When it starts again, the page says "The server
+  lost this extraction". **Try again** starts it over, unless the page was
+  reloaded since you chose the PDF. A reloaded page no longer has the file, so
+  wherever starting over is the fix (this, or an extraction that failed),
+  **Try again** isn't offered: choose the PDF again under **Change file or
+  features**.
+- **MinerU's own server keeps running in the background** after you close both
+  terminals. `mineru server stop` stops it.
+- **How long an extraction takes,** and what the server's answers look like, is
+  under [Extraction API](#extraction-api-extractionapipy) below.
 
-## Directory layout
+## Making an LLM call (`util/claudeAPIMock.py`)
 
+`ask_llm()` sends a prompt to Claude and returns the reply. For now it doesn't
+use a paid API. It runs Claude Code's non-interactive mode (`claude -p`) on your
+machine with your Claude Code login, so calls count against your Claude Code
+plan's usage limits and nothing is billed to an API key.
+
+**Setup:**
+1. Install Claude Code: `npm install -g @anthropic-ai/claude-code`.
+2. Run `claude` once and log in.
+
+`ask_llm()` needs only the `claude` command on your PATH and the Python standard
+library.
+
+```python
+import json
+from util.claudeAPIMock import ask_llm
+
+# Text in, text out
+reply = ask_llm("Summarise this abstract in two sentences: ...")
+
+# A system prompt (instructions for the whole reply) and a chosen model
+reply = ask_llm(question, system="You are a polymer chemist.", model="claude-opus-5-5")
+
+# JSON out: json_schema describes the shape the reply must have,
+# and the reply is that JSON as a string
+schema = {"type": "object",
+          "properties": {"polymer": {"type": "string"}, "salt": {"type": "string"}},
+          "required": ["polymer", "salt"], "additionalProperties": False}
+data = json.loads(ask_llm("Which polymer and salt does this paper study? ...", json_schema=schema))
+
+# Images, each optionally with a label shown just before it, such as its caption
+reply = ask_llm("How many curves does this plot show?",
+                images=[("fig4.png", "Fig. 4. Arrhenius plots for amorphous PEO ...")])
+
+# PDFs, which Claude reads page by page
+reply = ask_llm("List the samples this paper reports.", documents=["paper.pdf"])
 ```
-HANDOFF.md                 # status, gotchas, possible next steps
-data/                      # source dataset + captured reference data — don't edit
-  raw/                     # the two source CSVs + their MIT license
-  reference/               # ground truth captured from the original site, plus specs
-src/
-  main.tsx                 # entry point (mounts <App/>, imports theme.css)
-  App.tsx                  # BrowserRouter + route table
-  styles/
-    theme.css              # design tokens (Tailwind v4 @theme, light/dark, focus ring)
-    chart-palette.ts       # typed mirror of the --chart-1..7 CSS variables
-  components/
-    theme/                 # ThemeProvider, ThemeToggle, useTheme (light/dark/system)
-    layout/                # AppShell, Header, Nav, NavDrawer, Footer, PageHeader
-    ui/                    # primitives (Combobox, MultiSelect, Table, Sheet, Notice…)
-    charts/                # slim Plotly bundle, PlotlyChart wrapper, trace builders
-  lib/                     # transforms, filtering, log-axis guard, CSV export, URL +
-                           #   route state, correlation ranking
-  data/                    # typed accessors + generated/ (committed build output)
-  pages/                   # one route per file, plus a directory of parts per page
-scripts/
-  build-data.ts            # CSVs -> typed JSON, asserts every invariant
-  smoke.mjs                # browser smoke test
+
+**Importing it:** code run from the repo root imports it as shown. Code run from
+inside `extraction/` needs the repo root on its path: `PYTHONPATH=.. python your_script.py`.
+
+**What you'll notice:**
+- **Even a one-word reply takes 3–5 seconds,** because every call starts the
+  `claude` program.
+- **`ANTHROPIC_API_KEY` is removed on purpose** from what `claude` sees. With it
+  set, `claude` would bill that key instead of your plan. `extraction/` loads the
+  key from `.env`, so it is usually set.
+- **Each call is isolated, the way an API call is:**
+  - it has no tools, so it can't read files or run commands;
+  - it doesn't load CLAUDE.md files;
+  - it runs outside the repo.
+
+  It still gets a few lines of Claude Code's own context: the date, your
+  platform and your account's email.
+- **Leaving out `model`** uses your Claude Code default model.
+- **A failed call raises `RuntimeError`** with Claude Code's own message, for
+  example `claude` not installed, usage limit reached, or unknown model.
+
+**Switching to a real API later** (the Claude API, OpenAI, or a local model
+server) means rewriting the body of `ask_llm()`. Code that calls it doesn't
+change.
+
+`extraction/extract_features.py` is built on it. Give it a paper's PDF and a
+text file with one feature name per line, and it writes a table with one row
+per data point. The first column names the sample (one material the paper
+tests) and the other columns hold the features. A sample gets several rows when
+the paper gives a feature at several conditions, such as its conductivity at
+several temperatures. Run `python extract_features.py paper.pdf features.txt -o out.csv`
+from `extraction/`.
+
+## Extraction API (`extraction/api.py`)
+
+A small web server that lets the frontend use `extract_features.py`. The page
+sends a PDF and the feature names, and gets the data back grouped by sample.
+
+**Start it** with `.venv/bin/python api.py` from `extraction/`, after the
+one-time setup in [Running it locally](#running-it-locally).
+
+- It listens on http://127.0.0.1:8000, which only this computer can reach. To
+  let other computers on the network reach it, run
+  `.venv/bin/uvicorn api:app --host 0.0.0.0 --port 8000` instead.
+- http://127.0.0.1:8000/docs lists the endpoints and has a form for trying each
+  one.
+
+**An extraction runs as a job, because it takes minutes.** The page starts the
+job, then keeps asking whether it has finished.
+
+1. `POST /extract` with a form (the format a browser uses to send a file) that
+   has two fields:
+   - `pdf`: the paper's PDF.
+   - `features`: the feature names, separated by commas, for example
+     `Temperature (°C), Conductivity (S/cm)`.
+
+   It answers at once with `202` and the job's id: `{"job": "07561dd6..."}`.
+2. `GET /extract/<job id>` answers with one of:
+   - `{"status": "running"}`: not finished yet, so ask again in about 5 seconds.
+   - `{"status": "failed", "error": "..."}`, with the reason.
+   - `{"status": "done", "samples": {...}}`, with the data.
+
+   Each answer also has `file`, the PDF's file name as uploaded; `features`,
+   the feature names as the server split them; and `started`, when the job
+   started, in seconds since 1970 (Unix time). A page opened later at a job's
+   address learns them from here, since it no longer has the PDF.
+
+From the frontend:
+
+```js
+const form = new FormData();
+form.append("pdf", file);               // the File from an <input type="file">
+form.append("features", featuresText);  // the text box, as typed
+const res = await fetch("http://127.0.0.1:8000/extract", { method: "POST", body: form });
+if (!res.ok) throw new Error((await res.json()).detail);  // not a PDF, or no feature names
+const { job } = await res.json();
+
+let result;
+do {
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  result = await (await fetch(`http://127.0.0.1:8000/extract/${job}`)).json();
+} while (result.status === "running");
 ```
 
-### Routes
+From a terminal:
 
-| path            | file                         | nav label    |
-| --------------- | ---------------------------- | ------------ |
-| `/`             | `src/pages/Home.tsx`         | Home         |
-| `/explore`      | `src/pages/Explore.tsx`      | Explore      |
-| `/temperature`  | `src/pages/Temperature.tsx`  | Temperature  |
-| `/correlations` | `src/pages/Correlations.tsx` | Correlations |
-| `/data`         | `src/pages/DataTable.tsx`    | Data         |
-| `/extract`      | `src/pages/Extract.tsx`      | Extract      |
-| `/features`     | `src/pages/Features.tsx`     | Features     |
-| `/about`        | `src/pages/About.tsx`        | About        |
-| `*`             | `src/pages/NotFound.tsx`     | — (404)      |
+```sh
+curl -F pdf=@papers/bdf71b01-linden1988.pdf -F "features=Temperature (°C), Conductivity (S/cm)" http://127.0.0.1:8000/extract
+curl http://127.0.0.1:8000/extract/<job id>
+```
 
-Pages are code-split with `React.lazy` inside one `<Suspense>` boundary in `AppShell`, so only
-the routed content area shows a loading state. Plotly and the dataset get their own chunks and
-only load on the routes that need them, so a cold visit to `/` is about 137 kB gzipped.
+That paper's answer, shortened (it gave 6 samples with 7 temperatures each):
 
-## Data pipeline
+```json
+{
+  "status": "done",
+  "file": "bdf71b01-linden1988.pdf",
+  "features": ["Temperature (°C)", "Conductivity (S/cm)"],
+  "started": 1790000000.0,
+  "samples": {
+    "Amorphous PEO (undoped)": [
+      {"Temperature (°C)": 20, "Conductivity (S/cm)": 1e-07},
+      {"Temperature (°C)": 25, "Conductivity (S/cm)": 2.82e-07}
+    ],
+    "Amorphous PEO:LiClO4 - 64:1": [
+      {"Temperature (°C)": 20, "Conductivity (S/cm)": 1.78e-07},
+      {"Temperature (°C)": 25, "Conductivity (S/cm)": 5.62e-07}
+    ]
+  }
+}
+```
 
-`npm run build:data` reads the two CSVs in `data/raw/` and writes typed, columnar JSON plus a
-generated column registry into `src/data/generated/`. That output is committed, so the app builds
-without running the script. Columnar rather than array-of-objects because it maps straight onto
-Plotly's `x`/`y` arrays and gzips much better.
+- **Each key under `samples` is a sample's name** as the paper gives it, or its
+  composition when the paper doesn't name it. Its list has one entry per data
+  point.
+- **Every data point has every feature,** in the order they were typed. `null`
+  means the paper doesn't give that value for that data point.
 
-It also emits a feature-vs-conductivity correlation table: for each of the 22 temperatures, the
-correlation of log σ against each feature, with the pair count. Two encoding decisions are
-recorded in the data rather than guessed — `crystalline?` is coded no/yes with the 19 `na` rows
-dropped, and `drying vacuum` is excluded outright, because its ordinal encoding in the forML CSV
-isn't recoverable with confidence. The reason is written into the generated JSON.
-
-The assertions are the main point of that script. It fails the build unless the regenerated data
-still matches the counts we verified against the original site: 655 rows, 5225 non-null
-conductivity measurements, 368 samples with a T<sub>g</sub>, 441 with `approxTg`, the six
-category cardinalities, and a 36×36 correlation matrix with a diagonal of exactly 1. The ground
-truth is in [`data/reference/DATA-SPEC.md`](data/reference/DATA-SPEC.md).
-
-Three data-quality fixes happen here:
-
-- **Encoding.** The main CSV isn't valid UTF-8. There are 37 stray `0xA0` bytes and 2 `0x96`
-  bytes sitting inside pasted citation text. We decode as Windows-1252 rather than Latin-1, so a
-  page range reads `104–109` instead of an invisible control character.
-- **Zero-width characters.** 40 cells have a `U+FEFF` inside the value, including three polymer
-  names. It's invisible in any editor but it breaks exact matching and search, so we strip it at
-  parse time. The downloadable CSV gets the same treatment plus a leading BOM so Excel reads it
-  as UTF-8.
-- **Correlation matrix.** Recomputed as plain pairwise-complete Pearson. There's a test asserting
-  that ours × 271/270 reproduces the original's, which both explains the difference and pins the
-  computation down.
-
-## Charts
-
-One `PlotlyChart` wrapper calls `Plotly.react()` against a ref instead of using
-`react-plotly.js`. It uses a `ResizeObserver` for responsiveness and resolves theme colours from
-CSS custom properties into concrete values, because Plotly can't read `var()` inside SVG
-attributes.
-
-**Trace batching.** The temperature page draws up to 619 sample curves. One trace each is what
-the original did, and it cost roughly 1 MB of JSON per interaction. Instead, samples that share a
-colour get concatenated into a single trace separated by `null`s, which gets it down to 8 traces
-or fewer. A parallel `customdata` array of the same length carries each point's source row index
-so a click still resolves to the right sample. That's in `src/components/charts/series.ts`, and
-the index mapping has its own test, because an off-by-one there would quietly credit a
-measurement to the wrong paper.
-
-**`scattergl` is deliberately not registered.** It measured 143 kB gzipped extra, and the largest
-plot here is 5225 points, which SVG handles fine. SVG also exports crisp PNGs at any scale. Read
-the note in `src/components/charts/plotly.ts` before adding it back.
-
-## Design tokens
-
-`src/styles/theme.css` defines a semantic token contract that all the UI is built from, instead
-of raw Tailwind palette colours (no `bg-slate-100` in app code): surfaces (`bg-canvas`,
-`bg-surface`, `bg-surface-raised`, `bg-muted`), text (`text-primary`, `text-secondary`,
-`text-muted`), borders (`border-subtle`, `border-default`, `border-strong`), one accent
-(`bg-accent` / `text-accent` / `border-accent` / `text-on-accent`, plus `bg-accent-hover`),
-restrained status colours (`text-danger`, `text-success`), a `.tabular` utility for lining up
-numeric columns, and a `--ring` focus colour used by a global `:focus-visible` style.
-
-Dark mode is a `.dark` class on `<html>`, applied before first paint by an inline script in
-`index.html` so there's no flash of the wrong theme, then kept in sync by `ThemeProvider`
-(light / dark / system, persisted to `localStorage`).
-
-### How the chart palette was picked
-
-The 7-slot categorical palette (`--chart-1` … `--chart-7` plus a reserved grey `--chart-other`,
-typed in `src/styles/chart-palette.ts`) was found by searching the OKLCH gamut and scoring
-candidates with `validate_palette.js` (OKLab ΔE under Machado-Oliveira-Fernandes CVD simulation).
-It passes every hard check under the strict `--pairs all` criterion in both light and dark, which
-is the criterion this app needs since the main view is a scatter plot where any two categories can
-end up side by side.
-
-Seven is the measured ceiling, not a preference. Joint light+dark margins come out at 1.29 for
-six hues, 1.03 for seven and 0.96 for eight, where 1.0 is the pass mark. Dark mode is what binds,
-because its lightness band (L ∈ [0.48, 0.67]) is a lot narrower than light's.
-
-Several columns have more than seven categories (12 anions, 14 solvents, 24 polymer families, 65
-DOIs, 78 polymers), so the rule is fold, never cycle. The seven most frequent categories take the
-hue slots and everything else renders as a desaturated "Other". The ranking is computed once over
-the whole dataset rather than the filtered view, so filtering never repaints the series that
-survive. Scatter marks also vary marker symbol per slot. Full derivation and the per-column
-coverage numbers are in [`data/reference/CHART-PALETTE.md`](data/reference/CHART-PALETTE.md).
-
-## Accessibility
-
-Keyboard reachable throughout with visible focus, semantic landmarks, a skip link, a
-focus-trapped mobile nav drawer, `aria-sort` on sortable headers and live regions for result
-counts. axe reports no violations across all 7 routes at desktop and mobile widths. The `/data`
-table also serves as the non-colour way to read the plotted data.
-
-## Static hosting (SPA fallback)
-
-Routing is client-side (`BrowserRouter`), so a static host has to serve `index.html` for unknown
-paths or deep links and refreshes will 404:
-
-- **Netlify** — `public/_redirects` is already there (`/* /index.html 200`).
-- **GitHub Pages** — copy the built `dist/index.html` to `dist/404.html` as a post-build step.
-- **Vercel** — rewrites are configured by default for Vite SPA output.
-
-## Data & attribution
-
-Data from Nicole Schauser et al., UC Santa Barbara / NSF MRSEC DMR 1720256. MIT licensed:
-[github.com/nschauser/PolymerElectrolyte](https://github.com/nschauser/PolymerElectrolyte). The
-source CSVs and their license sit untouched in `data/raw/`. `data/reference/` holds the ground
-truth we captured from the original site and used to check this rebuild against it.
+**What you'll notice:**
+- **A PDF the server has seen before takes from about 30 seconds to 2 minutes,**
+  which is the Claude call alone. A new PDF adds about 4 minutes while MinerU
+  parses it. The parse is kept, so the same PDF uploaded again, under any file
+  name, skips that step.
+- **Jobs run one at a time, in the order they came in.** `running` also covers
+  waiting for earlier jobs, so a job can stay `running` longer than the times
+  above.
+- **Every finished job is saved** to `extraction/output/extractions/<job id>.json`,
+  holding the same answer `GET /extract/<job id>` gives, so its id keeps
+  working after a restart. Failed jobs are saved too, with their reason. The
+  files stay on the computer running the server: `output/` isn't in git.
+- **A job still running when the server stops is lost.** Its id answers `404`
+  after the restart, and so does an id the server never made.
+- **Commas separate the feature names,** so a name can't contain a comma.
+  Spaces around each name are dropped.
+- **The server answers `400`,** with the reason in `detail`, when the file isn't
+  a PDF or no feature names are left.
+- **Only pages opened from a localhost address can read the answers,** meaning
+  `http://localhost:<port>` or `http://127.0.0.1:<port>`. That covers the Vite
+  dev server on any computer. A browser hides a server's answers from pages at
+  other addresses unless the server allows them (the browser rule called CORS),
+  and this server allows only those.

@@ -1,0 +1,32 @@
+{
+  "paper_id": "1dba839e",
+  "source_pdf": "experiments/tier_comparison/1dba839e-tominaga2015/1dba839e-tominaga2015.pdf",
+  "mineru_doc_id": "d87dfd8",
+  "tier": "advanced",
+  "text_tier": null,
+  "figure_tier": null,
+  "page_range": "1-4",
+  "figures": [
+    {
+      "locator": "doc:d87dfd8/tier:advanced/page:1/block:3",
+      "page": 1,
+      "block": 3,
+      "image_path": "figures/page1-block3.png",
+      "caption": null,
+      "source_tier": null
+    },
+    {
+      "locator": "doc:d87dfd8/tier:advanced/page:3/block:7",
+      "page": 3,
+      "block": 7,
+      "image_path": "figures/page3-block7.png",
+      "caption": "Figure 5. Structural image of interactions of $\\mathrm { L i ^ { + } }$ with carbonate groups in PEC-Li salt electrolyte at a salt concentration of 40 mol%.",
+      "source_tier": null
+    }
+  ],
+  "content_md_path": "content.md",
+  "parsed_at": "2026-09-22T06:06:58.928290Z",
+  "duration_seconds": 64.7509032090893,
+  "wait_retries": 0,
+  "num_tables": 4
+}
