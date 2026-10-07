@@ -32,8 +32,22 @@ export interface JobInfo {
   readonly startedAt?: number;
 }
 
+/** Where a running job is, from its status answer's `progress` (issue #13).
+ *  The words come from the server, so a new step needs no change here. */
+export interface JobProgress {
+  /** A stable id for the step, e.g. "parsing". */
+  readonly step: string;
+  /** What to call it, e.g. "Parsing the PDF". */
+  readonly name: string;
+  /** A sentence about it, e.g. how long it usually takes. */
+  readonly description: string;
+  /** How far along the job is, 0–100. It moves at step boundaries only: the
+   *  server can't see inside its two long steps (MinerU and the model call). */
+  readonly percent: number;
+}
+
 export type JobStatus = (
-  | { readonly status: "running" }
+  | { readonly status: "running"; readonly progress?: JobProgress }
   | { readonly status: "failed"; readonly error: string }
   | { readonly status: "done"; readonly samples: Samples }
 ) &
@@ -207,13 +221,30 @@ function parseJobInfo(body: Record<string, unknown>): JobInfo {
   return info;
 }
 
+/** A running job's `progress`, or `undefined` when it's missing or malformed:
+ *  the answer is still a usable status without it, as from an older server. */
+function parseProgress(value: unknown): JobProgress | undefined {
+  if (!isRecord(value)) return undefined;
+  const { step, name, description, percent } = value;
+  if (typeof step !== "string" || typeof name !== "string" || name === "") return undefined;
+  if (typeof percent !== "number" || !Number.isFinite(percent)) return undefined;
+  return {
+    step,
+    name,
+    description: typeof description === "string" ? description : "",
+    percent: Math.min(100, Math.max(0, percent)),
+  };
+}
+
 /** A job-status answer, or `null` if it isn't one. */
 export function parseJobStatus(body: unknown): JobStatus | null {
   if (!isRecord(body)) return null;
   const info = parseJobInfo(body);
   switch (body.status) {
-    case "running":
-      return { status: "running", ...info };
+    case "running": {
+      const progress = parseProgress(body.progress);
+      return progress ? { status: "running", progress, ...info } : { status: "running", ...info };
+    }
     case "failed":
       return {
         status: "failed",

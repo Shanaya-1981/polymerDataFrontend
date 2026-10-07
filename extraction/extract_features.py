@@ -30,7 +30,9 @@ With --send-pdf the PDF itself goes to the model and MinerU isn't used:
 Claude reads the pages, tables and plots on its own. That needs a model that
 reads PDFs (Claude does; most local models don't).
 
-Not wired into pipeline/ yet. It can be started from any folder.
+Not wired into pipeline/ yet. It can be started from any folder. It logs
+each parse and model call (log_setup.py), to stderr when run as a script so
+the CSV on stdout stays clean.
 """
 
 from __future__ import annotations
@@ -39,10 +41,13 @@ import argparse
 import csv
 import hashlib
 import json
+import logging
 import os
 import shutil
 import sys
 import tempfile
+import time
+from collections.abc import Callable
 from pathlib import Path
 from typing import TextIO
 
@@ -54,6 +59,14 @@ from pipeline.parsing.figure_links import prompt_anchor, rewrite_to_prompt_ancho
 from pipeline.parsing.manifest_schema import ParseManifest  # noqa: E402
 from pipeline.parsing.parse_paper import OUTPUT_ROOT, parse_paper_auto  # noqa: E402
 from util.claudeAPIMock import ask_llm  # noqa: E402
+
+from job_progress import ASKING, COLLECTING, PARSING  # noqa: E402
+from log_setup import configure_logging  # noqa: E402
+
+log = logging.getLogger("extraction.pipeline")
+
+# Called with a job_progress step id as each step starts.
+OnStep = Callable[[str], None]
 
 _TASK = (
     "Return each sample the paper reports, named as the paper names it (or by its composition if the paper "
@@ -89,14 +102,40 @@ def build_prompt(paper_dir: Path, features: list[str]) -> tuple[str, list[tuple[
     return f"{feature_list(features)}\n\nPaper:\n\n{paper_text}", images
 
 
+def _ask(prompt: str, **kwargs) -> str:
+    """ask_llm(), logged: what was sent, how long the reply took, or why it failed."""
+    log.info(
+        "LLM call: model %s, prompt %d chars, %d image(s), %d PDF(s)",
+        kwargs.get("model") or "(Claude Code's default)",
+        len(prompt),
+        len(kwargs.get("images", ())),
+        len(kwargs.get("documents", ())),
+    )
+    start = time.monotonic()
+    try:
+        reply = ask_llm(prompt, **kwargs)
+    except Exception as e:
+        log.error("LLM call failed after %.1f s: %s", time.monotonic() - start, e)
+        raise
+    log.info("LLM reply after %.1f s: %d chars", time.monotonic() - start, len(reply))
+    return reply
+
+
 def extract_features(
-    paper: Path, features: list[str], model: str | None = None, send_pdf: bool = False
+    paper: Path,
+    features: list[str],
+    model: str | None = None,
+    send_pdf: bool = False,
+    on_step: OnStep | None = None,
 ) -> dict[str, list[dict]]:
     """Each sample's name mapped to its data points, each a dict of every feature, in the order given;
     None where the paper doesn't give it. Samples the model gives the same name are merged.
 
     send_pdf=True sends the PDF itself instead of MinerU's text and figures.
+    on_step is called with each job_progress step as it starts: PARSING (only
+    when MinerU runs), ASKING, then COLLECTING.
     """
+    step = on_step or (lambda _: None)
     value = {"type": ["string", "number", "null"]}
     point = {"type": "object", "properties": {feature: value for feature in features}, "additionalProperties": False}
     schema = {
@@ -118,19 +157,24 @@ def extract_features(
     if send_pdf:
         if paper.suffix.lower() != ".pdf":
             raise ValueError(f"{paper}: --send-pdf needs the paper's PDF, not a parsed folder")
-        reply = ask_llm(feature_list(features), system=SYSTEM_PDF, model=model, json_schema=schema, documents=[paper])
+        step(ASKING)
+        reply = _ask(feature_list(features), system=SYSTEM_PDF, model=model, json_schema=schema, documents=[paper])
     else:
-        text, images = build_prompt(paper if paper.is_dir() else parse(paper), features)
-        reply = ask_llm(text, system=SYSTEM, model=model, json_schema=schema, images=images)
+        text, images = build_prompt(paper if paper.is_dir() else parse(paper, on_step=step), features)
+        step(ASKING)
+        reply = _ask(text, system=SYSTEM, model=model, json_schema=schema, images=images)
+    step(COLLECTING)
     samples: dict[str, list[dict]] = {}
     for reported in json.loads(reply)["samples"]:
         points = samples.setdefault(reported["sample"], [])
         points += ({feature: p.get(feature) for feature in features} for p in reported["points"])
+    log.info("Extracted %d sample(s), %d data point(s)", len(samples), sum(len(p) for p in samples.values()))
     return samples
 
 
-def parse(pdf: Path) -> Path:
-    """output/parsed/<paper id>/ for this PDF, running the parse step first if it isn't there yet."""
+def parse(pdf: Path, on_step: OnStep | None = None) -> Path:
+    """output/parsed/<paper id>/ for this PDF, running the parse step first if it
+    isn't there yet -- and only then calling on_step(PARSING)."""
     try:
         paper_id = paper_id_from_path(pdf)
         named = None
@@ -141,13 +185,25 @@ def parse(pdf: Path) -> Path:
         paper_id = hashlib.sha256(pdf.read_bytes()).hexdigest()[:8]
         named = f"{paper_id}-{pdf.stem}.pdf"
     paper_dir = OUTPUT_ROOT / paper_id
-    if not (paper_dir / "manifest.json").exists():
-        with tempfile.TemporaryDirectory() as tmp:
-            source = pdf
-            if named:
-                source = Path(tmp) / named
-                shutil.copyfile(pdf, source)
-            parse_paper_auto(source, dest_dir=paper_dir)
+    if (paper_dir / "manifest.json").exists():
+        log.info("Reusing the saved parse in %s", paper_dir)
+        return paper_dir
+    if on_step:
+        on_step(PARSING)
+    log.info("Parsing with MinerU into %s", paper_dir)
+    start = time.monotonic()
+    with tempfile.TemporaryDirectory() as tmp:
+        source = pdf
+        if named:
+            source = Path(tmp) / named
+            shutil.copyfile(pdf, source)
+        manifest = parse_paper_auto(source, dest_dir=paper_dir)
+    log.info(
+        "MinerU parse done in %.1f s: %d figure(s), %d table(s)",
+        time.monotonic() - start,
+        len(manifest.figures),
+        manifest.num_tables,
+    )
     return paper_dir
 
 
@@ -166,6 +222,7 @@ def main() -> None:
     ap.add_argument("--send-pdf", action="store_true", help="send the PDF itself instead of MinerU's text and figures")
     args = ap.parse_args()
 
+    configure_logging(stream=sys.stderr)  # stdout carries the CSV
     paper, output = args.paper.resolve(), args.output.resolve() if args.output else None
     lines = args.features.read_text(encoding="utf-8").splitlines()
     features = [line.strip() for line in lines if line.strip()]

@@ -99,6 +99,7 @@ export default function Extract() {
             fileName={state.request.fileName}
             features={state.request.features}
             startedAt={state.startedAt}
+            progress={state.phase === "running" ? state.progress : undefined}
             onNewExtraction={handleNewExtraction}
           />
         ) : null}
