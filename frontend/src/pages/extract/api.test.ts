@@ -210,3 +210,58 @@ describe("parseJobStatus — the job's own details", () => {
     ).toEqual({ status: "done", samples: {} });
   });
 });
+
+describe("parseJobStatus — a running job's progress", () => {
+  const parsing = {
+    step: "parsing",
+    name: "Parsing the PDF",
+    description: "MinerU is turning the paper into text, tables and figure images.",
+    percent: 5,
+  };
+
+  it("reads the step, what to call it, its description and the percent", () => {
+    expect(parseJobStatus({ status: "running", progress: parsing })).toEqual({
+      status: "running",
+      progress: parsing,
+    });
+  });
+
+  it("keeps the percent within 0–100", () => {
+    expect(parseJobStatus({ status: "running", progress: { ...parsing, percent: 140 } })).toEqual({
+      status: "running",
+      progress: { ...parsing, percent: 100 },
+    });
+    expect(parseJobStatus({ status: "running", progress: { ...parsing, percent: -3 } })).toEqual({
+      status: "running",
+      progress: { ...parsing, percent: 0 },
+    });
+  });
+
+  it("drops a malformed progress rather than refusing the answer", () => {
+    for (const progress of [
+      null,
+      "parsing",
+      { ...parsing, percent: "5" },
+      { ...parsing, percent: Number.NaN },
+      { ...parsing, name: "" },
+      { ...parsing, step: 1 },
+    ]) {
+      expect(parseJobStatus({ status: "running", progress })).toEqual({ status: "running" });
+    }
+  });
+
+  it("treats a missing description as empty", () => {
+    const progress = { step: "asking", name: "Asking the model", percent: 60 };
+    expect(parseJobStatus({ status: "running", progress })).toEqual({
+      status: "running",
+      progress: { ...progress, description: "" },
+    });
+  });
+
+  it("only reads progress from a running answer", () => {
+    expect(parseJobStatus({ status: "done", samples: {}, progress: parsing })).toEqual({
+      status: "done",
+      samples: {},
+    });
+  });
+});

@@ -15,3 +15,6 @@ experiments/claude_code/pmma_xp/mw_comparison*.png
 experiments/claude_code/pmma_xp/slide_overlays.png
 experiments/claude_code/pmma_xp/misses.png
 experiments/claude_code/pmma_xp/unexplained.png
+
+# Server logs (log_setup.py)
+logs/
