@@ -26,6 +26,7 @@ const ROUTES = [
   "/temperature",
   "/correlations",
   "/data",
+  "/discover",
   "/extract",
   "/features",
   "/about",

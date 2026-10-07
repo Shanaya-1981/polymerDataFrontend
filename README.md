@@ -300,3 +300,45 @@ That paper's answer, shortened (it gave 6 samples with 7 temperatures each):
   dev server on any computer. A browser hides a server's answers from pages at
   other addresses unless the server allows them (the browser rule called CORS),
   and this server allows only those.
+
+## Finding papers (`extraction/discover.py`, issue #7)
+
+`discover.py` finds papers likely to report the data you want, to feed
+`extract_features.py`. Give it keywords, and optionally papers you already have
+(DOI or title) and feature names. It searches [OpenAlex](https://openalex.org),
+has Claude judge each paper from its title, journal, year and abstract, and
+follows the references and citing papers of the ones judged likely. A search
+takes 5 minutes and returns the papers best first.
+
+```sh
+python discover.py "solid polymer electrolyte ionic conductivity" --feature Tg -o found.json
+```
+
+**It needs an OpenAlex key.** OpenAlex charges each request against a daily
+budget. Without a key, everyone on your network's IP address shares 1,000
+credits a day, less than one search. A free key (make an account, then
+https://openalex.org/settings/api) gives 10,000, about 10 searches. Put it in
+`extraction/.env` as `OPENALEX_API_KEY=...`.
+
+The extraction API serves it too, for the Discover page:
+
+1. `POST /discover` with JSON `{"keywords": "...", "seeds": ["10.1021/...", "a title"], "features": ["Tg"]}`.
+   `seeds` and `features` may be left out. It answers `202` and `{"job": "..."}`,
+   or `400` when the keywords are blank or there are more than 20 seeds.
+2. `GET /discover/<job id>` answers `{"status": "running", "progress": {"candidates", "judged", "likely", "seconds", "credits"}}`
+   (`progress` is `null` at first), then `{"status": "done", "papers": [...]}` or
+   `{"status": "failed", "error": "..."}`. Each paper has `title`, `authors`,
+   `year`, `journal`, `doi`, `pdf` (an open-access PDF, or `null`), `score`
+   (2 probably reports the data, 3 clearly), `reason`, `description` (from the
+   abstract, or `null`) and `openalex`.
+
+**What you'll notice:**
+- **Most papers have no description.** OpenAlex has no abstracts for most
+  Elsevier papers, which is most of this field, and Semantic Scholar and
+  Crossref had none it lacked. Those papers are judged from their title alone.
+- **Few have an open-access PDF,** so you usually get the PDF yourself before
+  extracting.
+- **The list is long,** often thousands of papers. Measured on the 63 papers
+  behind the golden dataset, a keywords-only search listed 75% of them, but only
+  11 in its top 100 (`extraction/experiments/discovery/`).
+- **Searches run one at a time,** apart from extractions.
