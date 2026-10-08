@@ -1,0 +1,623 @@
+{
+ "paper": {
+  "file": "bdf71b01-linden1988.pdf",
+  "paper_id": "bdf71b01",
+  "doi": "https://doi.org/10.1016/0167-2738(88)90318-9",
+  "reference": "E. Linden and J. R. Owen, Solid State Ionics, 1988, 28–30(2), 994–1000"
+ },
+ "run": {
+  "job": "52791ed7780e465b9d5bb8b37cde96cb",
+  "status": "done",
+  "error": null,
+  "features": "Temperature (°C), Conductivity (S/cm)",
+  "model": "Claude Code's default for your login (not recorded: the API names no model, and Claude Code doesn't say which it used)",
+  "started_at": "2026-10-07T16:38:30-07:00",
+  "wall_s": 210.5,
+  "poll_every_s": 5.0,
+  "observed_steps": [
+   {
+    "step": "parsing",
+    "name": "Parsing the PDF",
+    "first_seen_s": 0.0,
+    "seen_for_s": 180.3
+   },
+   {
+    "step": "asking",
+    "name": "Asking the model",
+    "first_seen_s": 180.3,
+    "seen_for_s": 30.0
+   },
+   {
+    "step": "done",
+    "name": "done",
+    "first_seen_s": 210.3
+   }
+  ],
+  "rescored": true
+ },
+ "timing": {
+  "steps": {
+   "parsing": 177.5,
+   "asking": 27.8,
+   "collecting": 0.0
+  },
+  "queue_s": 0.0,
+  "parse_cached": false,
+  "parse_dir": "output/parsed/9be25e50",
+  "mineru_s": 177.5,
+  "figures": 10,
+  "tables": 6,
+  "model_logged": "(Claude Code's default)",
+  "prompt_chars": 14378,
+  "images": 10,
+  "pdfs": 0,
+  "llm_s": 27.8,
+  "reply_chars": 2789,
+  "total_s": 205.4
+ },
+ "parse": {
+  "cached": false,
+  "dir": "output/parsed/9be25e50",
+  "figures": 10,
+  "tables": 6
+ },
+ "samples": {
+  "found": 6,
+  "expected": 5,
+  "matched": 5,
+  "unmatched_extracted": [
+   "Amorphous PEO (undoped)"
+  ],
+  "unmatched_golden": [],
+  "extracted": [
+   {
+    "name": "Amorphous PEO (undoped)",
+    "points": 7,
+    "unusable_points": 0,
+    "anion": null,
+    "li_ratio": null,
+    "salt_wt": null,
+    "undoped": true
+   },
+   {
+    "name": "Amorphous PEO:LiClO4 64:1",
+    "points": 7,
+    "unusable_points": 0,
+    "anion": "ClO4",
+    "li_ratio": 0.015625,
+    "salt_wt": null,
+    "undoped": false
+   },
+   {
+    "name": "Amorphous PEO:LiClO4 24:1",
+    "points": 7,
+    "unusable_points": 0,
+    "anion": "ClO4",
+    "li_ratio": 0.041666666666666664,
+    "salt_wt": null,
+    "undoped": false
+   },
+   {
+    "name": "Amorphous PEO:LiClO4 16:1",
+    "points": 7,
+    "unusable_points": 0,
+    "anion": "ClO4",
+    "li_ratio": 0.0625,
+    "salt_wt": null,
+    "undoped": false
+   },
+   {
+    "name": "Amorphous PEO:LiClO4 12:1",
+    "points": 7,
+    "unusable_points": 0,
+    "anion": "ClO4",
+    "li_ratio": 0.08333333333333333,
+    "salt_wt": null,
+    "undoped": false
+   },
+   {
+    "name": "Amorphous PEO:LiClO4 8:1",
+    "points": 7,
+    "unusable_points": 0,
+    "anion": "ClO4",
+    "li_ratio": 0.125,
+    "salt_wt": null,
+    "undoped": false
+   }
+  ],
+  "golden": [
+   {
+    "number": 1,
+    "polymer": "poly(ethyleneoxide-co-methyleneoxide)",
+    "anion": "ClO4",
+    "li_ratio": 0.015818571,
+    "salt_wt": null,
+    "points": 7
+   },
+   {
+    "number": 2,
+    "polymer": "poly(ethyleneoxide-co-methyleneoxide)",
+    "anion": "ClO4",
+    "li_ratio": 0.041708571,
+    "salt_wt": null,
+    "points": 7
+   },
+   {
+    "number": 3,
+    "polymer": "poly(ethyleneoxide-co-methyleneoxide)",
+    "anion": "ClO4",
+    "li_ratio": 0.062875714,
+    "salt_wt": null,
+    "points": 7
+   },
+   {
+    "number": 4,
+    "polymer": "poly(ethyleneoxide-co-methyleneoxide)",
+    "anion": "ClO4",
+    "li_ratio": 0.083492857,
+    "salt_wt": null,
+    "points": 7
+   },
+   {
+    "number": 5,
+    "polymer": "poly(ethyleneoxide-co-methyleneoxide)",
+    "anion": "ClO4",
+    "li_ratio": 0.125,
+    "salt_wt": null,
+    "points": 7
+   }
+  ]
+ },
+ "points": {
+  "overall": {
+   "matches": 35,
+   "extracted_points_compared": 35,
+   "golden_points_compared": 35,
+   "precision": 1.0,
+   "recall": 1.0,
+   "f1": 1.0,
+   "mean_abs_log_sigma_error": 0.005785714285714286,
+   "mean_log_sigma_bias": 0.0013628571428571429
+  },
+  "per_sample": [
+   {
+    "extracted": "Amorphous PEO:LiClO4 64:1",
+    "golden": "UCSB #1 Li:FG 0.01582 (1:63.2)",
+    "reason": "ClO4 salt, Li:FG 0.01562 vs 0.01582 (1.2% apart)",
+    "matches": 7,
+    "extracted_points_compared": 7,
+    "golden_points_compared": 7,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "pairs": [
+     {
+      "t_extracted": 20.0,
+      "t_golden": 20.0,
+      "log_sigma_extracted": -6.7496,
+      "log_sigma_golden": -6.757,
+      "error": 0.0074,
+      "match": true
+     },
+     {
+      "t_extracted": 25.0,
+      "t_golden": 25.0,
+      "log_sigma_extracted": -6.2503,
+      "log_sigma_golden": -6.2321,
+      "error": -0.0182,
+      "match": true
+     },
+     {
+      "t_extracted": 30.0,
+      "t_golden": 30.0,
+      "log_sigma_extracted": -5.8508,
+      "log_sigma_golden": -5.8477,
+      "error": -0.0031,
+      "match": true
+     },
+     {
+      "t_extracted": 35.0,
+      "t_golden": 35.0,
+      "log_sigma_extracted": -5.4001,
+      "log_sigma_golden": -5.4078,
+      "error": 0.0077,
+      "match": true
+     },
+     {
+      "t_extracted": 40.0,
+      "t_golden": 40.0,
+      "log_sigma_extracted": -4.8996,
+      "log_sigma_golden": -4.8996,
+      "error": 0.0,
+      "match": true
+     },
+     {
+      "t_extracted": 45.0,
+      "t_golden": 45.0,
+      "log_sigma_extracted": -4.6696,
+      "log_sigma_golden": -4.6676,
+      "error": -0.002,
+      "match": true
+     },
+     {
+      "t_extracted": 50.0,
+      "t_golden": 50.0,
+      "log_sigma_extracted": -4.4202,
+      "log_sigma_golden": -4.4157,
+      "error": -0.0045,
+      "match": true
+     }
+    ],
+    "mean_abs_log_sigma_error": 0.0061285714285714285,
+    "mean_log_sigma_bias": -0.0018142857142857142
+   },
+   {
+    "extracted": "Amorphous PEO:LiClO4 24:1",
+    "golden": "UCSB #2 Li:FG 0.04171 (1:24)",
+    "reason": "ClO4 salt, Li:FG 0.04167 vs 0.04171 (0.1% apart)",
+    "matches": 7,
+    "extracted_points_compared": 7,
+    "golden_points_compared": 7,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "pairs": [
+     {
+      "t_extracted": 20.0,
+      "t_golden": 20.0,
+      "log_sigma_extracted": -4.8297,
+      "log_sigma_golden": -4.8327,
+      "error": 0.0029,
+      "match": true
+     },
+     {
+      "t_extracted": 25.0,
+      "t_golden": 25.0,
+      "log_sigma_extracted": -4.52,
+      "log_sigma_golden": -4.5129,
+      "error": -0.0071,
+      "match": true
+     },
+     {
+      "t_extracted": 30.0,
+      "t_golden": 30.0,
+      "log_sigma_extracted": -4.2,
+      "log_sigma_golden": -4.2048,
+      "error": 0.0048,
+      "match": true
+     },
+     {
+      "t_extracted": 35.0,
+      "t_golden": 35.0,
+      "log_sigma_extracted": -4.0,
+      "log_sigma_golden": -4.0048,
+      "error": 0.0048,
+      "match": true
+     },
+     {
+      "t_extracted": 40.0,
+      "t_golden": 40.0,
+      "log_sigma_extracted": -3.8013,
+      "log_sigma_golden": -3.805,
+      "error": 0.0037,
+      "match": true
+     },
+     {
+      "t_extracted": 45.0,
+      "t_golden": 45.0,
+      "log_sigma_extracted": -3.6696,
+      "log_sigma_golden": -3.669,
+      "error": -0.0006,
+      "match": true
+     },
+     {
+      "t_extracted": 50.0,
+      "t_golden": 50.0,
+      "log_sigma_extracted": -3.5302,
+      "log_sigma_golden": -3.529,
+      "error": -0.0012,
+      "match": true
+     }
+    ],
+    "mean_abs_log_sigma_error": 0.003585714285714286,
+    "mean_log_sigma_bias": 0.0010428571428571427
+   },
+   {
+    "extracted": "Amorphous PEO:LiClO4 16:1",
+    "golden": "UCSB #3 Li:FG 0.06288 (1:15.9)",
+    "reason": "ClO4 salt, Li:FG 0.0625 vs 0.06288 (0.6% apart)",
+    "matches": 7,
+    "extracted_points_compared": 7,
+    "golden_points_compared": 7,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "pairs": [
+     {
+      "t_extracted": 20.0,
+      "t_golden": 20.0,
+      "log_sigma_extracted": -5.3002,
+      "log_sigma_golden": -5.2899,
+      "error": -0.0103,
+      "match": true
+     },
+     {
+      "t_extracted": 25.0,
+      "t_golden": 25.0,
+      "log_sigma_extracted": -4.9318,
+      "log_sigma_golden": -4.9245,
+      "error": -0.0074,
+      "match": true
+     },
+     {
+      "t_extracted": 30.0,
+      "t_golden": 30.0,
+      "log_sigma_extracted": -4.5003,
+      "log_sigma_golden": -4.5143,
+      "error": 0.014,
+      "match": true
+     },
+     {
+      "t_extracted": 35.0,
+      "t_golden": 35.0,
+      "log_sigma_extracted": -4.2503,
+      "log_sigma_golden": -4.2541,
+      "error": 0.0039,
+      "match": true
+     },
+     {
+      "t_extracted": 40.0,
+      "t_golden": 40.0,
+      "log_sigma_extracted": -4.0,
+      "log_sigma_golden": -3.994,
+      "error": -0.006,
+      "match": true
+     },
+     {
+      "t_extracted": 45.0,
+      "t_golden": 45.0,
+      "log_sigma_extracted": -3.821,
+      "log_sigma_golden": -3.822,
+      "error": 0.001,
+      "match": true
+     },
+     {
+      "t_extracted": 50.0,
+      "t_golden": 50.0,
+      "log_sigma_extracted": -3.6799,
+      "log_sigma_golden": -3.682,
+      "error": 0.0021,
+      "match": true
+     }
+    ],
+    "mean_abs_log_sigma_error": 0.006385714285714286,
+    "mean_log_sigma_bias": -0.0003857142857142858
+   },
+   {
+    "extracted": "Amorphous PEO:LiClO4 12:1",
+    "golden": "UCSB #4 Li:FG 0.08349 (1:12)",
+    "reason": "ClO4 salt, Li:FG 0.08333 vs 0.08349 (0.2% apart)",
+    "matches": 7,
+    "extracted_points_compared": 7,
+    "golden_points_compared": 7,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "pairs": [
+     {
+      "t_extracted": 20.0,
+      "t_golden": 20.0,
+      "log_sigma_extracted": -5.8697,
+      "log_sigma_golden": -5.8633,
+      "error": -0.0064,
+      "match": true
+     },
+     {
+      "t_extracted": 25.0,
+      "t_golden": 25.0,
+      "log_sigma_extracted": -5.5003,
+      "log_sigma_golden": -5.4908,
+      "error": -0.0095,
+      "match": true
+     },
+     {
+      "t_extracted": 30.0,
+      "t_golden": 30.0,
+      "log_sigma_extracted": -5.0501,
+      "log_sigma_golden": -5.0511,
+      "error": 0.001,
+      "match": true
+     },
+     {
+      "t_extracted": 35.0,
+      "t_golden": 35.0,
+      "log_sigma_extracted": -4.699,
+      "log_sigma_golden": -4.71,
+      "error": 0.011,
+      "match": true
+     },
+     {
+      "t_extracted": 40.0,
+      "t_golden": 40.0,
+      "log_sigma_extracted": -4.3497,
+      "log_sigma_golden": -4.3507,
+      "error": 0.001,
+      "match": true
+     },
+     {
+      "t_extracted": 45.0,
+      "t_golden": 45.0,
+      "log_sigma_extracted": -4.1002,
+      "log_sigma_golden": -4.0991,
+      "error": -0.0011,
+      "match": true
+     },
+     {
+      "t_extracted": 50.0,
+      "t_golden": 50.0,
+      "log_sigma_extracted": -3.9508,
+      "log_sigma_golden": -3.955,
+      "error": 0.0042,
+      "match": true
+     }
+    ],
+    "mean_abs_log_sigma_error": 0.004885714285714286,
+    "mean_log_sigma_bias": 2.857142857142843e-05
+   },
+   {
+    "extracted": "Amorphous PEO:LiClO4 8:1",
+    "golden": "UCSB #5 Li:FG 0.125 (1:8)",
+    "reason": "ClO4 salt, Li:FG 0.125 vs 0.125 (0.0% apart)",
+    "matches": 7,
+    "extracted_points_compared": 7,
+    "golden_points_compared": 7,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "pairs": [
+     {
+      "t_extracted": 20.0,
+      "t_golden": 20.0,
+      "log_sigma_extracted": -6.3497,
+      "log_sigma_golden": -6.3516,
+      "error": 0.0019,
+      "match": true
+     },
+     {
+      "t_extracted": 25.0,
+      "t_golden": 25.0,
+      "log_sigma_extracted": -6.02,
+      "log_sigma_golden": -6.02,
+      "error": 0.0,
+      "match": true
+     },
+     {
+      "t_extracted": 30.0,
+      "t_golden": 30.0,
+      "log_sigma_extracted": -5.3799,
+      "log_sigma_golden": -5.3915,
+      "error": 0.0116,
+      "match": true
+     },
+     {
+      "t_extracted": 35.0,
+      "t_golden": 35.0,
+      "log_sigma_extracted": -5.0,
+      "log_sigma_golden": -5.02,
+      "error": 0.02,
+      "match": true
+     },
+     {
+      "t_extracted": 40.0,
+      "t_golden": 40.0,
+      "log_sigma_extracted": -4.6696,
+      "log_sigma_golden": -4.6757,
+      "error": 0.0061,
+      "match": true
+     },
+     {
+      "t_extracted": 45.0,
+      "t_golden": 45.0,
+      "log_sigma_extracted": -4.4001,
+      "log_sigma_golden": -4.4045,
+      "error": 0.0044,
+      "match": true
+     },
+     {
+      "t_extracted": 50.0,
+      "t_golden": 50.0,
+      "log_sigma_extracted": -4.1002,
+      "log_sigma_golden": -4.1118,
+      "error": 0.0116,
+      "match": true
+     }
+    ],
+    "mean_abs_log_sigma_error": 0.007942857142857142,
+    "mean_log_sigma_bias": 0.007942857142857142
+   }
+  ]
+ },
+ "figure": {
+  "image": "/Users/tiwari.sup/Documents/CS-7980/polymerDataFrontend/extraction/output/parsed/9be25e50/figures/standard/page5-block5.png",
+  "page": 5,
+  "caption": "Fig. 4. Arrhenius plots for amorphous PEO doped with $\\mathrm{LiClO_4}$ at various concentrations.",
+  "score": 5,
+  "x_axis": "1/T",
+  "axis_label": "Reciprocal Temperature (1/K)",
+  "candidates": [
+   {
+    "image": "/Users/tiwari.sup/Documents/CS-7980/polymerDataFrontend/extraction/output/parsed/9be25e50/figures/standard/page5-block5.png",
+    "page": 5,
+    "caption": "Fig. 4. Arrhenius plots for amorphous PEO doped with $\\mathrm{LiClO_4}$ at various concentrations.",
+    "score": 5
+   },
+   {
+    "image": "/Users/tiwari.sup/Documents/CS-7980/polymerDataFrontend/extraction/output/parsed/9be25e50/figures/standard/page3-block3.png",
+    "page": 3,
+    "caption": "Fig. 1. Continued.",
+    "score": 0
+   },
+   {
+    "image": "/Users/tiwari.sup/Documents/CS-7980/polymerDataFrontend/extraction/output/parsed/9be25e50/figures/standard/page6-block3.png",
+    "page": 6,
+    "caption": "Fig. 5. $\\mathrm{Log_{10}}$ conductivity versus dopant level for $\\mathrm{LiClO_4}$ doped amorphous PEO at various temperatures.",
+    "score": -1
+   },
+   {
+    "image": "/Users/tiwari.sup/Documents/CS-7980/polymerDataFrontend/extraction/output/parsed/9be25e50/figures/advanced/page1-block7.png",
+    "page": 1,
+    "caption": "Fig. 1. (a) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - uncorrected complex impedance spectrum from thin cell; (b) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - corrected complex impedance spectrum from thin cell; (c) Crystalline PEO: $\\mathrm{LiClO_4 - 8:1}$ - corrected complex impedance spectrum from thin cell.",
+    "score": -3
+   },
+   {
+    "image": "/Users/tiwari.sup/Documents/CS-7980/polymerDataFrontend/extraction/output/parsed/9be25e50/figures/advanced/page2-block3.png",
+    "page": 2,
+    "caption": "Fig. 1. (a) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - uncorrected complex impedance spectrum from thin cell; (b) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - corrected complex impedance spectrum from thin cell; (c) Crystalline PEO: $\\mathrm{LiClO_4 - 8:1}$ - corrected complex impedance spectrum from thin cell.",
+    "score": -3
+   },
+   {
+    "image": "/Users/tiwari.sup/Documents/CS-7980/polymerDataFrontend/extraction/output/parsed/9be25e50/figures/standard/page2-block3.png",
+    "page": 2,
+    "caption": "Fig. 1. (a) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - uncorrected complex impedance spectrum from thin cell; (b) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - corrected complex impedance spectrum from thin cell; (c) Crystalline PEO: $\\mathrm{LiClO_4 - 8:1}$ - corrected complex impedance spectrum from thin cell.",
+    "score": -3
+   },
+   {
+    "image": "/Users/tiwari.sup/Documents/CS-7980/polymerDataFrontend/extraction/output/parsed/9be25e50/figures/standard/page2-block4.png",
+    "page": 2,
+    "caption": "Fig. 1. (a) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - uncorrected complex impedance spectrum from thin cell; (b) Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - corrected complex impedance spectrum from thin cell; (c) Crystalline PEO: $\\mathrm{LiClO_4 - 8:1}$ - corrected complex impedance spectrum from thin cell.",
+    "score": -3
+   },
+   {
+    "image": "/Users/tiwari.sup/Documents/CS-7980/polymerDataFrontend/extraction/output/parsed/9be25e50/figures/standard/page5-block3.png",
+    "page": 5,
+    "caption": "Fig. 3. Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - complex impedance spectrum from thick cell.",
+    "score": -3
+   },
+   {
+    "image": "/Users/tiwari.sup/Documents/CS-7980/polymerDataFrontend/extraction/output/parsed/9be25e50/figures/standard/page6-block5.png",
+    "page": 6,
+    "caption": "Fig. 6. Amorphous PEO: $\\mathrm{LiClO_4 - 24:1}$ - complex impedance spectrum from thick cell using lithium electrodes.",
+    "score": -3
+   },
+   {
+    "image": "/Users/tiwari.sup/Documents/CS-7980/polymerDataFrontend/extraction/output/parsed/9be25e50/figures/standard/page4-block3.png",
+    "page": 4,
+    "caption": "Fig. 2. Dielectric constant and conductivity versus frequency for amorphous PEO: $\\mathrm{LiClO_4 - 8:1}$ from thin cell.",
+    "score": -4
+   }
+  ]
+ },
+ "settings": {
+  "temperature_tolerance_c": 2.0,
+  "log_sigma_tolerance": 0.3,
+  "concentration_tolerance": 0.15
+ },
+ "files": {
+  "comparison": "comparison.png",
+  "extraction": "extraction.json"
+ },
+ "notes": [
+  "Where the numbers come from: MinerU's advanced parse turned Fig. 5 (log σ against Li:O ratio, one curve per temperature from 20 to 50 °C) into a table, and the model's values follow it closely: 25 of 42 identical, the rest within 0.05 decades. The UCSB values for this paper sit at the same seven temperatures, so they were most likely read off the same figure. The 100% agreement shows the pipeline read Fig. 5 the way the dataset's curators did; it isn't two independent sources agreeing.",
+  "Against the paper's Arrhenius plot (Fig. 4, left of the image), both sets follow its curves. MinerU also turned Fig. 4 into a table, but a much rougher one (8:1 near 25 °C: −5.1, where Fig. 4's curve and Fig. 5 give about −6.0), and the model didn't use it."
+ ]
+}

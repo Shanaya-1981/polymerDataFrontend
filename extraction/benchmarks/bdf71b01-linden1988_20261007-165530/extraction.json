@@ -1,0 +1,191 @@
+{
+ "status": "done",
+ "file": "bdf71b01-linden1988.pdf",
+ "features": [
+  "Temperature (°C)",
+  "Conductivity (S/cm)"
+ ],
+ "started": 1791416310.6358552,
+ "samples": {
+  "Amorphous PEO (undoped)": [
+   {
+    "Temperature (°C)": 20,
+    "Conductivity (S/cm)": 1e-07
+   },
+   {
+    "Temperature (°C)": 25,
+    "Conductivity (S/cm)": 2.82e-07
+   },
+   {
+    "Temperature (°C)": 30,
+    "Conductivity (S/cm)": 5.01e-07
+   },
+   {
+    "Temperature (°C)": 35,
+    "Conductivity (S/cm)": 7.08e-07
+   },
+   {
+    "Temperature (°C)": 40,
+    "Conductivity (S/cm)": 1e-06
+   },
+   {
+    "Temperature (°C)": 45,
+    "Conductivity (S/cm)": 1.12e-06
+   },
+   {
+    "Temperature (°C)": 50,
+    "Conductivity (S/cm)": 1.48e-06
+   }
+  ],
+  "Amorphous PEO:LiClO4 64:1": [
+   {
+    "Temperature (°C)": 20,
+    "Conductivity (S/cm)": 1.78e-07
+   },
+   {
+    "Temperature (°C)": 25,
+    "Conductivity (S/cm)": 5.62e-07
+   },
+   {
+    "Temperature (°C)": 30,
+    "Conductivity (S/cm)": 1.41e-06
+   },
+   {
+    "Temperature (°C)": 35,
+    "Conductivity (S/cm)": 3.98e-06
+   },
+   {
+    "Temperature (°C)": 40,
+    "Conductivity (S/cm)": 1.26e-05
+   },
+   {
+    "Temperature (°C)": 45,
+    "Conductivity (S/cm)": 2.14e-05
+   },
+   {
+    "Temperature (°C)": 50,
+    "Conductivity (S/cm)": 3.8e-05
+   }
+  ],
+  "Amorphous PEO:LiClO4 24:1": [
+   {
+    "Temperature (°C)": 20,
+    "Conductivity (S/cm)": 1.48e-05
+   },
+   {
+    "Temperature (°C)": 25,
+    "Conductivity (S/cm)": 3.02e-05
+   },
+   {
+    "Temperature (°C)": 30,
+    "Conductivity (S/cm)": 6.31e-05
+   },
+   {
+    "Temperature (°C)": 35,
+    "Conductivity (S/cm)": 0.0001
+   },
+   {
+    "Temperature (°C)": 40,
+    "Conductivity (S/cm)": 0.000158
+   },
+   {
+    "Temperature (°C)": 45,
+    "Conductivity (S/cm)": 0.000214
+   },
+   {
+    "Temperature (°C)": 50,
+    "Conductivity (S/cm)": 0.000295
+   }
+  ],
+  "Amorphous PEO:LiClO4 16:1": [
+   {
+    "Temperature (°C)": 20,
+    "Conductivity (S/cm)": 5.01e-06
+   },
+   {
+    "Temperature (°C)": 25,
+    "Conductivity (S/cm)": 1.17e-05
+   },
+   {
+    "Temperature (°C)": 30,
+    "Conductivity (S/cm)": 3.16e-05
+   },
+   {
+    "Temperature (°C)": 35,
+    "Conductivity (S/cm)": 5.62e-05
+   },
+   {
+    "Temperature (°C)": 40,
+    "Conductivity (S/cm)": 0.0001
+   },
+   {
+    "Temperature (°C)": 45,
+    "Conductivity (S/cm)": 0.000151
+   },
+   {
+    "Temperature (°C)": 50,
+    "Conductivity (S/cm)": 0.000209
+   }
+  ],
+  "Amorphous PEO:LiClO4 12:1": [
+   {
+    "Temperature (°C)": 20,
+    "Conductivity (S/cm)": 1.35e-06
+   },
+   {
+    "Temperature (°C)": 25,
+    "Conductivity (S/cm)": 3.16e-06
+   },
+   {
+    "Temperature (°C)": 30,
+    "Conductivity (S/cm)": 8.91e-06
+   },
+   {
+    "Temperature (°C)": 35,
+    "Conductivity (S/cm)": 2e-05
+   },
+   {
+    "Temperature (°C)": 40,
+    "Conductivity (S/cm)": 4.47e-05
+   },
+   {
+    "Temperature (°C)": 45,
+    "Conductivity (S/cm)": 7.94e-05
+   },
+   {
+    "Temperature (°C)": 50,
+    "Conductivity (S/cm)": 0.000112
+   }
+  ],
+  "Amorphous PEO:LiClO4 8:1": [
+   {
+    "Temperature (°C)": 20,
+    "Conductivity (S/cm)": 4.47e-07
+   },
+   {
+    "Temperature (°C)": 25,
+    "Conductivity (S/cm)": 9.55e-07
+   },
+   {
+    "Temperature (°C)": 30,
+    "Conductivity (S/cm)": 4.17e-06
+   },
+   {
+    "Temperature (°C)": 35,
+    "Conductivity (S/cm)": 1e-05
+   },
+   {
+    "Temperature (°C)": 40,
+    "Conductivity (S/cm)": 2.14e-05
+   },
+   {
+    "Temperature (°C)": 45,
+    "Conductivity (S/cm)": 3.98e-05
+   },
+   {
+    "Temperature (°C)": 50,
+    "Conductivity (S/cm)": 7.94e-05
+   }
+  ]
+ }
+}
