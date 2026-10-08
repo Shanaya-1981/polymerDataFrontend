@@ -112,7 +112,11 @@ _RATIO = re.compile(r"(\d+(?:\.\d+)?)\s*:\s*(\d+(?:\.\d+)?)")
 _PER_LI = re.compile(r"\b(?:e?o)\s*/\s*li\+?\s*[=:]?\s*(\d+(?:\.\d+)?)", re.IGNORECASE)  # "EO/Li = 16"
 _LI_PER = re.compile(r"\bli\+?\s*/\s*e?o\s*[=:]?\s*(\d*\.?\d+)", re.IGNORECASE)  # "Li/O = 0.0625"
 _WT = re.compile(r"(\d+(?:\.\d+)?)\s*wt\.?\s*%", re.IGNORECASE)
-_UNDOPED = re.compile(r"\b(undoped|salt[- ]free|no salt|without salt|neat|pure (?:polymer|peo))\b", re.IGNORECASE)
+# An O:Li ratio of "∞:1" or "Inf:1" is a polymer without salt too.
+_UNDOPED = re.compile(
+    r"\b(undoped|salt[- ]free|no salt|without salt|neat|pure (?:polymer|peo))\b|∞\s*:\s*1|\binf(?:inite|inity)?\s*:\s*1\b",
+    re.IGNORECASE,
+)
 
 
 def li_ratio_from_name(name: str) -> float | None:
@@ -501,22 +505,31 @@ def read_logs(log_file: Path = LOG_FILE) -> str:
 def model_used(logged: str | None) -> str:
     """The model the extraction used, as far as anything recorded it. The API
     names none, so Claude Code's default answered, and Claude Code doesn't
-    say which that was. ~/.claude/settings.json can set it, and is shown when
-    it does; so can ANTHROPIC_MODEL in the server's environment, which this
-    script can't see (its own may differ), so it isn't consulted."""
+    say which that was. ~/.claude/settings.json can set it, else your
+    organisation's default does, which Claude Code caches in ~/.claude.json.
+    ANTHROPIC_MODEL in the server's environment would override both, but this
+    script can't see the server's environment (its own may differ)."""
     if logged and "default" not in logged:
         return logged
-    settings = Path.home() / ".claude" / "settings.json"
-    try:
-        configured = json.loads(settings.read_text(encoding="utf-8")).get("model")
-    except (OSError, ValueError):
-        configured = None
+    configured = _json_file(Path.home() / ".claude" / "settings.json").get("model")
+    org = _json_file(Path.home() / ".claude.json").get("orgModelDefaultCache") or {}
+    org_model = org.get("name") if isinstance(org, dict) else None
+    if org_model and (org.get("override_user_selection") or not configured):
+        return f"{org_model} (Claude Code's default: your organisation's, as cached in ~/.claude.json)"
     if configured:
         return f"{configured} (Claude Code's default, set in ~/.claude/settings.json)"
     return (
         "Claude Code's default for your login (not recorded: the API names no model, "
         "and Claude Code doesn't say which it used)"
     )
+
+
+def _json_file(path: Path) -> dict:
+    try:
+        found = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return found if isinstance(found, dict) else {}
 
 
 # ---------------------------------------------------------------------------
@@ -577,26 +590,34 @@ def axis_for(caption: str, axis_label: str = "") -> str:
     return "1000/T"
 
 
-def axis_label_near(content_md: str, caption: str) -> str:
-    """The x axis label MinerU's advanced tier read off a figure: the first
-    header cell of the table it writes just above the figure's caption. Empty
-    when the figure has no such table."""
+def table_above(content_md: str, caption: str) -> list[list[str]]:
+    """The table MinerU's advanced tier read off a figure, which it writes just
+    above the figure's caption: its rows of cells, header first, without the
+    "| --- |" line. Empty when the figure has no such table."""
     head = caption[:40]
     at = content_md.find(head) if head else -1
     if at < 0:
-        return ""
-    header, in_table = "", False
-    # Walk up from the caption: blank lines, then the table's rows, the
-    # "| --- |" line, and its header row, which is the table's topmost line.
-    for line in reversed(content_md[:at].splitlines()[-60:]):
+        return []
+    lines, in_table = [], False
+    # Walk up from the caption: blank lines, then the table's rows up to its header.
+    for line in reversed(content_md[:at].splitlines()[-200:]):
         stripped = line.strip()
         if stripped.startswith("|"):
-            in_table, header = True, stripped
+            in_table = True
+            lines.append(stripped)
         elif in_table:
             break
         elif stripped:
-            return ""  # text between the caption and any table: not this figure's
-    return header.strip("|").split("|")[0].strip() if header else ""
+            return []  # text between the caption and any table: not this figure's
+    rows = [[cell.strip() for cell in line.strip("|").split("|")] for line in reversed(lines)]
+    return [row for row in rows if not all(re.fullmatch(r":?-{3,}:?", cell) for cell in row)]
+
+
+def axis_label_near(content_md: str, caption: str) -> str:
+    """The x axis label MinerU's advanced tier read off a figure: the first
+    header cell of its table for the figure. Empty when there's no table."""
+    table = table_above(content_md, caption)
+    return table[0][0] if table else ""
 
 
 def parse_dir_for(pdf: Path, logged: str | None) -> Path:

@@ -222,6 +222,12 @@ class RunRecordTest(unittest.TestCase):
             (Path(home) / ".claude").mkdir()
             (Path(home) / ".claude" / "settings.json").write_text(json.dumps({"model": "opus"}))
             self.assertIn("opus", bm.model_used("(Claude Code's default)"))
+            # Your own setting beats your organisation's default, unless the organisation overrides it.
+            org = {"name": "claude-opus-5-5", "override_user_selection": False}
+            (Path(home) / ".claude.json").write_text(json.dumps({"orgModelDefaultCache": org}))
+            self.assertTrue(bm.model_used(None).startswith("opus"))
+            (Path(home) / ".claude" / "settings.json").unlink()
+            self.assertTrue(bm.model_used(None).startswith("claude-opus-5-5"))
 
 
 class FigureTest(unittest.TestCase):
