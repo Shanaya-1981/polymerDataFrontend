@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Discover from "./Discover";
 import Extract from "./Extract";
@@ -47,11 +47,27 @@ async function wait(ms: number) {
   });
 }
 
-function renderDiscover() {
+/** Renders the address for tests to read with `address()`. */
+function Spy() {
+  const location = useLocation();
+  return <data data-testid="address" value={location.pathname + location.search} />;
+}
+
+const address = () => screen.getByTestId("address").getAttribute("value");
+
+function renderDiscover(initialEntry = "/discover") {
   return render(
-    <MemoryRouter initialEntries={["/discover"]}>
+    <MemoryRouter initialEntries={[initialEntry]}>
       <Routes>
-        <Route path="/discover" element={<Discover />} />
+        <Route
+          path="/discover"
+          element={
+            <>
+              <Discover />
+              <Spy />
+            </>
+          }
+        />
         <Route path="/extract" element={<Extract />} />
       </Routes>
     </MemoryRouter>,
@@ -166,6 +182,51 @@ describe("Discover page", () => {
 
     fireEvent.click(screen.getByRole("link", { name: "Extract its data" }));
     expect(screen.getByLabelText("Features")).toHaveValue("Tg, conductivity");
+  });
+
+  it("puts a started search's id in the address, and clears it on a new search", async () => {
+    fakeServer([json({ job: "s1" }, 202)], [json({ status: "done", papers: [paper(1)] })]);
+    renderDiscover();
+    submit();
+    await wait(0);
+    expect(address()).toBe("/discover?job=s1");
+
+    await wait(POLL_INTERVAL_MS);
+    expect(address()).toBe("/discover?job=s1");
+    fireEvent.click(screen.getByRole("button", { name: "New search" }));
+    expect(address()).toBe("/discover");
+  });
+
+  it("reopens the search named in the address, with its request from the server", async () => {
+    const fetchMock = fakeServer(
+      [],
+      [
+        json({
+          status: "done",
+          papers: [paper(1)],
+          keywords: "PEO LiTFSI",
+          features: ["Tg"],
+          started: 1700000000,
+        }),
+      ],
+    );
+    renderDiscover("/discover?job=s9");
+    await wait(0); // a reopened search is checked at once
+
+    expect(fetchMock.mock.calls[0]![0]).toBe(`${API}/discover/s9`);
+    expect(screen.getByRole("list", { name: "Papers found for PEO LiTFSI" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("link", { name: "Extract its data" }));
+    expect(screen.getByLabelText("Features")).toHaveValue("Tg");
+  });
+
+  it("says a reopened search the server lost can't be retried", async () => {
+    fakeServer([], [json({ detail: "No such search." }, 404)]);
+    renderDiscover("/discover?job=s9");
+    await wait(0);
+
+    expect(screen.getByText("The server lost this search")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Try again" })).not.toBeInTheDocument();
   });
 });
 

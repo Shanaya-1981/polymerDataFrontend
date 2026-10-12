@@ -13,6 +13,7 @@ import json
 import re
 import threading
 import time
+from unittest import mock
 
 import pytest
 import requests
@@ -297,9 +298,11 @@ def test_seeds_are_followed_but_not_returned(openalex, model):
 
 
 @pytest.fixture
-def client(monkeypatch) -> tuple[TestClient, list]:
+def client(monkeypatch, tmp_path) -> tuple[TestClient, list]:
     started = []
     monkeypatch.setattr(api.searcher, "submit", lambda fn, job, request: started.append(request))
+    monkeypatch.setattr(api, "DISCOVERIES", tmp_path / "discoveries")
+    api.searches.clear()
     return TestClient(api.app), started
 
 
@@ -315,6 +318,57 @@ def test_api_starts_a_search(client):
     r = http.post("/discover", json={"keywords": " PEO ", "seeds": [DOI] * 20 + ["", " "], "features": ["Tg", " "]})
 
     assert r.status_code == 202
-    assert http.get(f"/discover/{r.json()['job']}").json()["status"] == "running"
+    answer = http.get(f"/discover/{r.json()['job']}").json()
+    assert answer["status"] == "running"
+    # Every answer carries the request, so a page reopened at the search's
+    # address can show what was searched for (issue #18).
+    assert (answer["keywords"], len(answer["seeds"]), answer["features"]) == ("PEO", 20, ["Tg"])
+    assert answer["started"] == pytest.approx(time.time(), abs=10)
     [request] = started
     assert (request.keywords, len(request.seeds), request.features) == ("PEO", 20, ["Tg"])
+
+
+def finish_search(client, outcome) -> str:
+    """Start a search through the API and run it with discover() faked to `outcome`."""
+    http, started = client
+    job = http.post("/discover", json={"keywords": "PEO", "features": ["Tg"]}).json()["job"]
+    [request] = started
+    with mock.patch.object(api, "discover", outcome):
+        api.run_search(job, request)
+    return job
+
+
+def test_a_finished_search_is_saved_and_answers_after_a_restart(client):
+    http, _ = client
+    papers = [{"title": "Likely", "openalex": "https://openalex.org/W1", "score": 3}]
+    job = finish_search(client, lambda *a, **kw: papers)
+
+    answer = http.get(f"/discover/{job}").json()
+    assert (answer["status"], answer["papers"], answer["keywords"]) == ("done", papers, "PEO")
+    assert "progress" not in answer
+
+    api.searches.clear()  # as a restart would
+    assert http.get(f"/discover/{job}").json() == answer
+    saved = json.loads((api.DISCOVERIES / f"{job}.json").read_text(encoding="utf-8"))
+    assert saved == answer
+
+
+def test_a_failed_search_answers_failed_and_is_saved(client):
+    http, _ = client
+
+    def boom(*args, **kw):
+        raise d.OpenAlexBudgetError("OpenAlex's daily budget is used up")
+
+    job = finish_search(client, boom)
+
+    answer = http.get(f"/discover/{job}").json()
+    assert (answer["status"], answer["error"]) == ("failed", "OpenAlex's daily budget is used up")
+    api.searches.clear()
+    assert http.get(f"/discover/{job}").json() == answer
+
+
+@pytest.mark.parametrize("job", ["f" * 32, "../../etc/passwd"])
+def test_an_unknown_search_is_a_404(client, job):
+    http, _ = client
+    (api.DISCOVERIES / "sentinel").parent.mkdir(parents=True, exist_ok=True)
+    assert http.get(f"/discover/{job}").status_code == 404

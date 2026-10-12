@@ -29,7 +29,8 @@ export function describeDiscoverError(
     case "job-lost":
       return {
         title: "The server lost this search",
-        message: "It forgets its searches when it restarts, so this one has to start again.",
+        message:
+          "A search still running when the server stops is lost, so this one has to start again.",
       };
     case "http":
       return {

@@ -160,6 +160,7 @@ your home folder, unless you chose another. It holds:
   again, under any file name, reuses this instead of being read again.
 - `extractions/`: one file per extraction, `<id>.json`, holding the results the
   page showed. `<id>` is the end of the page's address, `/extract?job=<id>`.
+- `discoveries/`: the same for searches, `/discover?job=<id>`.
 
 To move your data, stop PolymerData and move the folder. Then tell PolymerData
 where it went. In `polymerData-main`, open the `extraction` folder and press
@@ -518,7 +519,8 @@ The extraction API serves it too, for the Discover page:
    `{"status": "failed", "error": "..."}`. Each paper has `title`, `authors`,
    `year`, `journal`, `doi`, `pdf` (an open-access PDF, or `null`), `score`
    (2 probably reports the data, 3 clearly), `reason`, `description` (from the
-   abstract, or `null`) and `openalex`.
+   abstract, or `null`) and `openalex`. Every answer also carries the search's
+   `keywords`, `seeds`, `features` and `started` (Unix seconds).
 
 **What you'll notice:**
 - **Most papers have no description.** OpenAlex has no abstracts for most
@@ -530,3 +532,8 @@ The extraction API serves it too, for the Discover page:
   behind the golden dataset, a keywords-only search listed 75% of them, but only
   11 in its top 100 (`extraction/experiments/discovery/`).
 - **Searches run one at a time,** apart from extractions.
+- **Every finished search is saved** to `discoveries/<job id>.json` in the
+  [data folder](#where-your-data-is-kept), as extractions are, so its id — and
+  the Discover page's address, `/discover?job=<id>` — keeps working after a
+  restart. A search still running when the server stops is lost: its id
+  answers `404`.
