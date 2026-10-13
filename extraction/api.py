@@ -26,8 +26,12 @@ POST /discover with JSON {"keywords": "...", "seeds": [DOI or title, ...],
 likely to report that data (discover.py) and answers {"job": "<id>"}.
 GET /discover/<id> answers {"status": "running", "progress": {...}} until
 {"status": "done", "papers": [...]} (best first) or {"status": "failed",
-"error": "..."}. A search takes 5 minutes. Searches run one at a time, apart
-from extractions, since each spends OpenAlex's daily budget.
+"error": "..."}. Every answer also gives the search's `keywords`, `seeds`,
+`features` and `started` (Unix time in seconds). A search takes 5 minutes.
+Searches run one at a time, apart from extractions, since each spends
+OpenAlex's daily budget. A finished search is saved to
+<DATA_DIR>/discoveries/<id>.json, so its id keeps answering after a restart;
+one still running when the server stops is lost, like an extraction.
 """
 
 from __future__ import annotations
@@ -122,20 +126,30 @@ def run(job: str, pdf: bytes, features: list[str]) -> None:
             outcome = {"status": "failed", "error": str(e)}
         # A finished job has no step to report, so its progress isn't kept or saved.
         jobs[job] = {**{key: value for key, value in jobs[job].items() if key != "progress"}, **outcome}
-        _save(job)
+        _save(job, jobs[job], RESULTS)
 
 
-def _save(job: str) -> None:
-    """Write a finished job to RESULTS, so its id keeps answering after a restart."""
+def _save(job: str, record: dict, folder: Path) -> None:
+    """Write a finished job to `folder`, so its id keeps answering after a restart."""
     try:
-        RESULTS.mkdir(parents=True, exist_ok=True)
-        saving = RESULTS / f"{job}.json.tmp"  # renamed once complete, so a crash never leaves half a file
-        saving.write_text(json.dumps(jobs[job], ensure_ascii=False, indent=1), encoding="utf-8")
-        saving.replace(RESULTS / f"{job}.json")
+        folder.mkdir(parents=True, exist_ok=True)
+        saving = folder / f"{job}.json.tmp"  # renamed once complete, so a crash never leaves half a file
+        saving.write_text(json.dumps(record, ensure_ascii=False, indent=1), encoding="utf-8")
+        saving.replace(folder / f"{job}.json")
     except OSError:
-        log.exception("Couldn't save the result to %s; it answers only until the server stops", RESULTS)
+        log.exception("Couldn't save the result to %s; it answers only until the server stops", folder)
     else:
-        log.debug("Saved to %s", RESULTS / f"{job}.json")
+        log.debug("Saved to %s", folder / f"{job}.json")
+
+
+def _saved(job: str, folder: Path) -> dict | None:
+    """A finished job read back from `folder`, or None. Only ids this server
+    makes are looked up, never a path."""
+    saved = folder / f"{job}.json"
+    if re.fullmatch(r"[0-9a-f]{32}", job) and saved.exists():
+        log.debug("Status: from %s", saved, extra={"job": job})
+        return json.loads(saved.read_text(encoding="utf-8"))
+    return None
 
 
 @app.post("/extract", status_code=202)
@@ -180,10 +194,9 @@ def status(job: str) -> dict:
             answer = {**answer, "progress": job_progress.progress(QUEUED, ahead=_jobs_ahead(job))}
         log.debug("Status: %s", answer["status"], extra={"job": job})
         return answer
-    saved = RESULTS / f"{job}.json"
-    if re.fullmatch(r"[0-9a-f]{32}", job) and saved.exists():  # only ids this server makes, never a path
-        log.debug("Status: from %s", saved, extra={"job": job})
-        return json.loads(saved.read_text(encoding="utf-8"))
+    saved = _saved(job, RESULTS)
+    if saved is not None:
+        return saved
     log.info("No such job: %r", job[:64])
     raise HTTPException(404, "No such job. A job still running when the server stopped is lost.")
 
@@ -191,6 +204,7 @@ def status(job: str) -> dict:
 searches: dict[str, dict] = {}
 searcher = ThreadPoolExecutor(max_workers=1)
 MAX_SEEDS = 20  # each title costs an OpenAlex search (10 credits) of the search's 1,000
+DISCOVERIES = DATA_DIR / "discoveries"  # <job id>.json for each finished search
 
 
 class DiscoverRequest(BaseModel):
@@ -200,15 +214,21 @@ class DiscoverRequest(BaseModel):
 
 
 def run_search(job: str, request: DiscoverRequest) -> None:
-    def progress(counts: dict) -> None:
-        searches[job] = {"status": "running", "progress": counts}
+    with job_context(job):
+        def progress(counts: dict) -> None:
+            searches[job] = {**searches[job], "progress": counts}
 
-    try:
-        papers = discover(request.keywords, request.seeds, request.features, progress=progress)
-        searches[job] = {"status": "done", "papers": papers}
-    except Exception as e:
-        traceback.print_exc()
-        searches[job] = {"status": "failed", "error": str(e)}
+        began = time.monotonic()
+        try:
+            papers = discover(request.keywords, request.seeds, request.features, progress=progress)
+            outcome = {"status": "done", "papers": papers}
+            log.info("Search done in %.1f s: %d paper(s)", time.monotonic() - began, len(papers))
+        except Exception as e:
+            log.exception("Search failed after %.1f s: %s", time.monotonic() - began, e)
+            outcome = {"status": "failed", "error": str(e)}
+        # A finished search has no counts to report, so its progress isn't kept or saved.
+        searches[job] = {**{key: value for key, value in searches[job].items() if key != "progress"}, **outcome}
+        _save(job, searches[job], DISCOVERIES)
 
 
 @app.post("/discover", status_code=202)
@@ -221,16 +241,37 @@ def start_search(request: DiscoverRequest) -> dict:
     if len(request.seeds) > MAX_SEEDS:
         raise HTTPException(400, f"Give at most {MAX_SEEDS} papers you already have.")
     job = uuid.uuid4().hex
-    searches[job] = {"status": "running", "progress": None}
+    # The request goes in every answer, so a page reopened at the search's
+    # address can show what was searched for.
+    searches[job] = {
+        "status": "running",
+        "progress": None,
+        "keywords": request.keywords,
+        "seeds": request.seeds,
+        "features": request.features,
+        "started": time.time(),
+    }
+    # The keywords are the user's, so they're logged with %r: quoted and
+    # escaped, never able to fake a line of their own.
+    log.info(
+        "Search submitted for %r with %d seed(s), %d feature(s)",
+        request.keywords,
+        len(request.seeds),
+        len(request.features),
+        extra={"job": job},
+    )
     searcher.submit(run_search, job, request)
     return {"job": job}
 
 
 @app.get("/discover/{job}")
 def search_status(job: str) -> dict:
-    if job not in searches:
-        raise HTTPException(404, "No such search. The server forgets its searches when it restarts.")
-    return searches[job]
+    if job in searches:
+        return searches[job]
+    saved = _saved(job, DISCOVERIES)
+    if saved is not None:
+        return saved
+    raise HTTPException(404, "No such search. A search still running when the server stopped is lost.")
 
 
 if __name__ == "__main__":

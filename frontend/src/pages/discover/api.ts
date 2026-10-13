@@ -48,10 +48,21 @@ export interface DiscoverProgress {
   readonly seconds: number;
 }
 
-export type DiscoverStatus =
+/** What the server says about the search itself, in every status answer. A
+ *  page opened at a search's address (issue #18) has no other way to know them. */
+export interface SearchInfo {
+  readonly keywords?: string;
+  readonly features?: readonly string[];
+  /** When the search started, in milliseconds like `Date.now()`. */
+  readonly startedAt?: number;
+}
+
+export type DiscoverStatus = (
   | { readonly status: "running"; readonly progress: DiscoverProgress | null }
   | { readonly status: "failed"; readonly error: string }
-  | { readonly status: "done"; readonly papers: readonly DiscoveredPaper[] };
+  | { readonly status: "done"; readonly papers: readonly DiscoveredPaper[] }
+) &
+  SearchInfo;
 
 /** Start a search; resolves to its id. */
 export async function startDiscovery(
@@ -124,14 +135,30 @@ function parsePaper(value: unknown): DiscoveredPaper | null {
   };
 }
 
+/** The search's own details from a status answer: each is left out when the
+ *  server didn't send it, or sent something other than the documented type. */
+function parseSearchInfo(body: Record<string, unknown>): SearchInfo {
+  const info: { keywords?: string; features?: string[]; startedAt?: number } = {};
+  const keywords = text(body.keywords);
+  if (keywords) info.keywords = keywords;
+  if (Array.isArray(body.features) && body.features.every((name) => typeof name === "string")) {
+    info.features = body.features;
+  }
+  if (typeof body.started === "number" && Number.isFinite(body.started)) {
+    info.startedAt = body.started * 1000; // the server sends Unix seconds
+  }
+  return info;
+}
+
 /** A search-status answer, or `null` if it isn't one. */
 export function parseDiscoverStatus(body: unknown): DiscoverStatus | null {
   if (!isRecord(body)) return null;
+  const info = parseSearchInfo(body);
   switch (body.status) {
     case "running":
-      return { status: "running", progress: parseProgress(body.progress) };
+      return { status: "running", progress: parseProgress(body.progress), ...info };
     case "failed":
-      return { status: "failed", error: text(body.error) ?? "No reason given." };
+      return { status: "failed", error: text(body.error) ?? "No reason given.", ...info };
     case "done": {
       if (!Array.isArray(body.papers)) return null;
       const papers: DiscoveredPaper[] = [];
@@ -140,7 +167,7 @@ export function parseDiscoverStatus(body: unknown): DiscoverStatus | null {
         if (!paper) return null;
         papers.push(paper);
       }
-      return { status: "done", papers };
+      return { status: "done", papers, ...info };
     }
     default:
       return null;
