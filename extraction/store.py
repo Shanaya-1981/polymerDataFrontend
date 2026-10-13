@@ -1,7 +1,7 @@
 """Where the server keeps finished extractions: one SQLite file,
 <DATA_DIR>/polymerdata.db, through Python's own sqlite3.
 
-Four tables, linked by their ids. The links are foreign keys, checked on every
+Five tables, linked by their ids. The links are foreign keys, checked on every
 connection, so a row can't point to one that doesn't exist:
 
     papers         a paper: its id (from its PDF's contents, as the parse step
@@ -11,8 +11,10 @@ connection, so a row can't point to one that doesn't exist:
                    names it was given (the names as a JSON list), when it
                    started (empty for jobs saved before the server noted it),
                    and whether it's "done" or "failed" (with why)
-    points         a data point, the values measured together: its extraction,
-                   its sample, and its place in the result
+    samples        a sample the extraction found: its extraction, its name, and
+                   its place in the result. A sample can have no data points.
+    points         a data point, the values measured together: its sample, and
+                   its place among the sample's data points
     point_values   one value of a data point: its feature, and the value as the
                    model gave it, a number or text. (SQL reserves "values".)
 
@@ -52,13 +54,19 @@ CREATE TABLE IF NOT EXISTS extractions (
     status TEXT NOT NULL CHECK (status IN ('done', 'failed')),
     error TEXT
 );
-CREATE TABLE IF NOT EXISTS points (
+CREATE TABLE IF NOT EXISTS samples (
     id INTEGER PRIMARY KEY,
     extraction_id TEXT NOT NULL REFERENCES extractions (id) ON DELETE CASCADE,
-    sample TEXT NOT NULL,
+    name TEXT NOT NULL,
     position INTEGER NOT NULL
 );
-CREATE INDEX IF NOT EXISTS points_of_extraction ON points (extraction_id, position);
+CREATE INDEX IF NOT EXISTS samples_of_extraction ON samples (extraction_id, position);
+CREATE TABLE IF NOT EXISTS points (
+    id INTEGER PRIMARY KEY,
+    sample_id INTEGER NOT NULL REFERENCES samples (id) ON DELETE CASCADE,
+    position INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS points_of_sample ON points (sample_id, position);
 -- value has no type, so SQLite keeps each one as the model gave it: a whole
 -- number, a decimal or text.
 CREATE TABLE IF NOT EXISTS point_values (
@@ -101,15 +109,18 @@ def save_extraction(db: Path, job: str, record: dict, paper: str | None = None) 
                 record.get("error"),
             ),
         )
-        points = ((sample, point) for sample, sample_points in record.get("samples", {}).items() for point in sample_points)
-        for position, (sample, point) in enumerate(points):
-            point_id = connection.execute(
-                "INSERT INTO points (extraction_id, sample, position) VALUES (?, ?, ?)", (job, sample, position)
+        for sample_position, (sample, points) in enumerate(record.get("samples", {}).items()):
+            sample_id = connection.execute(
+                "INSERT INTO samples (extraction_id, name, position) VALUES (?, ?, ?)", (job, sample, sample_position)
             ).lastrowid
-            connection.executemany(
-                "INSERT INTO point_values VALUES (?, ?, ?)",
-                [(point_id, feature, value) for feature, value in point.items() if value is not None],
-            )
+            for position, point in enumerate(points):
+                point_id = connection.execute(
+                    "INSERT INTO points (sample_id, position) VALUES (?, ?)", (sample_id, position)
+                ).lastrowid
+                connection.executemany(
+                    "INSERT INTO point_values VALUES (?, ?, ?)",
+                    [(point_id, feature, value) for feature, value in point.items() if value is not None],
+                )
 
 
 def load_extraction(db: Path, job: str) -> dict | None:
@@ -129,19 +140,24 @@ def load_extraction(db: Path, job: str) -> dict | None:
             record["started"] = started
         if status == "failed":
             return {**record, "error": error}
+        names = dict(
+            connection.execute("SELECT id, name FROM samples WHERE extraction_id = ? ORDER BY position", (job,))
+        )
+        samples: dict[str, list[dict]] = {name: [] for name in names.values()}
         values: dict[int, dict] = {}
         for point_id, feature, value in connection.execute(
             "SELECT point_id, feature, value FROM point_values JOIN points ON points.id = point_id"
-            " WHERE extraction_id = ?",
+            " JOIN samples ON samples.id = sample_id WHERE extraction_id = ?",
             (job,),
         ):
             values.setdefault(point_id, {})[feature] = value
-        samples: dict[str, list[dict]] = {}
-        for point_id, sample in connection.execute(
-            "SELECT id, sample FROM points WHERE extraction_id = ? ORDER BY position", (job,)
+        for point_id, sample_id in connection.execute(
+            "SELECT points.id, sample_id FROM points JOIN samples ON samples.id = sample_id"
+            " WHERE extraction_id = ? ORDER BY samples.position, points.position",
+            (job,),
         ):
             given = values.get(point_id, {})
-            samples.setdefault(sample, []).append({feature: given.get(feature) for feature in features})
+            samples[names[sample_id]].append({feature: given.get(feature) for feature in features})
         return {**record, "samples": samples}
 
 

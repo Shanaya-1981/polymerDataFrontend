@@ -56,17 +56,25 @@ class StoreTest(unittest.TestCase):
         self.assertEqual(papers, [("0a1b2c3d", "linden1988.pdf")])
         self.assertEqual(store.load_extraction(self.db, OTHER)["file"], "renamed.pdf")
 
+    def test_a_sample_with_no_data_points_reads_back_too(self):
+        given = {**DONE, "samples": {"PVDF": [], **DONE["samples"], "PAN": []}}
+        store.save_extraction(self.db, JOB, given)
+        self.assertEqual(json.dumps(store.load_extraction(self.db, JOB)), json.dumps(given))
+
     def test_a_row_cant_point_to_one_that_doesnt_exist(self):
         store.save_extraction(self.db, JOB, DONE)
         with store._connect(self.db) as connection, self.assertRaises(sqlite3.IntegrityError):
-            connection.execute("INSERT INTO points (extraction_id, sample, position) VALUES (?, 'PEO', 0)", (OTHER,))
+            connection.execute("INSERT INTO samples (extraction_id, name, position) VALUES (?, 'PEO', 0)", (OTHER,))
+        with store._connect(self.db) as connection, self.assertRaises(sqlite3.IntegrityError):
+            connection.execute("INSERT INTO points (sample_id, position) VALUES (12345, 0)")
 
-    def test_deleting_an_extraction_deletes_its_data_points_and_values(self):
+    def test_deleting_an_extraction_deletes_its_samples_data_points_and_values(self):
         store.save_extraction(self.db, JOB, DONE)
         with store._connect(self.db) as connection:
             connection.execute("DELETE FROM extractions WHERE id = ?", (JOB,))
-            left = [connection.execute(f"SELECT count(*) FROM {t}").fetchone()[0] for t in ("points", "point_values")]
-        self.assertEqual(left, [0, 0])
+            tables = ("samples", "points", "point_values")
+            left = [connection.execute(f"SELECT count(*) FROM {t}").fetchone()[0] for t in tables]
+        self.assertEqual(left, [0, 0, 0])
 
     def test_jobs_saved_as_json_are_copied_once_and_unreadable_ones_skipped(self):
         folder = self.tmp / "extractions"
