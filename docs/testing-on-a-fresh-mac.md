@@ -509,8 +509,10 @@ and step 2 below avoids problem 2 on purpose.
    In this run setup took 36 seconds. It used the Node.js 24 from Homebrew,
    found Claude Code installed and logged in (so it didn't ask), and found
    MinerU running with its model files (so it downloaded nothing). This run
-   chose **Use This Folder**, which put the data in `~/PolymerData Results`.
-   The app opened at `http://localhost:5173`.
+   was made before this step said to choose another folder: it chose **Use
+   This Folder**, so for it `DATA` was `~/PolymerData Results`, and that's
+   where steps 5 and 6 found its files. The app opened at
+   `http://localhost:5173`.
 
 4. **Run the tests in the package's copy,** with the Python setup installed:
 
@@ -559,10 +561,19 @@ and step 2 below avoids problem 2 on purpose.
    python3 $D/score_runs.py "$DATA/extractions/$job.json"
    ```
 
-   It first prints "Answer key: 202 rows in 8 tables"; fewer means the parse
-   it found isn't of this paper. In this run: "exactly a table row (right
-   condition, time and conversion): 202 of 202 rows", with nothing wrong or
-   missed.
+   It first prints "Answer key: 202 rows in 8 tables". The answer key is
+   MinerU's reading of Tables IV–XI, and a table counts only if MinerU read
+   both its "TABLE" heading and the footnote that says which experiment it
+   is. Fewer rows means MinerU missed or misread part of a table, not that it
+   read another paper: open `$DATA/parsed/fcac8200/content.md` and compare
+   those tables with the paper. The folder's name comes from the PDF's
+   contents, so a different copy of the paper, such as another library's
+   scan, gets a different name, and the scorer stops with "No such file or
+   directory". For such a copy, replace `fcac8200` in `$D/score_runs.py`
+   with its folder name, from `ls "$DATA/parsed"`.
+
+   In this run: "exactly a table row (right condition, time and conversion):
+   202 of 202 rows", with nothing wrong or missed.
 
 7. **Clean up.** Double-click PolymerData and choose **Stop PolymerData**. That
    also stops MinerU's background server, which your checkout shares; the
