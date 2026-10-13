@@ -43,7 +43,6 @@ import json
 import logging
 import os
 import re
-import sqlite3
 import tempfile
 import time
 import uuid
@@ -80,7 +79,7 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     configure_logging()
     try:
         copied = store.import_json(DB, RESULTS)
-    except (OSError, sqlite3.Error):
+    except Exception:  # the server starts anyway: new jobs, and jobs still in memory, don't need these
         log.exception("Couldn't copy the jobs saved in %s into %s", RESULTS, DB)
     else:
         if copied:
@@ -144,7 +143,9 @@ def run(job: str, pdf: bytes, features: list[str]) -> None:
         jobs[job] = {**{key: value for key, value in jobs[job].items() if key != "progress"}, **outcome}
         try:
             store.save_extraction(DB, job, jobs[job], paper)
-        except (OSError, sqlite3.Error):
+        # Any error, logged: one raised here ends up unread in the worker's future,
+        # and the job would be lost at the next restart without a word.
+        except Exception:
             log.exception("Couldn't save the result to %s; it answers only until the server stops", DB)
         else:
             log.debug("Saved to %s", DB)

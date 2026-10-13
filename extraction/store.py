@@ -172,7 +172,9 @@ def import_json(db: Path, folder: Path) -> int:
             continue
         try:
             save_extraction(db, job, json.loads(file.read_text(encoding="utf-8")))
-        except (OSError, ValueError, KeyError, TypeError, sqlite3.Error) as e:
+        # Any error: a file can hold JSON of any shape, and one that can't be
+        # copied mustn't stop the others, or the server's start.
+        except Exception as e:
             log.warning("Couldn't copy %s into %s: %s", file, db, e)
             continue
         copied += 1

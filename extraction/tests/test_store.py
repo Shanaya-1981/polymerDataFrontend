@@ -97,6 +97,26 @@ class StoreTest(unittest.TestCase):
         store.save_extraction(self.db, JOB, old)
         self.assertEqual(json.dumps(store.load_extraction(self.db, JOB)), json.dumps(old))
 
+    def test_json_of_the_wrong_shape_is_skipped_and_leaves_nothing_behind(self):
+        folder = self.tmp / "extractions"
+        folder.mkdir()
+        wrong = [
+            {**DONE, "samples": []},
+            {**DONE, "samples": None},
+            {**DONE, "samples": {"PEO": [5]}},  # a data point that isn't an object
+            {**DONE, "samples": {"PEO": [{"Polymer": 2**70}]}},  # bigger than SQLite's whole numbers
+        ]
+        for i, record in enumerate(wrong):
+            (folder / f"{i:032x}.json").write_text(json.dumps(record), encoding="utf-8")
+
+        with self.assertLogs("extraction.store", "WARNING") as logs:
+            self.assertEqual(store.import_json(self.db, folder), 0)
+        self.assertEqual(len(logs.records), len(wrong))
+        tables = ("extractions", "samples", "points", "point_values")
+        with store._connect(self.db) as connection:
+            left = [connection.execute(f"SELECT count(*) FROM {t}").fetchone()[0] for t in tables]
+        self.assertEqual(left, [0, 0, 0, 0])  # each failed copy was undone
+
     def test_no_folder_of_json_copies_nothing(self):
         self.assertEqual(store.import_json(self.db, self.tmp / "extractions"), 0)
         self.assertFalse(self.db.exists())
