@@ -15,9 +15,12 @@ from job_progress.py), what to call that step (`name`), a sentence about it
 A PDF parsed before takes about 1.5 minutes, a new one about 5, since MinerU
 parses it first. Jobs run one at a time, in the order they came in, so
 "running" includes waiting for earlier jobs -- the "queued" step, whose
-description says how many are ahead. A finished job is also saved to
-<DATA_DIR>/extractions/<id>.json, so its id keeps answering after a restart. A job
-still running when the server stops is lost: its id answers 404.
+description says how many are ahead. A finished job is also saved in
+<DATA_DIR>/polymerdata.db (store.py), so its id keeps answering after a restart,
+and a copy of its PDF as <DATA_DIR>/papers/<paper id>.pdf. A job still running
+when the server stops is lost: its id answers 404. Jobs saved by earlier
+versions, as <DATA_DIR>/extractions/<id>.json, are copied into polymerdata.db
+when the server starts.
 
 What the server does goes to stdout and logs/extraction.log, each line tagged
 with its job and step; LOG_LEVEL sets how much (see log_setup.py).
@@ -40,6 +43,7 @@ import json
 import logging
 import os
 import re
+import sqlite3
 import tempfile
 import time
 import uuid
@@ -54,8 +58,9 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
 import job_progress
+import store
 from discover import discover
-from extract_features import DATA_DIR, HERE, extract_features
+from extract_features import DATA_DIR, HERE, extract_features, paper_id_of
 from job_progress import QUEUED
 from log_setup import LOG_FILE, configure_logging, job_context, resolve_level, set_step
 
@@ -63,7 +68,9 @@ os.chdir(HERE)  # the parse step's settings.yaml path is relative to extraction/
 
 log = logging.getLogger("extraction.api")
 
-RESULTS = DATA_DIR / "extractions"  # <job id>.json for each finished job
+DB = DATA_DIR / "polymerdata.db"  # each finished job and the data it found (store.py)
+PAPERS = DATA_DIR / "papers"  # <paper id>.pdf, a copy of each PDF uploaded
+RESULTS = DATA_DIR / "extractions"  # <job id>.json, where earlier versions saved finished jobs
 
 
 @asynccontextmanager
@@ -71,7 +78,14 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     # At startup rather than import, so `python api.py` and `uvicorn api:app`
     # both get it, and importing this module (tests) writes no log file.
     configure_logging()
-    log.info("Ready: finished jobs saved to %s, logs written to %s", RESULTS, LOG_FILE)
+    try:
+        copied = store.import_json(DB, RESULTS)
+    except (OSError, sqlite3.Error):
+        log.exception("Couldn't copy the jobs saved in %s into %s", RESULTS, DB)
+    else:
+        if copied:
+            log.info("Copied %d job(s) saved by an earlier version from %s into %s", copied, RESULTS, DB)
+    log.info("Ready: finished jobs saved to %s, logs written to %s", DB, LOG_FILE)
     yield
 
 
@@ -100,6 +114,8 @@ def run(job: str, pdf: bytes, features: list[str]) -> None:
     with job_context(job):
         log.info("Started after %.1f s in the queue", time.time() - jobs[job]["started"])
         began = time.monotonic()
+        paper = paper_id_of(pdf)
+        _keep_pdf(paper, pdf)
         current: dict = {"step": None, "since": began}
 
         def on_step(step: str) -> None:
@@ -126,7 +142,25 @@ def run(job: str, pdf: bytes, features: list[str]) -> None:
             outcome = {"status": "failed", "error": str(e)}
         # A finished job has no step to report, so its progress isn't kept or saved.
         jobs[job] = {**{key: value for key, value in jobs[job].items() if key != "progress"}, **outcome}
-        _save(job, jobs[job], RESULTS)
+        try:
+            store.save_extraction(DB, job, jobs[job], paper)
+        except (OSError, sqlite3.Error):
+            log.exception("Couldn't save the result to %s; it answers only until the server stops", DB)
+        else:
+            log.debug("Saved to %s", DB)
+
+
+def _keep_pdf(paper: str, pdf: bytes) -> None:
+    """Keep a copy of the uploaded PDF as PAPERS/<paper id>.pdf, unless there is one."""
+    kept = PAPERS / f"{paper}.pdf"
+    try:
+        if not kept.exists():
+            PAPERS.mkdir(parents=True, exist_ok=True)
+            saving = PAPERS / f"{paper}.pdf.tmp"  # renamed once complete, so a crash never leaves half a file
+            saving.write_bytes(pdf)
+            saving.replace(kept)
+    except OSError:
+        log.exception("Couldn't keep a copy of the PDF in %s", PAPERS)
 
 
 def _save(job: str, record: dict, folder: Path) -> None:
@@ -194,8 +228,10 @@ def status(job: str) -> dict:
             answer = {**answer, "progress": job_progress.progress(QUEUED, ahead=_jobs_ahead(job))}
         log.debug("Status: %s", answer["status"], extra={"job": job})
         return answer
-    saved = _saved(job, RESULTS)
+    # Only ids this server makes are looked up.
+    saved = store.load_extraction(DB, job) if re.fullmatch(r"[0-9a-f]{32}", job) else None
     if saved is not None:
+        log.debug("Status: from %s", DB, extra={"job": job})
         return saved
     log.info("No such job: %r", job[:64])
     raise HTTPException(404, "No such job. A job still running when the server stopped is lost.")

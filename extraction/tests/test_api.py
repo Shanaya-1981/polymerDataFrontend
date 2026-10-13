@@ -10,6 +10,8 @@ from fastapi import HTTPException, UploadFile
 
 import api
 import log_setup
+import store
+from extract_features import paper_id_of
 from job_progress import ASKING, COLLECTING, PARSING, QUEUED, progress
 
 PDF = b"%PDF-1.7 fake paper"
@@ -29,7 +31,10 @@ class ApiTest(unittest.TestCase):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         self.tmp = Path(tmp.name)
+        self.db = self.tmp / "polymerdata.db"
         for patcher in (
+            mock.patch.object(api, "DB", self.db),
+            mock.patch.object(api, "PAPERS", self.tmp / "papers"),
             mock.patch.object(api, "RESULTS", self.tmp / "extractions"),
             # Jobs are run by the test itself, never by the server's worker thread.
             mock.patch.object(api.worker, "submit"),
@@ -107,8 +112,8 @@ class ApiTest(unittest.TestCase):
         answer = api.status(job)
         self.assertEqual((answer["status"], answer["samples"]), ("done", SAMPLES))
         self.assertNotIn("progress", answer)
-        saved = json.loads((self.tmp / "extractions" / f"{job}.json").read_text(encoding="utf-8"))
-        self.assertEqual(saved, answer)
+        self.assertEqual(store.load_extraction(self.db, job), answer)
+        self.assertEqual((self.tmp / "papers" / f"{paper_id_of(PDF)}.pdf").read_bytes(), PDF)
 
         messages = [record.getMessage() for record in logs.records]
         self.assertRegex(messages[0], r"^Started after \d+\.\d s in the queue$")
@@ -140,18 +145,28 @@ class ApiTest(unittest.TestCase):
         self.assertEqual(failure.levelname, "ERROR")
         self.assertRegex(failure.getMessage(), r"^Failed after \d+\.\d s: claude -p failed: usage limit reached$")
         self.assertIsNotNone(failure.exc_info)
-        self.assertTrue((self.tmp / "extractions" / f"{job}.json").exists())
+        self.assertEqual(store.load_extraction(self.db, job), answer)
 
     def test_a_result_that_cant_be_saved_is_logged_and_still_answers(self):
         job = self.submit()
         (self.tmp / "a-file").write_text("not a folder")
-        with mock.patch.object(api, "RESULTS", self.tmp / "a-file" / "extractions"), mock.patch.object(
-            api, "extract_features", return_value=SAMPLES
-        ), self.assertLogs("extraction.api", "INFO") as logs:
+        with mock.patch.object(api, "DB", self.tmp / "a-file" / "polymerdata.db"), mock.patch.object(
+            api, "PAPERS", self.tmp / "a-file" / "papers"
+        ), mock.patch.object(api, "extract_features", return_value=SAMPLES), self.assertLogs(
+            "extraction.api", "INFO"
+        ) as logs:
             api.run(job, PDF, NAMES)
 
         self.assertEqual(api.status(job)["status"], "done")
-        self.assertTrue(any(record.getMessage().startswith("Couldn't save the result") for record in logs.records))
+        messages = [record.getMessage() for record in logs.records]
+        self.assertTrue(any(m.startswith("Couldn't keep a copy of the PDF") for m in messages))
+        self.assertTrue(any(m.startswith("Couldn't save the result") for m in messages))
+
+    def test_the_same_pdf_is_kept_once(self):
+        with mock.patch.object(api, "extract_features", return_value=SAMPLES), self.assertLogs("extraction.api", "INFO"):
+            for name in ("linden1988.pdf", "renamed.pdf"):
+                api.run(self.submit(name=name), PDF, NAMES)
+        self.assertEqual([p.name for p in (self.tmp / "papers").iterdir()], [f"{paper_id_of(PDF)}.pdf"])
 
     def test_an_unknown_job_is_a_logged_404(self):
         for job in ("f" * 32, "../../etc/passwd"):
@@ -162,19 +177,43 @@ class ApiTest(unittest.TestCase):
 
     def test_a_saved_job_still_answers_after_a_restart(self):
         job = "0" * 32
-        (self.tmp / "extractions").mkdir()
-        saved = {"status": "done", "samples": SAMPLES, "file": "linden1988.pdf", "features": NAMES, "started": 1.0}
-        (self.tmp / "extractions" / f"{job}.json").write_text(json.dumps(saved), encoding="utf-8")
+        saved = {"status": "done", "file": "linden1988.pdf", "features": NAMES, "started": 1.0, "samples": SAMPLES}
+        store.save_extraction(self.db, job, saved, paper_id_of(PDF))
         self.assertEqual(api.status(job), saved)
 
-    def test_starting_the_server_sets_up_logging(self):
+    def start_and_stop_the_server(self) -> tuple[list[str], mock.Mock]:
+        """Run the server's startup and shutdown: the messages it logged, and
+        the stand-in for configure_logging(), which would write a log file."""
+
         async def start_and_stop():
             async with api.lifespan(api.app):
                 pass
 
-        with mock.patch.object(api, "configure_logging") as configure, self.assertLogs("extraction.api", "INFO"):
+        with mock.patch.object(api, "configure_logging") as configure, self.assertLogs(
+            "extraction.api", "INFO"
+        ) as logs:
             asyncio.run(start_and_stop())
+        return [record.getMessage() for record in logs.records], configure
+
+    def test_starting_the_server_sets_up_logging(self):
+        _, configure = self.start_and_stop_the_server()
         configure.assert_called_once_with()
+
+    def test_jobs_saved_by_an_earlier_version_are_copied_in_once(self):
+        job = "0" * 32
+        saved = {"status": "done", "file": "linden1988.pdf", "features": NAMES, "started": 1.0, "samples": SAMPLES}
+        (self.tmp / "extractions").mkdir()
+        (self.tmp / "extractions" / f"{job}.json").write_text(json.dumps(saved), encoding="utf-8")
+
+        first, _ = self.start_and_stop_the_server()
+        self.assertIn(
+            f"Copied 1 job(s) saved by an earlier version from {self.tmp / 'extractions'} into {self.db}", first
+        )
+        self.assertEqual(api.status(job), saved)
+        self.assertTrue((self.tmp / "extractions" / f"{job}.json").exists())  # left as it was
+
+        second, _ = self.start_and_stop_the_server()
+        self.assertFalse(any(m.startswith("Copied") for m in second))
 
 
 if __name__ == "__main__":

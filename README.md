@@ -158,9 +158,16 @@ your home folder, unless you chose another. It holds:
 - `parsed/`: one folder per paper, with its text as MinerU read it
   (`content.md`) and its figures as images (`figures/`). The same PDF uploaded
   again, under any file name, reuses this instead of being read again.
-- `extractions/`: one file per extraction, `<id>.json`, holding the results the
-  page showed. `<id>` is the end of the page's address, `/extract?job=<id>`.
-- `discoveries/`: the same for searches, `/discover?job=<id>`.
+- `papers/`: a copy of each PDF you've extracted from, named by the paper's id
+  (made from the PDF's contents), such as `fcac8200.pdf`.
+- `polymerdata.db`: every finished extraction and the data it found, in one
+  SQLite database file. Any SQLite program can open it, such as the free DB
+  Browser for SQLite.
+- `discoveries/`: one file per search, `<id>.json`, holding the results the
+  page showed. `<id>` is the end of the page's address, `/discover?job=<id>`.
+- `extractions/`, if you used an earlier version: one file per extraction,
+  `<id>.json`. PolymerData copies these into `polymerdata.db` when it starts,
+  and leaves the files as they are.
 
 To move your data, stop PolymerData and move the folder. Then tell PolymerData
 where it went. In `polymerData-main`, open the `extraction` folder and press
@@ -473,11 +480,14 @@ That paper's answer, shortened (it gave 6 samples with 7 temperatures each):
 - **Jobs run one at a time, in the order they came in.** `running` also covers
   waiting for earlier jobs, so a job can stay `running` longer than the times
   above.
-- **Every finished job is saved** to `extractions/<job id>.json` in the
-  [data folder](#where-your-data-is-kept), holding the same answer
-  `GET /extract/<job id>` gives, so its id keeps working after a restart.
-  Failed jobs are saved too, with their reason. The files stay on the computer
-  running the server: the default data folder, `extraction/output/`, isn't in git.
+- **Every finished job is saved** in `polymerdata.db` in the
+  [data folder](#where-your-data-is-kept), so `GET /extract/<job id>` gives the
+  same answer after a restart. Failed jobs are saved too, with their reason.
+  The uploaded PDF is kept as `papers/<paper id>.pdf`. Both stay on the
+  computer running the server: the default data folder, `extraction/output/`,
+  isn't in git. `extraction/store.py` describes the database's tables. Jobs
+  saved by earlier versions as `extractions/<job id>.json` are copied in when
+  the server starts, so their ids keep working too.
 - **A job still running when the server stops is lost.** Its id answers `404`
   after the restart, and so does an id the server never made.
 - **Commas separate the feature names,** so a name can't contain a comma.

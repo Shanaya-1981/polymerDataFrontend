@@ -68,7 +68,7 @@ from log_setup import configure_logging  # noqa: E402
 log = logging.getLogger("extraction.pipeline")
 
 load_dotenv(HERE / ".env")
-# Where the parsed papers (parsed/) and the server's finished jobs (extractions/) are kept:
+# Where the parsed papers (parsed/) and the server's PDFs and finished jobs (papers/, polymerdata.db) are kept:
 # DATA_DIR from the environment or extraction/.env, relative to the repo root unless
 # absolute. setup.sh asks for it; unset, it's extraction/output/.
 DATA_DIR = HERE.parent / Path(os.environ.get("DATA_DIR") or "extraction/output").expanduser()
@@ -181,6 +181,11 @@ def extract_features(
     return samples
 
 
+def paper_id_of(pdf: bytes) -> str:
+    """A paper's id, made from its PDF's contents, so the same PDF has the same id under any file name."""
+    return hashlib.sha256(pdf).hexdigest()[:8]
+
+
 def parse(pdf: Path, on_step: OnStep | None = None) -> Path:
     """OUTPUT_ROOT/<paper id>/ for this PDF, running the parse step first if it
     isn't there yet -- and only then calling on_step(PARSING)."""
@@ -191,7 +196,7 @@ def parse(pdf: Path, on_step: OnStep | None = None) -> Path:
         # The parse step takes a paper's id from the front of its file name
         # (papers/0a011d54-tominaga2012.pdf). Any other PDF gets one from its
         # contents and is parsed under that name.
-        paper_id = hashlib.sha256(pdf.read_bytes()).hexdigest()[:8]
+        paper_id = paper_id_of(pdf.read_bytes())
         named = f"{paper_id}-{pdf.stem}.pdf"
     paper_dir = OUTPUT_ROOT / paper_id
     if (paper_dir / "manifest.json").exists():
