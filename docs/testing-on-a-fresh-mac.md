@@ -420,10 +420,12 @@ paper in the background even after the extraction gave up on it.
 To test the rest of the extraction anyway, give the VM the parse your own Mac
 made of the same paper. The server reuses a parse when it finds one under the
 paper's id, which comes from the PDF's contents (`fcac8200` for
-`balke1973.pdf`):
+`balke1973.pdf`). Your Mac has one if you've extracted the paper from your
+checkout (in `extraction/output/parsed/`) or done step 12 (in its data
+folder's `parsed/`). From the folder that holds it:
 
 ```sh
-cd extraction/output/parsed && tar czf - fcac8200 |
+tar czf - fcac8200 |
   vm 'mkdir -p ~/"PolymerData Results"/parsed && cd ~/"PolymerData Results"/parsed && tar xzf -'
 ```
 
@@ -470,10 +472,11 @@ and step 2 below avoids problem 2 on purpose.
    Stop it, and note how you started it so you can start it again afterwards.
 
 2. **Download and unzip the package** into a folder of its own, outside
-   Downloads, Desktop and Documents (problem 2):
+   Downloads, Desktop and Documents (problem 2), with an empty `data` folder
+   next to it for the test's results:
 
    ```sh
-   mkdir -p ~/projects/packageTest && cd ~/projects/packageTest
+   mkdir -p ~/projects/packageTest/data && cd ~/projects/packageTest
    curl -fsSL -o polymerData-main.zip https://github.com/merlinymy/polymerData/archive/refs/heads/main.zip
    xattr -w com.apple.quarantine "0083;$(printf %x $(date +%s));Safari;$(uuidgen)" polymerData-main.zip
    ditto -x -k polymerData-main.zip . && rm polymerData-main.zip
@@ -493,11 +496,21 @@ and step 2 below avoids problem 2 on purpose.
    privacy." That's expected for an app that isn't signed by a registered
    developer.
 
+   When setup asks where to keep your data, choose **Choose Another…** and
+   pick `packageTest/data`. **Use This Folder** would use
+   `~/PolymerData Results`, where any extractions you've made with PolymerData
+   before are kept, and the test's results would mix with them. The steps
+   below find the results through `DATA`:
+
+   ```sh
+   DATA=~/projects/packageTest/data
+   ```
+
    In this run setup took 36 seconds. It used the Node.js 24 from Homebrew,
    found Claude Code installed and logged in (so it didn't ask), and found
-   MinerU running with its model files (so it downloaded nothing). **Use This
-   Folder** put the data in `~/PolymerData Results`. The app opened at
-   `http://localhost:5173`.
+   MinerU running with its model files (so it downloaded nothing). This run
+   chose **Use This Folder**, which put the data in `~/PolymerData Results`.
+   The app opened at `http://localhost:5173`.
 
 4. **Run the tests in the package's copy,** with the Python setup installed:
 
@@ -513,8 +526,12 @@ and step 2 below avoids problem 2 on purpose.
    said "All routes rendered cleanly."
 
 5. **Run an extraction through the extraction server,** from your checkout's
-   root. `papers/balke1973.pdf` isn't in the repo, since it isn't ours to
-   publish; use any paper you have, with features it reports.
+   root. Steps 5 and 6 use the paper this run used: S. T. Balke and A. E.
+   Hamielec, "Bulk Polymerization of Methyl Methacrylate", *Journal of Applied
+   Polymer Science* 17, 905–949 (1973). It isn't in the repo, since it isn't
+   ours to publish; get it from a library and save it as
+   `papers/balke1973.pdf`. With another paper, use features it reports and
+   skip step 6, which only knows this paper's tables.
 
    ```sh
    job=$(curl -s -F "pdf=@papers/balke1973.pdf" -F "features=Time (min), Cov Exp" \
@@ -522,31 +539,42 @@ and step 2 below avoids problem 2 on purpose.
    curl -s http://127.0.0.1:8000/extract/$job   # repeat until "status" is no longer "running"
    ```
 
-   In this run it took 76 seconds and found 8 samples with 202 data points. It
-   saves the result as `~/PolymerData Results/extractions/<job>.json`. MinerU
-   took only 14 seconds because it had read this paper on this Mac before; it
-   keeps its own copy of every paper it reads, in `~/.mineru`.
+   In this run it took 76 seconds and found 8 samples with 202 data points.
+   The server saves the result as `$DATA/extractions/<job>.json`, and MinerU's
+   reading of the paper as `$DATA/parsed/fcac8200/` (`fcac8200` is the
+   paper's id, made from the PDF's contents). MinerU took only 14 seconds
+   because it had read this paper on this Mac before; it keeps its own copy of
+   every paper it reads, in `~/.mineru`.
 
 6. **Score it against the paper's printed tables,** with the scorer from the
    `save-extraction-results` branch. It reads the tables from
-   `extraction/output/parsed/fcac8200/content.md`, found from its own location,
-   so give it a folder that matches:
+   `output/parsed/fcac8200/content.md`, three folders up from its own
+   location. Point that at `$DATA`, so the tables come from the same run as
+   the extraction:
 
    ```sh
    D=/tmp/score/extraction/experiments/claude_code/pmma_xp; mkdir -p $D
-   git show save-extraction-results:extraction/experiments/claude_code/pmma_xp/score_runs.py > $D/score_runs.py
-   ln -sfn "$PWD/extraction/output" /tmp/score/extraction/output
-   python3 $D/score_runs.py ~/"PolymerData Results"/extractions/$job.json
+   git show origin/save-extraction-results:extraction/experiments/claude_code/pmma_xp/score_runs.py > $D/score_runs.py
+   ln -sfn "$DATA" /tmp/score/extraction/output
+   python3 $D/score_runs.py "$DATA/extractions/$job.json"
    ```
 
-   In this run: "exactly a table row (right condition, time and conversion):
-   202 of 202 rows", with nothing wrong or missed.
+   It first prints "Answer key: 202 rows in 8 tables"; fewer means the parse
+   it found isn't of this paper. In this run: "exactly a table row (right
+   condition, time and conversion): 202 of 202 rows", with nothing wrong or
+   missed.
 
 7. **Clean up.** Double-click PolymerData and choose **Stop PolymerData**. That
    also stops MinerU's background server, which your checkout shares; the
    extraction server starts it again the next time it needs it. Start again
-   whatever you stopped in step 1. Delete `~/projects/packageTest` and
-   `~/PolymerData Results` if you don't want to keep them.
+   whatever you stopped in step 1. Then delete `~/projects/packageTest`: it
+   holds the package and, if you chose `packageTest/data` in step 3, all of
+   the test's results.
+
+   If you chose **Use This Folder** instead, don't delete
+   `~/PolymerData Results`, which may hold your real extractions. Delete only
+   this test's result, `extractions/<job>.json`, and `parsed/fcac8200` only
+   if it wasn't there before the test.
 
 ## Appendix: driving the VM's screen from a terminal
 
