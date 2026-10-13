@@ -162,6 +162,17 @@ class ApiTest(unittest.TestCase):
         self.assertTrue(any(m.startswith("Couldn't keep a copy of the PDF") for m in messages))
         self.assertTrue(any(m.startswith("Couldn't save the result") for m in messages))
 
+    def test_a_result_sqlite_cant_hold_is_logged_and_still_answers(self):
+        job = self.submit()
+        too_big = {"PEO": [{"Temperature (°C)": 2**70, "Conductivity (S/cm)": 1e-7}]}  # SQLite's whole numbers end at 2**63
+        with mock.patch.object(api, "extract_features", return_value=too_big), self.assertLogs(
+            "extraction.api", "INFO"
+        ) as logs:
+            api.run(job, PDF, NAMES)
+
+        self.assertEqual(api.status(job)["samples"], too_big)
+        self.assertTrue(any(record.getMessage().startswith("Couldn't save the result") for record in logs.records))
+
     def test_the_same_pdf_is_kept_once(self):
         with mock.patch.object(api, "extract_features", return_value=SAMPLES), self.assertLogs("extraction.api", "INFO"):
             for name in ("linden1988.pdf", "renamed.pdf"):
@@ -214,6 +225,20 @@ class ApiTest(unittest.TestCase):
 
         second, _ = self.start_and_stop_the_server()
         self.assertFalse(any(m.startswith("Copied") for m in second))
+
+    def test_a_saved_job_of_the_wrong_shape_doesnt_stop_the_server_starting(self):
+        good, bad = "0" * 32, "1" * 32
+        saved = {"status": "done", "file": "linden1988.pdf", "features": NAMES, "started": 1.0, "samples": SAMPLES}
+        (self.tmp / "extractions").mkdir()
+        (self.tmp / "extractions" / f"{good}.json").write_text(json.dumps(saved), encoding="utf-8")
+        (self.tmp / "extractions" / f"{bad}.json").write_text(json.dumps({**saved, "samples": []}), encoding="utf-8")
+
+        with self.assertLogs("extraction.store", "WARNING") as warnings:
+            messages, _ = self.start_and_stop_the_server()
+
+        self.assertIn(f"Copied 1 job(s) saved by an earlier version from {self.tmp / 'extractions'} into {self.db}", messages)
+        self.assertIn(f"{bad}.json", warnings.records[0].getMessage())
+        self.assertEqual(api.status(good), saved)
 
 
 if __name__ == "__main__":
