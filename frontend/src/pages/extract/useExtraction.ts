@@ -7,6 +7,7 @@ import {
   type JobInfo,
   type JobProgress,
   type Samples,
+  type Sources,
 } from "./api";
 import { EXTRACT_API_URL } from "./config";
 import { retryActionFor, type ExtractStage } from "./describe-error";
@@ -62,6 +63,8 @@ export type ExtractionState =
       readonly request: ExtractionDetails;
       readonly job: string;
       readonly samples: Samples;
+      /** Where each point was read, when the server says (issue #33). */
+      readonly sources?: Sources;
     }
   | {
       readonly phase: "failed";
@@ -196,7 +199,13 @@ export function useExtraction(apiUrl: string = EXTRACT_API_URL, job: string | nu
                 progress: status.progress,
               });
             } else if (status.status === "done") {
-              setState({ phase: "done", request, job: current.job, samples: status.samples });
+              setState({
+                phase: "done",
+                request,
+                job: current.job,
+                samples: status.samples,
+                ...(status.sources ? { sources: status.sources } : {}),
+              });
             } else {
               setState({
                 phase: "failed",

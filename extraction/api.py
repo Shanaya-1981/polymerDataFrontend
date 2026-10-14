@@ -10,7 +10,13 @@ Every answer also gives the PDF's file name (`file`), the feature names
 (`features`), and when the job started (`started`, Unix time in seconds).
 A running job's answer also has `progress`: the step it's on (`step`, an id
 from job_progress.py), what to call that step (`name`), a sentence about it
-(`description`), and how far along the job is (`percent`, 0-100).
+(`description`), and how far along the job is (`percent`, 0-100). A done
+job's answer also has `sources`, shaped like `samples`: for each sample, where
+each of its data points was read, in the same order -- {"kind": "table",
+"figure" or "text", "label": "Table IV" or null, "page": 12 or null, "quote":
+"..." or null}, or null for a point without one (point_sources.py). Pages are
+the PDF's, from 1. It's left out when no point has a source, as for jobs
+saved before sources were recorded.
 
 A PDF parsed before takes about 1.5 minutes, a new one about 5, since MinerU
 parses it first. Jobs run one at a time, in the order they came in, so
@@ -132,7 +138,12 @@ def run(job: str, pdf: bytes, features: list[str]) -> None:
                 # its contents and a PDF uploaded again reuses its earlier parse.
                 path = Path(tmp) / "paper.pdf"
                 path.write_bytes(pdf)
-                outcome = {"status": "done", "samples": extract_features(path, features, on_step=on_step)}
+                samples = extract_features(path, features, on_step=on_step)
+                outcome = {"status": "done", "samples": dict(samples)}
+                sources = getattr(samples, "sources", None) or {}
+                # Only when there's one to give, as store.py reads a saved job back.
+                if any(source is not None for points in sources.values() for source in points):
+                    outcome["sources"] = sources
             if current["step"]:
                 log.info("Step %s done in %.1f s", current["step"], time.monotonic() - current["since"])
             log.info("Done in %.1f s", time.monotonic() - began)

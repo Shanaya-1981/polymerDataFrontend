@@ -1,5 +1,5 @@
 import { toCsv } from "@/lib/csv-export";
-import type { ExtractedValue, Samples } from "./api";
+import type { ExtractedValue, PointSource, Samples, Sources } from "./api";
 
 /**
  * The feature names in what the user typed, split the way `POST /extract`
@@ -48,17 +48,53 @@ export function tableColumns(samples: Samples): string[] {
 }
 
 /**
+ * Where a point was read, as the Source column shows it: "Table IV, page 12",
+ * "Figure 3" (page unknown), "Text, page 3". A text source's quote is shown
+ * beside it, not in it.
+ */
+export function formatSource(source: PointSource): string {
+  const name = source.label ?? source.kind.charAt(0).toUpperCase() + source.kind.slice(1);
+  return source.page === null ? name : `${name}, page ${source.page}`;
+}
+
+/** The same in one line, quote included — for the CSV, as
+ *  `extract_features.py` writes it: 'Text, page 3: "1e-7 S/cm at 20 °C"'. */
+export function formatSourceLine(source: PointSource | null): string {
+  if (source === null) return "";
+  const where = formatSource(source);
+  return source.kind === "text" && source.quote !== null ? `${where}: "${source.quote}"` : where;
+}
+
+/** Whether any point has a source: if none does, there's no Source column. */
+export function hasSources(sources: Sources | undefined): sources is Sources {
+  return (
+    sources !== undefined && Object.values(sources).some((points) => points.some((s) => s !== null))
+  );
+}
+
+/** The source column's name: "source", unless a feature already has it. */
+export function sourceColumnName(columns: readonly string[]): string {
+  return columns.includes("source") ? "source of this data point" : "source";
+}
+
+/**
  * The results as a CSV file: one row per data point, the sample's name in a
- * first column called `sample`, then one column per feature — the layout
+ * first column called `sample`, then one column per feature, then — when the
+ * server said where each point was read — a `source` column: the layout
  * `extract_features.py` writes from the command line. A value the paper
  * doesn't give is an empty cell, and numbers keep every digit the server sent.
  */
-export function extractionCsv(samples: Samples): string {
+export function extractionCsv(samples: Samples, sources?: Sources): string {
   const columns = tableColumns(samples);
+  const withSources = hasSources(sources);
   const rows = Object.entries(samples).flatMap(([name, points]) =>
-    points.map((point) => [name, ...columns.map((column) => point[column] ?? null)]),
+    points.map((point, index) => [
+      name,
+      ...columns.map((column) => point[column] ?? null),
+      ...(withSources ? [formatSourceLine(sources[name]?.[index] ?? null)] : []),
+    ]),
   );
-  return toCsv(["sample", ...columns], rows);
+  return toCsv(["sample", ...columns, ...(withSources ? [sourceColumnName(columns)] : [])], rows);
 }
 
 /** `"linden1988.pdf"` → `"linden1988-extracted.csv"`. */

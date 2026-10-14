@@ -13,15 +13,17 @@ connection, so a row can't point to one that doesn't exist:
                    and whether it's "done" or "failed" (with why)
     samples        a sample the extraction found: its extraction, its name, and
                    its place in the result. A sample can have no data points.
-    points         a data point, the values measured together: its sample, and
-                   its place among the sample's data points
+    points         a data point, the values measured together: its sample, its
+                   place among the sample's data points, and where in the paper
+                   it was read (point_sources.py, as JSON; empty if not recorded)
     point_values   one value of a data point: its feature, and the value as the
                    model gave it, a number or text. (SQL reserves "values".)
 
 A feature the paper doesn't give for a data point has no row in point_values
 and reads back as None. load_extraction() gives back the same dict the server
 answered with before it saved the job, so GET /extract/<id> answers the same
-after a restart.
+after a restart. A database made before points had a source gets the column
+when it's next opened; its jobs have no sources, and read back without them.
 
 Before this file, each finished job was a JSON file,
 <DATA_DIR>/extractions/<id>.json. import_json() copies those in; the paper
@@ -64,7 +66,8 @@ CREATE INDEX IF NOT EXISTS samples_of_extraction ON samples (extraction_id, posi
 CREATE TABLE IF NOT EXISTS points (
     id INTEGER PRIMARY KEY,
     sample_id INTEGER NOT NULL REFERENCES samples (id) ON DELETE CASCADE,
-    position INTEGER NOT NULL
+    position INTEGER NOT NULL,
+    source TEXT
 );
 CREATE INDEX IF NOT EXISTS points_of_sample ON points (sample_id, position);
 -- value has no type, so SQLite keeps each one as the model gave it: a whole
@@ -86,14 +89,16 @@ def _connect(db: Path) -> Iterator[sqlite3.Connection]:
     with closing(sqlite3.connect(db, timeout=30)) as connection:
         connection.execute("PRAGMA foreign_keys = ON")  # SQLite's default is off, on each connection
         connection.executescript(SCHEMA)
+        if "source" not in {row[1] for row in connection.execute("PRAGMA table_info(points)")}:
+            connection.execute("ALTER TABLE points ADD COLUMN source TEXT")  # a database from before #33
         with connection:
             yield connection
 
 
 def save_extraction(db: Path, job: str, record: dict, paper: str | None = None) -> None:
     """Keep a finished job. `record` is what the server answers for it: "status",
-    "file", "features", "started", and "samples" or "error". `paper` is the
-    paper's id, or None if it isn't known."""
+    "file", "features", "started", and "samples" (with "sources", if it has
+    them) or "error". `paper` is the paper's id, or None if it isn't known."""
     with _connect(db) as connection:
         if paper is not None:
             connection.execute("INSERT OR IGNORE INTO papers VALUES (?, ?)", (paper, record["file"]))
@@ -109,13 +114,17 @@ def save_extraction(db: Path, job: str, record: dict, paper: str | None = None) 
                 record.get("error"),
             ),
         )
+        sources = record.get("sources") or {}
         for sample_position, (sample, points) in enumerate(record.get("samples", {}).items()):
             sample_id = connection.execute(
                 "INSERT INTO samples (extraction_id, name, position) VALUES (?, ?, ?)", (job, sample, sample_position)
             ).lastrowid
+            where = sources.get(sample) or []
             for position, point in enumerate(points):
+                source = where[position] if position < len(where) else None
                 point_id = connection.execute(
-                    "INSERT INTO points (sample_id, position) VALUES (?, ?)", (sample_id, position)
+                    "INSERT INTO points (sample_id, position, source) VALUES (?, ?, ?)",
+                    (sample_id, position, None if source is None else json.dumps(source, ensure_ascii=False)),
                 ).lastrowid
                 connection.executemany(
                     "INSERT INTO point_values VALUES (?, ?, ?)",
@@ -151,13 +160,17 @@ def load_extraction(db: Path, job: str) -> dict | None:
             (job,),
         ):
             values.setdefault(point_id, {})[feature] = value
-        for point_id, sample_id in connection.execute(
-            "SELECT points.id, sample_id FROM points JOIN samples ON samples.id = sample_id"
+        sources: dict[str, list[dict | None]] = {name: [] for name in names.values()}
+        for point_id, sample_id, source in connection.execute(
+            "SELECT points.id, sample_id, points.source FROM points JOIN samples ON samples.id = sample_id"
             " WHERE extraction_id = ? ORDER BY samples.position, points.position",
             (job,),
         ):
             given = values.get(point_id, {})
             samples[names[sample_id]].append({feature: given.get(feature) for feature in features})
+            sources[names[sample_id]].append(None if source is None else json.loads(source))
+        if any(source is not None for points in sources.values() for source in points):
+            return {**record, "samples": samples, "sources": sources}
         return {**record, "samples": samples}
 
 

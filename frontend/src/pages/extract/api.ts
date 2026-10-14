@@ -21,6 +21,22 @@ export type DataPoint = Readonly<Record<string, ExtractedValue>>;
 /** Each sample's name — as the paper gives it — mapped to its data points. */
 export type Samples = Readonly<Record<string, readonly DataPoint[]>>;
 
+/** Where in the paper a data point was read (issue #33): a table or a
+ *  figure by the name the paper gives it, or the text, with a short quote.
+ *  `page` is the PDF's, counted from 1; `null` when it couldn't be told. */
+export interface PointSource {
+  readonly kind: "table" | "figure" | "text";
+  /** "Table IV", "Figure 3"; `null` for text. */
+  readonly label: string | null;
+  readonly page: number | null;
+  /** For text, the words it was read from. */
+  readonly quote: string | null;
+}
+
+/** Shaped like `Samples`: for each sample, where each of its data points
+ *  was read, in the same order; `null` for a point without a source. */
+export type Sources = Readonly<Record<string, readonly (PointSource | null)[]>>;
+
 /** What the server says about the job itself, in every status answer. A
  *  page opened at a job's address has no other way to know them. */
 export interface JobInfo {
@@ -49,7 +65,7 @@ export interface JobProgress {
 export type JobStatus = (
   | { readonly status: "running"; readonly progress?: JobProgress }
   | { readonly status: "failed"; readonly error: string }
-  | { readonly status: "done"; readonly samples: Samples }
+  | { readonly status: "done"; readonly samples: Samples; readonly sources?: Sources }
 ) &
   JobInfo;
 
@@ -207,6 +223,37 @@ function parseSamples(value: unknown): Samples | null {
   return samples;
 }
 
+function parseSource(value: unknown): PointSource | null {
+  if (!isRecord(value)) return null;
+  const { kind, label, page, quote } = value;
+  if (kind !== "table" && kind !== "figure" && kind !== "text") return null;
+  const text = (v: unknown) => (typeof v === "string" && v.trim() !== "" ? v : null);
+  return {
+    kind,
+    label: text(label),
+    page: typeof page === "number" && Number.isInteger(page) && page >= 1 ? page : null,
+    quote: text(quote),
+  };
+}
+
+/** A done answer's `sources`, or `undefined` when it's missing or isn't
+ *  shaped like the samples: the results still show, without a Source column,
+ *  as from a server that predates it. A point's malformed source is `null`. */
+function parseSources(value: unknown, samples: Samples): Sources | undefined {
+  if (!isRecord(value)) return undefined;
+  const sources: Record<string, (PointSource | null)[]> = {};
+  for (const [name, points] of Object.entries(samples)) {
+    const given = value[name];
+    if (given === undefined) {
+      sources[name] = points.map(() => null);
+      continue;
+    }
+    if (!Array.isArray(given) || given.length !== points.length) return undefined;
+    sources[name] = given.map(parseSource);
+  }
+  return sources;
+}
+
 /** The job's own details from a status answer: each is left out when the
  *  server didn't send it, or sent something other than the documented type. */
 function parseJobInfo(body: Record<string, unknown>): JobInfo {
@@ -254,7 +301,11 @@ export function parseJobStatus(body: unknown): JobStatus | null {
       };
     case "done": {
       const samples = parseSamples(body.samples);
-      return samples ? { status: "done", samples, ...info } : null;
+      if (!samples) return null;
+      const sources = parseSources(body.sources, samples);
+      return sources
+        ? { status: "done", samples, sources, ...info }
+        : { status: "done", samples, ...info };
     }
     default:
       return null;

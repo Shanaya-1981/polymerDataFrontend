@@ -1,6 +1,7 @@
 """Extract the features you name from one paper: a PDF and a list of feature
 names in, a table out, with one row per data point the paper reports, a
-first column naming the sample it belongs to, and one column per feature.
+first column naming the sample it belongs to, one column per feature, and a
+last column saying where in the paper the point was read ("Table IV, page 12").
 
     .venv/bin/python extract_features.py paper.pdf features.txt              # CSV to the terminal
     .venv/bin/python extract_features.py paper.pdf features.txt -o out.csv
@@ -62,6 +63,7 @@ from pipeline.parsing.manifest_schema import ParseManifest  # noqa: E402
 from pipeline.parsing.parse_paper import parse_paper_auto  # noqa: E402
 from util.claudeAPIMock import ask_llm  # noqa: E402
 
+import point_sources  # noqa: E402
 from job_progress import ASKING, COLLECTING, PARSING  # noqa: E402
 from log_setup import configure_logging  # noqa: E402
 
@@ -82,16 +84,41 @@ _TASK = (
     "gives it no name), with its values for each feature, taken from the text, the tables or the figures. "
     "Give a sample one data point, or several if the paper gives a feature at several conditions (for "
     "example at several temperatures). Give numbers as plain numbers, in the unit a feature's name gives if "
-    "it gives one. Leave out a feature the paper doesn't give."
+    "it gives one. Leave out a feature the paper doesn't give. For each data point, also say where you read it "
+    "(its source): a table or a figure, with the name the paper gives it as the label (\"Table IV\", "
+    "\"Figure 3\"), or the text, with a short quote (at most 15 words, copied exactly) of where it gives the "
+    "value; and the page it's on."
 )
 # For MinerU's text and figure crops.
 SYSTEM = (
     "You extract data from a scientific paper. You get the paper's text (converted from PDF, tables "
     "included), its figures, and a list of features. Each figure comes after the text, labelled with the "
-    "[FIGURE ...] line that marks its place in the text. " + _TASK
+    "[FIGURE ...] line that marks its place in the text, and a line like <!-- page 5 of 7 --> marks where "
+    "each page starts. " + _TASK
 )
 # For the PDF itself (--send-pdf).
-SYSTEM_PDF = "You extract data from a scientific paper. You get the paper as a PDF and a list of features. " + _TASK
+SYSTEM_PDF = (
+    "You extract data from a scientific paper. You get the paper as a PDF and a list of features. "
+    + _TASK
+    + " Count pages as the PDF's, from 1."
+)
+
+
+class Extracted(dict):
+    """What extract_features() returns: each sample's name mapped to its data
+    points, as before, plus `sources`: the same names mapped to where each of
+    those points was read, in the same order (point_sources.py; None for a
+    point the model gave no source for)."""
+
+    def __init__(self, samples: dict[str, list[dict]], sources: dict[str, list[dict | None]]):
+        super().__init__(samples)
+        self.sources = sources
+
+
+def source_key(features: list[str]) -> str:
+    """The key each point's source has in the model's reply, beside the
+    features: "source", unless a feature is called that."""
+    return "source" if "source" not in features else "source of this data point"
 
 
 def feature_list(features: list[str]) -> str:
@@ -136,9 +163,11 @@ def extract_features(
     model: str | None = None,
     send_pdf: bool = False,
     on_step: OnStep | None = None,
-) -> dict[str, list[dict]]:
+) -> Extracted:
     """Each sample's name mapped to its data points, each a dict of every feature, in the order given;
-    None where the paper doesn't give it. Samples the model gives the same name are merged.
+    None where the paper doesn't give it. Samples the model gives the same name are merged. Where
+    each point was read is in the result's `sources` (see Extracted), its page looked up in the
+    parse where it can be.
 
     send_pdf=True sends the PDF itself instead of MinerU's text and figures.
     on_step is called with each job_progress step as it starts: PARSING (only
@@ -146,7 +175,13 @@ def extract_features(
     """
     step = on_step or (lambda _: None)
     value = {"type": ["string", "number", "null"]}
-    point = {"type": "object", "properties": {feature: value for feature in features}, "additionalProperties": False}
+    where = source_key(features)
+    point = {
+        "type": "object",
+        "properties": {**{feature: value for feature in features}, where: point_sources.schema()},
+        "required": [where],
+        "additionalProperties": False,
+    }
     schema = {
         "type": "object",
         "properties": {
@@ -169,16 +204,29 @@ def extract_features(
         step(ASKING)
         reply = _ask(feature_list(features), system=SYSTEM_PDF, model=model, json_schema=schema, documents=[paper])
     else:
-        text, images = build_prompt(paper if paper.is_dir() else parse(paper, on_step=step), features)
+        paper_dir = paper if paper.is_dir() else parse(paper, on_step=step)
+        text, images = build_prompt(paper_dir, features)
         step(ASKING)
         reply = _ask(text, system=SYSTEM, model=model, json_schema=schema, images=images)
     step(COLLECTING)
+    pages = None if send_pdf else _pages(paper_dir)
     samples: dict[str, list[dict]] = {}
+    sources: dict[str, list[dict | None]] = {}
     for reported in json.loads(reply)["samples"]:
         points = samples.setdefault(reported["sample"], [])
         points += ({feature: p.get(feature) for feature in features} for p in reported["points"])
+        sources.setdefault(reported["sample"], []).extend(
+            point_sources.resolve(p.get(where), pages) for p in reported["points"]
+        )
     log.info("Extracted %d sample(s), %d data point(s)", len(samples), sum(len(p) for p in samples.values()))
-    return samples
+    return Extracted(samples, sources)
+
+
+def _pages(paper_dir: Path) -> point_sources.Pages:
+    """Page lookups for a parsed paper: its text's page markers and its figures' records."""
+    manifest = ParseManifest.model_validate_json((paper_dir / "manifest.json").read_text())
+    content = (paper_dir / manifest.content_md_path).read_text(encoding="utf-8")
+    return point_sources.Pages(content, manifest.figures)
 
 
 def paper_id_of(pdf: bytes) -> str:
@@ -222,9 +270,19 @@ def parse(pdf: Path, on_step: OnStep | None = None) -> Path:
 
 
 def write_csv(samples: dict[str, list[dict]], features: list[str], out: TextIO) -> None:
-    writer = csv.DictWriter(out, fieldnames=["sample", *features])
+    """One row per data point: its sample, its features, and where it was read
+    ("Table IV, page 12"), when the samples say (Extracted.sources)."""
+    sources = getattr(samples, "sources", None)
+    where = source_key(features)
+    writer = csv.DictWriter(out, fieldnames=["sample", *features, *([where] if sources is not None else [])])
     writer.writeheader()
-    writer.writerows({"sample": name, **point} for name, points in samples.items() for point in points)
+    for name, points in samples.items():
+        for i, point in enumerate(points):
+            row = {"sample": name, **point}
+            if sources is not None:
+                found = sources.get(name, [])
+                row[where] = point_sources.describe(found[i] if i < len(found) else None)
+            writer.writerow(row)
 
 
 def main() -> None:

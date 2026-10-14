@@ -107,6 +107,7 @@ export default function Extract() {
         {state.phase === "done" ? (
           <ExtractResults
             samples={state.samples}
+            {...(state.sources ? { sources: state.sources } : {})}
             fileName={state.request.fileName}
             onNewExtraction={handleNewExtraction}
           />
