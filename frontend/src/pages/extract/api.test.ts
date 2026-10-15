@@ -210,3 +210,121 @@ describe("parseJobStatus — the job's own details", () => {
     ).toEqual({ status: "done", samples: {} });
   });
 });
+
+describe("parseJobStatus — a running job's progress", () => {
+  const parsing = {
+    step: "parsing",
+    name: "Parsing the PDF",
+    description: "MinerU is turning the paper into text, tables and figure images.",
+    percent: 5,
+  };
+
+  it("reads the step, what to call it, its description and the percent", () => {
+    expect(parseJobStatus({ status: "running", progress: parsing })).toEqual({
+      status: "running",
+      progress: parsing,
+    });
+  });
+
+  it("keeps the percent within 0–100", () => {
+    expect(parseJobStatus({ status: "running", progress: { ...parsing, percent: 140 } })).toEqual({
+      status: "running",
+      progress: { ...parsing, percent: 100 },
+    });
+    expect(parseJobStatus({ status: "running", progress: { ...parsing, percent: -3 } })).toEqual({
+      status: "running",
+      progress: { ...parsing, percent: 0 },
+    });
+  });
+
+  it("drops a malformed progress rather than refusing the answer", () => {
+    for (const progress of [
+      null,
+      "parsing",
+      { ...parsing, percent: "5" },
+      { ...parsing, percent: Number.NaN },
+      { ...parsing, name: "" },
+      { ...parsing, step: 1 },
+    ]) {
+      expect(parseJobStatus({ status: "running", progress })).toEqual({ status: "running" });
+    }
+  });
+
+  it("treats a missing description as empty", () => {
+    const progress = { step: "asking", name: "Asking the model", percent: 60 };
+    expect(parseJobStatus({ status: "running", progress })).toEqual({
+      status: "running",
+      progress: { ...progress, description: "" },
+    });
+  });
+
+  it("only reads progress from a running answer", () => {
+    expect(parseJobStatus({ status: "done", samples: {}, progress: parsing })).toEqual({
+      status: "done",
+      samples: {},
+    });
+  });
+});
+
+describe("parseJobStatus — where each point was read (issue #33)", () => {
+  const samples = { PEO: [{ T: 20 }, { T: 25 }], PPO: [{ T: 30 }] };
+  const table = { kind: "table", label: "Table IV", page: 12, quote: null };
+
+  it("keeps each point's source beside the samples, which stay as they were", () => {
+    const status = parseJobStatus({
+      status: "done",
+      samples,
+      sources: {
+        PEO: [table, null],
+        PPO: [{ kind: "text", label: null, page: 3, quote: "at 30 °C" }],
+      },
+    });
+    expect(status).toEqual({
+      status: "done",
+      samples,
+      sources: {
+        PEO: [table, null],
+        PPO: [{ kind: "text", label: null, page: 3, quote: "at 30 °C" }],
+      },
+    });
+  });
+
+  it("is left out when the server sends none, as an older one doesn't", () => {
+    expect(parseJobStatus({ status: "done", samples })).toEqual({ status: "done", samples });
+  });
+
+  it("drops sources not shaped like the samples, and never fails the answer for them", () => {
+    for (const sources of ["Table IV", [table], { PEO: [table] }, { PEO: "x" }]) {
+      expect(parseJobStatus({ status: "done", samples, sources })).toEqual({
+        status: "done",
+        samples,
+      });
+    }
+  });
+
+  it("reads a malformed source as none, and a bad page or a blank label as unknown", () => {
+    const status = parseJobStatus({
+      status: "done",
+      samples: { PEO: [{ T: 20 }, { T: 25 }, { T: 30 }] },
+      sources: {
+        PEO: [
+          { kind: "chart", label: "x", page: 1, quote: null },
+          { kind: "figure", label: " ", page: 0, quote: null },
+          { kind: "table", label: "Table 2", page: 2.5 },
+        ],
+      },
+    });
+    expect(status?.status === "done" && status.sources).toEqual({
+      PEO: [
+        null,
+        { kind: "figure", label: null, page: null, quote: null },
+        { kind: "table", label: "Table 2", page: null, quote: null },
+      ],
+    });
+  });
+
+  it("gives a sample the server listed no sources for one null per point", () => {
+    const status = parseJobStatus({ status: "done", samples, sources: { PEO: [table, table] } });
+    expect(status?.status === "done" && status.sources?.PPO).toEqual([null]);
+  });
+});

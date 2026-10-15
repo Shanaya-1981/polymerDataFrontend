@@ -7,7 +7,9 @@
  * words for the page.
  *
  * The server's answers are checked rather than trusted: this is the one
- * place data enters the app from outside the build.
+ * place data enters the app from outside the build. The Discover page talks
+ * to the same server, so its client (`discover/api.ts`) reuses the request
+ * and error handling here.
  */
 
 /** One value of one feature; `null` where the paper doesn't give it. */
@@ -18,6 +20,22 @@ export type DataPoint = Readonly<Record<string, ExtractedValue>>;
 
 /** Each sample's name — as the paper gives it — mapped to its data points. */
 export type Samples = Readonly<Record<string, readonly DataPoint[]>>;
+
+/** Where in the paper a data point was read (issue #33): a table or a
+ *  figure by the name the paper gives it, or the text, with a short quote.
+ *  `page` is the PDF's, counted from 1; `null` when it couldn't be told. */
+export interface PointSource {
+  readonly kind: "table" | "figure" | "text";
+  /** "Table IV", "Figure 3"; `null` for text. */
+  readonly label: string | null;
+  readonly page: number | null;
+  /** For text, the words it was read from. */
+  readonly quote: string | null;
+}
+
+/** Shaped like `Samples`: for each sample, where each of its data points
+ *  was read, in the same order; `null` for a point without a source. */
+export type Sources = Readonly<Record<string, readonly (PointSource | null)[]>>;
 
 /** What the server says about the job itself, in every status answer. A
  *  page opened at a job's address has no other way to know them. */
@@ -30,10 +48,24 @@ export interface JobInfo {
   readonly startedAt?: number;
 }
 
+/** Where a running job is, from its status answer's `progress` (issue #13).
+ *  The words come from the server, so a new step needs no change here. */
+export interface JobProgress {
+  /** A stable id for the step, e.g. "parsing". */
+  readonly step: string;
+  /** What to call it, e.g. "Parsing the PDF". */
+  readonly name: string;
+  /** A sentence about it, e.g. how long it usually takes. */
+  readonly description: string;
+  /** How far along the job is, 0–100. It moves at step boundaries only: the
+   *  server can't see inside its two long steps (MinerU and the model call). */
+  readonly percent: number;
+}
+
 export type JobStatus = (
-  | { readonly status: "running" }
+  | { readonly status: "running"; readonly progress?: JobProgress }
   | { readonly status: "failed"; readonly error: string }
-  | { readonly status: "done"; readonly samples: Samples }
+  | { readonly status: "done"; readonly samples: Samples; readonly sources?: Sources }
 ) &
   JobInfo;
 
@@ -76,19 +108,19 @@ export function isAbortError(error: unknown): boolean {
   );
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 const NOT_JSON = Symbol("not JSON");
 
-interface ApiResponse {
+export interface ApiResponse {
   readonly status: number;
   readonly ok: boolean;
   readonly body: unknown;
 }
 
-async function request(url: string, init: RequestInit): Promise<ApiResponse> {
+export async function request(url: string, init: RequestInit): Promise<ApiResponse> {
   let response: Response;
   let text: string;
   try {
@@ -108,11 +140,11 @@ async function request(url: string, init: RequestInit): Promise<ApiResponse> {
 }
 
 /** FastAPI puts the reason for an error in `detail`. */
-function detailOf(body: unknown): string | undefined {
+export function detailOf(body: unknown): string | undefined {
   return isRecord(body) && typeof body.detail === "string" ? body.detail : undefined;
 }
 
-function unreadable(response: ApiResponse, expected: string): ExtractApiError {
+export function unreadable(response: ApiResponse, expected: string): ExtractApiError {
   const what = response.body === NOT_JSON ? "an answer that isn't JSON" : "an unexpected answer";
   return new ExtractApiError(
     "bad-response",
@@ -121,7 +153,7 @@ function unreadable(response: ApiResponse, expected: string): ExtractApiError {
   );
 }
 
-function failedStatus(response: ApiResponse): ExtractApiError {
+export function failedStatus(response: ApiResponse): ExtractApiError {
   const detail = detailOf(response.body);
   if (response.status === 400) {
     return new ExtractApiError("rejected", detail ?? "The server refused the request.", 400);
@@ -191,6 +223,37 @@ function parseSamples(value: unknown): Samples | null {
   return samples;
 }
 
+function parseSource(value: unknown): PointSource | null {
+  if (!isRecord(value)) return null;
+  const { kind, label, page, quote } = value;
+  if (kind !== "table" && kind !== "figure" && kind !== "text") return null;
+  const text = (v: unknown) => (typeof v === "string" && v.trim() !== "" ? v : null);
+  return {
+    kind,
+    label: text(label),
+    page: typeof page === "number" && Number.isInteger(page) && page >= 1 ? page : null,
+    quote: text(quote),
+  };
+}
+
+/** A done answer's `sources`, or `undefined` when it's missing or isn't
+ *  shaped like the samples: the results still show, without a Source column,
+ *  as from a server that predates it. A point's malformed source is `null`. */
+function parseSources(value: unknown, samples: Samples): Sources | undefined {
+  if (!isRecord(value)) return undefined;
+  const sources: Record<string, (PointSource | null)[]> = {};
+  for (const [name, points] of Object.entries(samples)) {
+    const given = value[name];
+    if (given === undefined) {
+      sources[name] = points.map(() => null);
+      continue;
+    }
+    if (!Array.isArray(given) || given.length !== points.length) return undefined;
+    sources[name] = given.map(parseSource);
+  }
+  return sources;
+}
+
 /** The job's own details from a status answer: each is left out when the
  *  server didn't send it, or sent something other than the documented type. */
 function parseJobInfo(body: Record<string, unknown>): JobInfo {
@@ -205,13 +268,30 @@ function parseJobInfo(body: Record<string, unknown>): JobInfo {
   return info;
 }
 
+/** A running job's `progress`, or `undefined` when it's missing or malformed:
+ *  the answer is still a usable status without it, as from an older server. */
+function parseProgress(value: unknown): JobProgress | undefined {
+  if (!isRecord(value)) return undefined;
+  const { step, name, description, percent } = value;
+  if (typeof step !== "string" || typeof name !== "string" || name === "") return undefined;
+  if (typeof percent !== "number" || !Number.isFinite(percent)) return undefined;
+  return {
+    step,
+    name,
+    description: typeof description === "string" ? description : "",
+    percent: Math.min(100, Math.max(0, percent)),
+  };
+}
+
 /** A job-status answer, or `null` if it isn't one. */
 export function parseJobStatus(body: unknown): JobStatus | null {
   if (!isRecord(body)) return null;
   const info = parseJobInfo(body);
   switch (body.status) {
-    case "running":
-      return { status: "running", ...info };
+    case "running": {
+      const progress = parseProgress(body.progress);
+      return progress ? { status: "running", progress, ...info } : { status: "running", ...info };
+    }
     case "failed":
       return {
         status: "failed",
@@ -221,7 +301,11 @@ export function parseJobStatus(body: unknown): JobStatus | null {
       };
     case "done": {
       const samples = parseSamples(body.samples);
-      return samples ? { status: "done", samples, ...info } : null;
+      if (!samples) return null;
+      const sources = parseSources(body.sources, samples);
+      return sources
+        ? { status: "done", samples, sources, ...info }
+        : { status: "done", samples, ...info };
     }
     default:
       return null;

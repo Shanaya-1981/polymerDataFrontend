@@ -285,6 +285,57 @@ describe("useExtraction", () => {
   });
 });
 
+describe("useExtraction — progress", () => {
+  const parsing = { step: "parsing", name: "Parsing the PDF", description: "MinerU…", percent: 5 };
+  const asking = {
+    step: "asking",
+    name: "Asking the model",
+    description: "The model…",
+    percent: 60,
+  };
+
+  it("keeps the step the server last reported, until the job is done", async () => {
+    fakeServer(
+      [json({ job: "abc" }, 202)],
+      [
+        json({ status: "running", progress: parsing }),
+        json({ status: "running", progress: asking }),
+        json({ status: "done", samples: SAMPLES }),
+      ],
+    );
+    const { result } = renderHook(() => useExtraction(API));
+    act(() => result.current.start(request));
+    await wait(0);
+    expect(result.current.state).toMatchObject({ phase: "running", job: "abc" });
+    expect(result.current.state).not.toHaveProperty("progress");
+
+    await wait(POLL_INTERVAL_MS);
+    expect(result.current.state).toMatchObject({ phase: "running", progress: parsing });
+    await wait(POLL_INTERVAL_MS);
+    expect(result.current.state).toMatchObject({ phase: "running", progress: asking });
+    await wait(POLL_INTERVAL_MS);
+    expect(result.current.state.phase).toBe("done");
+    expect(result.current.state).not.toHaveProperty("progress");
+  });
+
+  it("keeps showing the last step through a check that fails quietly", async () => {
+    fakeServer(
+      [json({ job: "abc" }, 202)],
+      [json({ status: "running", progress: asking }), offline()],
+    );
+    const { result } = renderHook(() => useExtraction(API));
+    act(() => result.current.start(request));
+    await wait(0);
+    await wait(POLL_INTERVAL_MS);
+    await wait(POLL_INTERVAL_MS);
+    expect(result.current.state).toMatchObject({
+      phase: "running",
+      failedPolls: 1,
+      progress: asking,
+    });
+  });
+});
+
 describe("useExtraction — a job reopened from the page's address", () => {
   const details = { file: "paper.pdf", features: ["Tg"], started: 1000 };
 

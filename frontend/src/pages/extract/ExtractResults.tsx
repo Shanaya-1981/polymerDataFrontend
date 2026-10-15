@@ -12,12 +12,14 @@ import {
   cn,
 } from "@/components/ui";
 import { downloadCsv } from "@/lib/csv-export";
-import type { Samples } from "./api";
+import type { PointSource, Samples, Sources } from "./api";
 import {
   countPoints,
   extractionCsv,
   extractionCsvName,
   formatExtractedValue,
+  formatSource,
+  hasSources,
   isNumericColumn,
   MISSING_VALUE_TEXT,
   tableColumns,
@@ -25,6 +27,8 @@ import {
 
 export interface ExtractResultsProps {
   samples: Samples;
+  /** Where each point was read (issue #33), from a server that says. */
+  sources?: Sources;
   fileName: string;
   onNewExtraction: () => void;
 }
@@ -32,30 +36,47 @@ export interface ExtractResultsProps {
 /**
  * One labelled group per sample, each a table of its data points with a
  * column per feature. Every table shares the same columns, in the order the
- * features were asked for, so groups read the same way down the page.
+ * features were asked for, so groups read the same way down the page. When
+ * the server says where each point was read, a last Source column gives it.
  */
-export function ExtractResults({ samples, fileName, onNewExtraction }: ExtractResultsProps) {
+export function ExtractResults({
+  samples,
+  sources,
+  fileName,
+  onNewExtraction,
+}: ExtractResultsProps) {
   const idPrefix = useId();
   const entries = Object.entries(samples);
   const columns = tableColumns(samples);
   const numericColumns = new Set(columns.filter((column) => isNumericColumn(samples, column)));
   const pointCount = countPoints(samples);
+  const showSources = hasSources(sources);
 
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p role="status" className="text-secondary">
-          <span className="font-medium text-primary">{entries.length}</span>{" "}
-          {entries.length === 1 ? "sample" : "samples"} ·{" "}
-          <span className="font-medium text-primary">{pointCount}</span>{" "}
-          {pointCount === 1 ? "data point" : "data points"} from{" "}
-          <span className="break-all font-medium text-primary">{fileName}</span>
-        </p>
+        <div className="flex flex-col gap-1">
+          <p role="status" className="text-secondary">
+            <span className="font-medium text-primary">{entries.length}</span>{" "}
+            {entries.length === 1 ? "sample" : "samples"} ·{" "}
+            <span className="font-medium text-primary">{pointCount}</span>{" "}
+            {pointCount === 1 ? "data point" : "data points"} from{" "}
+            <span className="break-all font-medium text-primary">{fileName}</span>
+          </p>
+          {showSources ? (
+            <p className="text-sm text-muted">
+              Source pages count the PDF&apos;s pages from 1, which can differ from the
+              journal&apos;s printed page numbers.
+            </p>
+          ) : null}
+        </div>
         <div className="flex flex-wrap gap-2 self-start sm:self-auto">
           {pointCount > 0 ? (
             <Button
               variant="outline"
-              onClick={() => downloadCsv(extractionCsvName(fileName), extractionCsv(samples))}
+              onClick={() =>
+                downloadCsv(extractionCsvName(fileName), extractionCsv(samples, sources))
+              }
             >
               Download CSV
             </Button>
@@ -108,6 +129,9 @@ export function ExtractResults({ samples, fileName, onNewExtraction }: ExtractRe
                         {column}
                       </TableHead>
                     ))}
+                    {showSources ? (
+                      <TableHead className="min-w-40 normal-case tracking-normal">Source</TableHead>
+                    ) : null}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -133,6 +157,11 @@ export function ExtractResults({ samples, fileName, onNewExtraction }: ExtractRe
                           </TableCell>
                         );
                       })}
+                      {showSources ? (
+                        <TableCell>
+                          <SourceCell source={sources?.[name]?.[row] ?? null} />
+                        </TableCell>
+                      ) : null}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -142,5 +171,27 @@ export function ExtractResults({ samples, fileName, onNewExtraction }: ExtractRe
         );
       })}
     </div>
+  );
+}
+
+/** "Table IV, page 12"; for text, the quote it was read from beneath. */
+function SourceCell({ source }: { source: PointSource | null }) {
+  if (source === null) {
+    return (
+      <>
+        <span aria-hidden="true" className="text-muted">
+          {MISSING_VALUE_TEXT}
+        </span>
+        <span className="sr-only">not recorded</span>
+      </>
+    );
+  }
+  return (
+    <span className="flex flex-col gap-0.5">
+      <span>{formatSource(source)}</span>
+      {source.kind === "text" && source.quote !== null ? (
+        <q className="max-w-xs text-xs text-secondary">{source.quote}</q>
+      ) : null}
+    </span>
   );
 }

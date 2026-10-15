@@ -1,0 +1,36 @@
+{
+  "keywords": {
+    "listed": 3893,
+    "wanted": 63,
+    "found": 47,
+    "top50": 9,
+    "top100": 11,
+    "top200": 12,
+    "seconds": 300
+  },
+  "features": [
+    "Polymer",
+    "Anion",
+    "salt concentration",
+    "Tg",
+    "ionic conductivity",
+    "transference number"
+  ],
+  "budget": 300,
+  "seed_dois": [
+    "https://doi.org/10.1021/acs.macromol.5b01724",
+    "https://doi.org/10.1016/0013-4686(92)80115-3",
+    "https://doi.org/10.1016/j.ssi.2014.09.011",
+    "https://doi.org/10.1016/j.electacta.2016.12.172",
+    "https://doi.org/10.1021/ma00103a034"
+  ],
+  "seeds": {
+    "listed": 4023,
+    "wanted": 58,
+    "found": 45,
+    "top50": 7,
+    "top100": 8,
+    "top200": 10,
+    "seconds": 300
+  }
+}

@@ -5,7 +5,9 @@ import {
   isAbortError,
   startExtraction,
   type JobInfo,
+  type JobProgress,
   type Samples,
+  type Sources,
 } from "./api";
 import { EXTRACT_API_URL } from "./config";
 import { retryActionFor, type ExtractStage } from "./describe-error";
@@ -52,12 +54,17 @@ export type ExtractionState =
       readonly polls: number;
       /** Failed checks in a row; any answer that reads resets it. */
       readonly failedPolls: number;
+      /** Where the job is, from the latest answer that said: absent until
+       *  the first one, or from a server that doesn't report it. */
+      readonly progress?: JobProgress;
     }
   | {
       readonly phase: "done";
       readonly request: ExtractionDetails;
       readonly job: string;
       readonly samples: Samples;
+      /** Where each point was read, when the server says (issue #33). */
+      readonly sources?: Sources;
     }
   | {
       readonly phase: "failed";
@@ -189,9 +196,16 @@ export function useExtraction(apiUrl: string = EXTRACT_API_URL, job: string | nu
                 startedAt,
                 polls: current.polls + 1,
                 failedPolls: 0,
+                progress: status.progress,
               });
             } else if (status.status === "done") {
-              setState({ phase: "done", request, job: current.job, samples: status.samples });
+              setState({
+                phase: "done",
+                request,
+                job: current.job,
+                samples: status.samples,
+                ...(status.sources ? { sources: status.sources } : {}),
+              });
             } else {
               setState({
                 phase: "failed",

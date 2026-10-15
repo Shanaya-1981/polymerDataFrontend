@@ -198,6 +198,53 @@ describe("Extract page — running and results", () => {
     );
   });
 
+  it("shows where each point was read in a Source column, and puts it in the CSV", async () => {
+    const sources = {
+      "Amorphous PEO (undoped)": [
+        { kind: "figure", label: "Fig. 4", page: 5, quote: null },
+        { kind: "text", label: null, page: 3, quote: "2.82 × 10⁻⁷ S/cm at 25 °C" },
+      ],
+      "Amorphous PEO:LiClO4 - 64:1": [null],
+    };
+    fakeServer([json({ job: "abc" }, 202)], [json({ status: "done", samples: SAMPLES, sources })]);
+    renderExtract();
+    await submitAndStart();
+    await wait(POLL_INTERVAL_MS);
+
+    expect(screen.getByText(/Source pages count the PDF's pages from 1/)).toBeInTheDocument();
+    const table = within(screen.getByRole("region", { name: "Amorphous PEO (undoped)" })).getByRole(
+      "table",
+    );
+    expect(
+      within(table)
+        .getAllByRole("columnheader")
+        .map((th) => th.textContent),
+    ).toEqual(["Temperature (°C)", "Conductivity (S/cm)", "Source"]);
+    const rows = within(table).getAllByRole("row").slice(1);
+    expect(within(rows[0]).getAllByRole("cell")[2]).toHaveTextContent(/^Fig\. 4, page 5$/);
+    expect(within(rows[1]).getAllByRole("cell")[2]).toHaveTextContent("Text, page 3");
+    expect(within(rows[1]).getAllByRole("cell")[2]).toHaveTextContent("2.82 × 10⁻⁷ S/cm at 25 °C");
+    const other = screen.getByRole("region", { name: "Amorphous PEO:LiClO4 - 64:1" });
+    expect(within(other).getByText("not recorded")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Download CSV" }));
+    expect(vi.mocked(downloadCsv).mock.calls[0]?.[1].split("\r\n")).toEqual([
+      "sample,Temperature (°C),Conductivity (S/cm),source",
+      'Amorphous PEO (undoped),20,1e-7,"Fig. 4, page 5"',
+      'Amorphous PEO (undoped),25,2.82e-7,"Text, page 3: ""2.82 × 10⁻⁷ S/cm at 25 °C"""',
+      "Amorphous PEO:LiClO4 - 64:1,20,,",
+    ]);
+  });
+
+  it("shows no Source column for a server that doesn't say", async () => {
+    fakeServer([json({ job: "abc" }, 202)], [json({ status: "done", samples: SAMPLES })]);
+    renderExtract();
+    await submitAndStart();
+    await wait(POLL_INTERVAL_MS);
+    expect(screen.queryByRole("columnheader", { name: "Source" })).not.toBeInTheDocument();
+    expect(screen.queryByText(/Source pages/)).not.toBeInTheDocument();
+  });
+
   it("New extraction goes back to the form, clearing the file but keeping the features", async () => {
     fakeServer([json({ job: "abc" }, 202)], [json({ status: "done", samples: SAMPLES })]);
     renderExtract();

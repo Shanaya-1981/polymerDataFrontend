@@ -7,6 +7,9 @@ import {
   formatElapsed,
   formatExtractedValue,
   formatFileSize,
+  formatSource,
+  formatSourceLine,
+  hasSources,
   isNumericColumn,
   MISSING_VALUE_TEXT,
   parseFeatureNames,
@@ -137,5 +140,48 @@ describe("extractionCsvName", () => {
     expect(extractionCsvName("bdf71b01-linden1988.pdf")).toBe("bdf71b01-linden1988-extracted.csv");
     expect(extractionCsvName("Paper.PDF")).toBe("Paper-extracted.csv");
     expect(extractionCsvName(".pdf")).toBe("paper-extracted.csv");
+  });
+});
+
+describe("where each point was read (issue #33)", () => {
+  const table = { kind: "table", label: "Table IV", page: 12, quote: null } as const;
+  const text = { kind: "text", label: null, page: 3, quote: "1e-7 S/cm at 20 °C" } as const;
+
+  it("names the table or figure and its page, or says it was the text", () => {
+    expect(formatSource(table)).toBe("Table IV, page 12");
+    expect(formatSource({ kind: "figure", label: "Figure 3", page: null, quote: null })).toBe(
+      "Figure 3",
+    );
+    expect(formatSource(text)).toBe("Text, page 3");
+    expect(formatSource({ kind: "table", label: null, page: 2, quote: null })).toBe(
+      "Table, page 2",
+    );
+  });
+
+  it("puts a text source's quote in the CSV's one line", () => {
+    expect(formatSourceLine(text)).toBe('Text, page 3: "1e-7 S/cm at 20 °C"');
+    expect(formatSourceLine(table)).toBe("Table IV, page 12");
+    expect(formatSourceLine(null)).toBe("");
+  });
+
+  it("has sources only when a point has one", () => {
+    expect(hasSources(undefined)).toBe(false);
+    expect(hasSources({ PEO: [null] })).toBe(false);
+    expect(hasSources({ PEO: [null, table] })).toBe(true);
+  });
+
+  it("adds a source column to the CSV, as extract_features.py writes it", () => {
+    const samples = { PEO: [{ T: 20 }, { T: 25 }] };
+    expect(extractionCsv(samples, { PEO: [table, null] }).split("\r\n")).toEqual([
+      "sample,T,source",
+      'PEO,20,"Table IV, page 12"',
+      "PEO,25,",
+    ]);
+    // A feature already called "source" keeps its column.
+    expect(extractionCsv({ PEO: [{ source: "lab" }] }, { PEO: [table] }).split("\r\n")[0]).toBe(
+      "sample,source,source of this data point",
+    );
+    // Without sources, the CSV is as before.
+    expect(extractionCsv(samples, { PEO: [null, null] }).split("\r\n")[0]).toBe("sample,T");
   });
 });
